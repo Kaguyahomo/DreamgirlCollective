@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+This is my playing.html: <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,13 +9,21 @@
         .embed-container {
             display: flex;
             justify-content: center;
+            gap: 20px;
             padding: 20px;
             background-color: #ffd1dc; /* Pastel pink background */
             width: 100%; /* Full width */
             margin: 0 auto;
         }
-        #twitch-embed {
+        .video-embed, .chat-embed {
+            background-color: #fff; /* White background for better visibility */
+        }
+        .video-embed {
             width: 70%;
+            height: 500px; /* Adjusted height */
+        }
+        .chat-embed {
+            width: 30%;
             height: 500px; /* Adjusted height */
         }
     </style>
@@ -35,26 +43,36 @@
         <a href="index.html"><img src="header-image.png" alt="Home"></a>
     </nav>
 
-    <section class="embed-container">
-        <!-- Add a placeholder for the Twitch embed -->
-        <div id="twitch-embed"></div>
+    <section>
+        <div class="embed-container">
+            <!-- Twitch Video Embed -->
+            <div id="twitch-video" class="video-embed"></div>
+            <!-- Twitch Chat Embed -->
+            <iframe
+                id="twitch-chat"
+                src="https://www.twitch.tv/embed/nancyb0yy/chat?parent=kaguyahomo.github.io"
+                frameborder="0"
+                scrolling="no"
+                class="chat-embed">
+            </iframe>
+        </div>
     </section>
 
     <footer>
-        <p>DreamGirl Collective</p>
+        <p>&copy; 2024 Shorty's Collection. All rights reserved.</p>
     </footer>
 
-    <!-- Load the Twitch embed JavaScript file -->
-    <script src="https://embed.twitch.tv/embed/v1.js"></script>
-
-    <!-- Create a Twitch.Embed object that will render within the "twitch-embed" element -->
+    <!-- Twitch Video Embed Script -->
+    <script src="https://player.twitch.tv/js/embed/v1.js"></script>
     <script type="text/javascript">
-      new Twitch.Embed("twitch-embed", {
-        width: '100%',
-        height: '100%',
-        channel: "nancyb0yy",
-        parent: ["kaguyahomo.github.io"]
-      });
+        var options = {
+            width: '100%',
+            height: '100%',
+            channel: 'nancyb0yy',
+            parent: ['kaguyahomo.github.io']
+        };
+        var player = new Twitch.Player('twitch-video', options);
+        player.setVolume(0.5);
     </script>
 </body>
 </html>
