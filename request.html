@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request a Document</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <img src="header-image.png" alt="Header Left Image" class="header-image left">
+        <h1>Request a Document</h1>
+        <img src="header-image.png" alt="Header Right Image" class="header-image right">
+    </header>
+
+    <nav>
+        <a href="index.html"><img src="header-image.png" alt="Home Icon"></a>
+    </nav>
+    
+    <section>
+        <form id="documentRequestForm" action="https://formspree.io/f/myzgpkqg" method="POST">
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Your Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="library">Document Type:</label>
+            <input type="text" id="library" name="library" required>
+
+            <label for="book-title">Title:</label>
+            <input type="text" id="book-title" name="book-title" required>
+
+            <label for="author">Author:</label>
+            <input type="text" id="author" name="author" required>
+
+            <label for="year">Year:</label>
+            <input type="text" id="year" name="year" required>
+
+            <label for="isbn">OCLC (optional):</label>
+            <input type="text" id="oclc" name="oclc">
+
+            <label for="comments">Additional Comments:</label>
+            <textarea id="comments" name="comments"></textarea>
+
+            <button type="submit">Submit Request</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>Dreamgirl Collective</p>
+    </footer>
+
+    <!-- JavaScript to sanitize user input and redirect to custom completed page -->
+    <script>
+        document.getElementById('documentRequestForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Sanitize user input
+            function sanitizeInput(value) {
+                const element = document.createElement('div');
+                element.innerText = value;
+                return element.innerHTML;
+            }
+
+            const formData = new FormData(this);
+            for (let [key, value] of formData.entries()) {
+                formData.set(key, sanitizeInput(value));
+            }
+
+            // Submit sanitized form data
+            fetch(this.action, {
+                method: this.method,
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = 'completed.html'; // Redirect to custom completed page
+                } else {
+                    alert('Something went wrong. Please try again.');
+                }
+            }).catch(error => {
+                alert('There was a problem submitting your request.');
+            });
+        });
+    </script>
+</body>
+</html>

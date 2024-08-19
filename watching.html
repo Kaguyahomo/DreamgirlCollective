@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watching</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Letterboxd Activity</h1>
+    </header>
+
+    <nav>
+        <ul>
+         <a href="reading.html"><img src="reading.gif" alt="Reading"></a>
+        <a href="playing.html"><img src="playing.gif" alt="Playing"></a>
+        <a href="listening.html"><img src="listening.gif" alt="Listening"></a>
+        <a href="photos.html"><img src="photos.gif" alt="Photos"></a>
+		  <a href="index.html""><img src="header-image.png" alt="home"></a>
+        </ul>
+    </nav>
+
+    <section class="letterboxd-embed">
+        <div id="letterboxd-embed-wrapper-tc">Loading...</div>
+        <script>
+        fetch('https://lb-embed-content.bokonon.dev?username=ChechoSpecho')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('letterboxd-embed-wrapper-tc').innerHTML = data;
+        });
+        </script>
+    </section>
+
+    <footer>
+        <p>Dreamgirl Collective</p>
+    </footer>
+</body>
+</html>

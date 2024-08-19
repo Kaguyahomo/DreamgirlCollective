@@ -1,0 +1,181 @@
+/* General Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #e6e6fa; /* Light pastel purple background */
+    color: white; /* White text color */
+    background-image: url('8bit-bunny.png');
+    background-size: 100px 100px; /* Adjusted size of the bunnies */
+    background-repeat: repeat;
+    background-position: 0 0;
+    background-attachment: fixed;
+    animation: bunny-hop-diagonal 2s infinite ease-in-out; /* Diagonal hopping animation */
+    min-height: 100vh; /* Ensure body covers the full viewport height */
+}
+
+/* Header styling */
+header {
+    max-width: 60%;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+    background-color: #ffd1dc; /* Pastel pink background */
+    border-radius: 8px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Header image styling */
+.header-image {
+    width: 80px;
+    height: 80px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.header-image.left {
+    margin-right: 1rem;
+}
+
+.header-image.right {
+    margin-left: 1rem;
+}
+
+/* Navigation styling */
+nav {
+    max-width: 60%;
+    margin: 1rem auto;
+    padding: 0.5rem;
+    text-align: center;
+    background-color: #ffd1dc; /* Pastel pink background */
+    border-radius: 8px;
+}
+
+nav a {
+    color: white; /* White text color */
+    margin: 0 1rem;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block; /* Ensure links are inline-block */
+    vertical-align: middle; /* Align images and text in the middle */
+}
+
+nav img {
+    width: 80px; /* Standardized width (doubled size) */
+    height: 80px; /* Standardized height (doubled size) */
+    vertical-align: middle; /* Align images with text */
+    margin-right: 0.5rem; /* Space between the image and the text */
+}
+
+/* Section styling */
+section {
+    max-width: 60%;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #ffd1dc; /* Pastel pink background */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling the form elements */
+form {
+    background-color: #ffd1dc; /* Pastel pink background */
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: 2rem auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Text boxes and other form elements */
+input, select, textarea {
+    width: 91%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #ffd1dc; /* Pastel pink background */
+    color: white; /* White text color */
+}
+
+/* Button styling */
+button {
+    background-color: white; /* White background */
+    color: #ffd1dc; /* Pastel pink text */
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #f2f2f2; /* Slightly darker white on hover */
+}
+
+/* Footer styling */
+footer {
+    max-width: 60%;
+    margin: 1rem auto;
+    background-color: #ffd1dc; /* Pastel pink background */
+    color: white; /* White text color */
+    text-align: center;
+    padding: 1rem 0;
+    border-radius: 8px;
+}
+
+/* Bunny diagonal hopping animation */
+@keyframes bunny-hop-diagonal {
+    0% {
+        background-position: 0 0;
+    }
+    25% {
+        background-position: 25px 25px;
+    }
+    50% {
+        background-position: 50px 0;
+    }
+    75% {
+        background-position: 75px 25px;
+    }
+    100% {
+        background-position: 100px 0;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header, nav, section, footer {
+        max-width: 90%;
+        padding: 1rem;
+    }
+
+    .header-image {
+        width: 50px;
+        height: 50px;
+    }
+
+    nav img {
+        width: 60px; 
+        height: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    header, nav, section, footer {
+        max-width: 95%;
+        padding: 0.5rem;
+    }
+
+    .header-image {
+        width: 40px;
+        height: 40px;
+    }
+
+    nav img {
+        width: 50px;
+        height: 50px;
+    }
+}
