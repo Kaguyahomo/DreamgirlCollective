@@ -53,7 +53,7 @@
     <nav>
         <a href="index.html"><img src="header-image.png" alt="Home"></a>
         <a href="kaguya.html"><img src="Kaguya.png" alt="Kaguya"></a>
-        <a href="studies.html"><img src="studies.gif" alt="studies"></a>
+        <a href="studies.html"><img src="studies.gif" alt="Studies"></a>
         <a href="book1.html"><img src="book1.png" alt="Book 1"></a>
         <a href="book3.html"><img src="book3.png" alt="Book 3"></a>
         <!-- Add links to other book HTML files here -->
@@ -144,11 +144,17 @@
                         break;
                 }
             } else if (event.direction === Hammer.DIRECTION_UP) {
-                // Swipe up: Scroll down the page
-                window.scrollBy(0, window.innerHeight / 2); // Adjust scroll amount as needed
+                // Swipe up: Scroll down the page smoothly
+                window.scrollTo({
+                    top: window.scrollY + window.innerHeight / 2,
+                    behavior: 'smooth'
+                });
             } else if (event.direction === Hammer.DIRECTION_DOWN) {
-                // Swipe down: Scroll up the page
-                window.scrollBy(0, -window.innerHeight / 2); // Adjust scroll amount as needed
+                // Swipe down: Scroll up the page smoothly
+                window.scrollTo({
+                    top: window.scrollY - window.innerHeight / 2,
+                    behavior: 'smooth'
+                });
             }
         };
 
