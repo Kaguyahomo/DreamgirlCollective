@@ -85,7 +85,8 @@
         // Add swipe recognizer for all directions
         mc.add(new Hammer.Swipe({ direction: Hammer.DIRECTION_ALL }));
 
-        mc.on('swipe', function(event) {
+        // Swipe handler function
+        var swipeHandler = function(event) {
             var currentPage = window.location.pathname.split('/').pop();
 
             if (event.direction === Hammer.DIRECTION_LEFT) {
@@ -112,6 +113,7 @@
                     case 'book7.html':
                         window.location.href = 'book8.html';
                         break;
+                    // No action if on last book
                 }
             } else if (event.direction === Hammer.DIRECTION_RIGHT) {
                 // Swipe right: Go to the previous book
@@ -142,13 +144,16 @@
                         break;
                 }
             } else if (event.direction === Hammer.DIRECTION_UP) {
-                // Swipe up: Scroll up or perform an action
-                window.scrollBy(0, -100); // Adjust as needed
+                // Swipe up: Scroll down the page
+                window.scrollBy(0, window.innerHeight / 2); // Adjust scroll amount as needed
             } else if (event.direction === Hammer.DIRECTION_DOWN) {
-                // Swipe down: Scroll down or perform an action
-                window.scrollBy(0, 100); // Adjust as needed
+                // Swipe down: Scroll up the page
+                window.scrollBy(0, -window.innerHeight / 2); // Adjust scroll amount as needed
             }
-        });
+        };
+
+        // Bind swipe handler to the manager
+        mc.on('swipe', swipeHandler);
     </script>
 </body>
 </html>
