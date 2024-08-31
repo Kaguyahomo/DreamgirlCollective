@@ -79,8 +79,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
 
     <script>
-        // Get the current page URL and set up the swipe handler
-        var swipeHandler = function(event) {
+        // Create a new Hammer Manager instance for the document body
+        var mc = new Hammer.Manager(document.body);
+
+        // Add swipe recognizer for all directions
+        mc.add(new Hammer.Swipe({ direction: Hammer.DIRECTION_ALL }));
+
+        mc.on('swipe', function(event) {
             var currentPage = window.location.pathname.split('/').pop();
 
             if (event.direction === Hammer.DIRECTION_LEFT) {
@@ -107,7 +112,6 @@
                     case 'book7.html':
                         window.location.href = 'book8.html';
                         break;
-                    // No action if on last book
                 }
             } else if (event.direction === Hammer.DIRECTION_RIGHT) {
                 // Swipe right: Go to the previous book
@@ -138,23 +142,13 @@
                         break;
                 }
             } else if (event.direction === Hammer.DIRECTION_UP) {
-                // Swipe up: Action for vertical swipe up (if needed)
-                console.log('Swiped up!');
-                // Example action: Scroll up by 100px
-                window.scrollBy(0, -100);
-                event.preventDefault();
+                // Swipe up: Scroll up or perform an action
+                window.scrollBy(0, -100); // Adjust as needed
             } else if (event.direction === Hammer.DIRECTION_DOWN) {
-                // Swipe down: Action for vertical swipe down (if needed)
-                console.log('Swiped down!');
-                // Example action: Scroll down by 100px
-                window.scrollBy(0, 100);
-                event.preventDefault();
+                // Swipe down: Scroll down or perform an action
+                window.scrollBy(0, 100); // Adjust as needed
             }
-        };
-
-        var mc = new Hammer.Manager(document.body);
-        mc.add(new Hammer.Swipe({ direction: Hammer.DIRECTION_ALL }));
-        mc.on('swipe', swipeHandler);
+        });
     </script>
 </body>
 </html>
