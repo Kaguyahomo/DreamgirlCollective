@@ -5,30 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Books Collection</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
     <style>
-        .swipe-container {
-            display: flex;
-            overflow-x: hidden;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-            gap: 20px;
-            padding: 20px;
-            background-color: #ffd1dc; /* Pastel pink background */
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .book-links {
-            display: flex;
-            flex-wrap: nowrap;
-            gap: 20px;
-        }
-        .book-links a {
-            flex: 0 0 auto; /* Prevent flex items from growing or shrinking */
-        }
-        .book-links img {
-            width: 150px; /* Standardized width */
-            height: auto; /* Maintain aspect ratio */
+        .book-links a img {
+            width: 150px;
+            height: auto;
         }
     </style>
 </head>
@@ -42,43 +22,98 @@
     <nav>
         <a href="index.html"><img src="header-image.png" alt="Home"></a>
         <a href="kaguya.html"><img src="Kaguya.png" alt="Kaguya"></a>
-        <!-- Add other navigation links if needed -->
     </nav>
 
     <section>
         <h2>Select a Book</h2>
-        <div class="swipe-container" id="swipe-container">
-            <div class="book-links">
-                <a href="book1.html"><img src="book1.png" alt="Title of Book 1"></a>
-                <a href="book2.html"><img src="book2.png" alt="Title of Book 2"></a>
-                <a href="book3.html"><img src="book3.png" alt="Title of Book 3"></a>
-                <a href="book4.html"><img src="book4.png" alt="Title of Book 4"></a>
-                <a href="book5.html"><img src="book5.png" alt="Title of Book 5"></a>
-                <a href="book6.html"><img src="book6.png" alt="Title of Book 6"></a>
-                <a href="book7.html"><img src="book7.png" alt="Title of Book 7"></a>
-                <a href="book8.html"><img src="book8.png" alt="Title of Book 8"></a>
-            </div>
+        <div class="book-links">
+            <a href="book1.html"><img src="book1.png" alt="Title of Book 1"></a>
+            <a href="book2.html"><img src="book2.png" alt="Title of Book 2"></a>
+            <a href="book3.html"><img src="book3.png" alt="Title of Book 3"></a>
+            <a href="book4.html"><img src="book4.png" alt="Title of Book 4"></a>
+            <a href="book5.html"><img src="book5.png" alt="Title of Book 5"></a>
+            <a href="book6.html"><img src="book6.png" alt="Title of Book 6"></a>
+            <a href="book7.html"><img src="book7.png" alt="Title of Book 7"></a>
+            <a href="book8.html"><img src="book8.png" alt="Title of Book 8"></a>
         </div>
     </section>
 
     <footer>
-        <p>&copy; 2024 Shorty's Collection. All rights reserved.</p>
+        <p>&copy; 2024 Library DreamGirl. All rights reserved.</p>
     </footer>
 
+    <!-- Include Hammer.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+
     <script>
-        // Initialize Hammer.js
-        var swipeContainer = document.getElementById('swipe-container');
-        var hammer = new Hammer(swipeContainer);
+        // Get the current page URL and set up the swipe handler
+        var swipeHandler = function(event) {
+            var currentPage = window.location.pathname.split('/').pop();
 
-        hammer.on('swipeleft', function() {
-            // Scroll to the next item
-            swipeContainer.scrollBy({ left: swipeContainer.offsetWidth, behavior: 'smooth' });
-        });
+            if (event.direction === Hammer.DIRECTION_LEFT) {
+                // Swipe left: Go to the next book
+                switch (currentPage) {
+                    case 'studies.html':
+                        window.location.href = 'book1.html';
+                        break;
+                    case 'book1.html':
+                        window.location.href = 'book2.html';
+                        break;
+                    case 'book2.html':
+                        window.location.href = 'book3.html';
+                        break;
+                    case 'book3.html':
+                        window.location.href = 'book4.html';
+                        break;
+                    case 'book4.html':
+                        window.location.href = 'book5.html';
+                        break;
+                    case 'book5.html':
+                        window.location.href = 'book6.html';
+                        break;
+                    case 'book6.html':
+                        window.location.href = 'book7.html';
+                        break;
+                    case 'book7.html':
+                        window.location.href = 'book8.html';
+                        break;
+                    // No action if on last book
+                }
+            } else if (event.direction === Hammer.DIRECTION_RIGHT) {
+                // Swipe right: Go to the previous book
+                switch (currentPage) {
+                    case 'book1.html':
+                        window.location.href = 'studies.html';
+                        break;
+                    case 'book2.html':
+                        window.location.href = 'book1.html';
+                        break;
+                    case 'book3.html':
+                        window.location.href = 'book2.html';
+                        break;
+                    case 'book4.html':
+                        window.location.href = 'book3.html';
+                        break;
+                    case 'book5.html':
+                        window.location.href = 'book4.html';
+                        break;
+                    case 'book6.html':
+                        window.location.href = 'book5.html';
+                        break;
+                    case 'book7.html':
+                        window.location.href = 'book6.html';
+                        break;
+                    case 'book8.html':
+                        window.location.href = 'book7.html';
+                        break;
+                    // No action if on first book
+                }
+            }
+        };
 
-        hammer.on('swiperight', function() {
-            // Scroll to the previous item
-            swipeContainer.scrollBy({ left: -swipeContainer.offsetWidth, behavior: 'smooth' });
-        });
+        var mc = new Hammer.Manager(document.body);
+        mc.add(new Hammer.Swipe());
+        mc.on('swipe', swipeHandler);
     </script>
 </body>
 </html>
