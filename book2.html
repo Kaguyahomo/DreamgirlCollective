@@ -137,11 +137,17 @@
                         window.location.href = 'book1.html';
                         break;
                 }
+            } else if (event.direction === Hammer.DIRECTION_UP) {
+                // Swipe up: Action for vertical swipe up (if needed)
+                console.log('Swiped up!');
+            } else if (event.direction === Hammer.DIRECTION_DOWN) {
+                // Swipe down: Action for vertical swipe down (if needed)
+                console.log('Swiped down!');
             }
         };
 
         var mc = new Hammer.Manager(document.body);
-        mc.add(new Hammer.Swipe());
+        mc.add(new Hammer.Swipe({ direction: Hammer.DIRECTION_ALL }));
         mc.on('swipe', swipeHandler);
     </script>
 </body>
