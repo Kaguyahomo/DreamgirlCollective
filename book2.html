@@ -75,22 +75,52 @@
         <p>&copy; 2024 Library DreamGirl. All rights reserved.</p>
     </footer>
 
-    <!-- Include Hammer.js library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
-
     <script>
-        // Create a new Hammer Manager instance for the document body
-        var mc = new Hammer.Manager(document.body);
+        // Variables for touch event
+        let startY, startX, deltaY, deltaX;
 
-        // Add swipe recognizer for all directions
-        mc.add(new Hammer.Swipe({ direction: Hammer.DIRECTION_ALL }));
+        // Function to handle touch start
+        function handleTouchStart(event) {
+            const touch = event.touches[0];
+            startY = touch.clientY;
+            startX = touch.clientX;
+        }
 
-        // Swipe handler function
-        var swipeHandler = function(event) {
-            var currentPage = window.location.pathname.split('/').pop();
+        // Function to handle touch move
+        function handleTouchMove(event) {
+            const touch = event.touches[0];
+            deltaY = touch.clientY - startY;
+            deltaX = touch.clientX - startX;
+        }
 
-            if (event.direction === Hammer.DIRECTION_LEFT) {
-                // Swipe left: Go to the next book
+        // Function to handle touch end
+        function handleTouchEnd(event) {
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                // Horizontal swipe
+                if (deltaX > 0) {
+                    // Swipe right
+                    navigate('right');
+                } else {
+                    // Swipe left
+                    navigate('left');
+                }
+            } else {
+                // Vertical swipe
+                if (deltaY > 0) {
+                    // Swipe down
+                    scroll('down');
+                } else {
+                    // Swipe up
+                    scroll('up');
+                }
+            }
+        }
+
+        // Function to handle navigation
+        function navigate(direction) {
+            const currentPage = window.location.pathname.split('/').pop();
+
+            if (direction === 'left') {
                 switch (currentPage) {
                     case 'book1.html':
                         window.location.href = 'book2.html';
@@ -113,11 +143,12 @@
                     case 'book7.html':
                         window.location.href = 'book8.html';
                         break;
-                    // No action if on last book
                 }
-            } else if (event.direction === Hammer.DIRECTION_RIGHT) {
-                // Swipe right: Go to the previous book
+            } else if (direction === 'right') {
                 switch (currentPage) {
+                    case 'book1.html':
+                        window.location.href = 'studies.html';
+                        break;
                     case 'book2.html':
                         window.location.href = 'book1.html';
                         break;
@@ -139,27 +170,23 @@
                     case 'book8.html':
                         window.location.href = 'book7.html';
                         break;
-                    case 'studies.html':
-                        window.location.href = 'book1.html';
-                        break;
                 }
-            } else if (event.direction === Hammer.DIRECTION_UP) {
-                // Swipe up: Scroll down the page smoothly
-                window.scrollTo({
-                    top: window.scrollY + window.innerHeight / 2,
-                    behavior: 'smooth'
-                });
-            } else if (event.direction === Hammer.DIRECTION_DOWN) {
-                // Swipe down: Scroll up the page smoothly
-                window.scrollTo({
-                    top: window.scrollY - window.innerHeight / 2,
-                    behavior: 'smooth'
-                });
             }
-        };
+        }
 
-        // Bind swipe handler to the manager
-        mc.on('swipe', swipeHandler);
+        // Function to handle scrolling
+        function scroll(direction) {
+            const scrollAmount = window.innerHeight / 2;
+            window.scrollBy({
+                top: direction === 'down' ? scrollAmount : -scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+
+        // Attach touch event listeners
+        document.addEventListener('touchstart', handleTouchStart);
+        document.addEventListener('touchmove', handleTouchMove);
+        document.addEventListener('touchend', handleTouchEnd);
     </script>
 </body>
 </html>
