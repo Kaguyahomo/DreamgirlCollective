@@ -12,6 +12,12 @@ body {
     background-attachment: fixed;
     animation: bunny-hop-diagonal 2s infinite ease-in-out; /* Diagonal hopping animation */
     min-height: 100vh; /* Ensure body covers the full viewport height */
+    overflow-x: hidden; /* Hide horizontal overflow if necessary */
+}
+
+/* Ensure full height and scrolling on the html element */
+html {
+    height: 100%;
 }
 
 /* Header styling */
