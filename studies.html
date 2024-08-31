@@ -5,6 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Books Collection</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <style>
+        /* Style for the swipe area */
+        .swipe-container {
+            display: flex;
+            overflow-x: scroll;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            gap: 20px;
+            padding: 20px;
+            background-color: #ffd1dc; /* Pastel pink background */
+        }
+        .book-links a {
+            display: inline-block;
+            scroll-snap-align: start;
+            margin: 0;
+        }
+        .book-links img {
+            width: 150px; /* Standardized width */
+            height: auto; /* Maintain aspect ratio */
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -15,26 +37,44 @@
 
     <nav>
         <a href="index.html"><img src="header-image.png" alt="Home"></a>
-			<a href="kaguya.html"><img src="Kaguya.png" alt="Kaguya"></a>
+        <a href="kaguya.html"><img src="Kaguya.png" alt="Kaguya"></a>
         <!-- Add other navigation links if needed -->
     </nav>
 
     <section>
         <h2>Select a Book</h2>
-        <div class="book-links">
-            <a href="book1.html"><img src="book1.png" alt="Title of Book 1" style="width: 150px; height: auto;"></a>
-            <a href="book2.html"><img src="book2.png" alt="Title of Book 2" style="width: 150px; height: auto;"></a> 
-            <a href="book3.html"><img src="book3.png" alt="Title of Book 3"style="width: 150px; height: auto;"></a>
-            <a href="book4.html"><img src="book4.png" alt="Title of Book 4"style="width: 150px; height: auto;"></a>
-				<a href="book5.html"><img src="book5.png" alt="Title of Book 4"style="width: 150px; height: auto;"></a>
-				<a href="book6.html"><img src="book6.png" alt="Title of Book 4"style="width: 150px; height: auto;"></a>
-				<a href="book7.html"><img src="book7.png" alt="Title of Book 4"style="width: 150px; height: auto;"></a>
-				<a href="book8.html"><img src="book8.png" alt="Title of Book 4"style="width: 150px; height: auto;"></a>
+        <div class="swipe-container" id="swipe-container">
+            <div class="book-links">
+                <a href="book1.html"><img src="book1.png" alt="Title of Book 1"></a>
+                <a href="book2.html"><img src="book2.png" alt="Title of Book 2"></a>
+                <a href="book3.html"><img src="book3.png" alt="Title of Book 3"></a>
+                <a href="book4.html"><img src="book4.png" alt="Title of Book 4"></a>
+                <a href="book5.html"><img src="book5.png" alt="Title of Book 5"></a>
+                <a href="book6.html"><img src="book6.png" alt="Title of Book 6"></a>
+                <a href="book7.html"><img src="book7.png" alt="Title of Book 7"></a>
+                <a href="book8.html"><img src="book8.png" alt="Title of Book 8"></a>
+            </div>
         </div>
     </section>
 
     <footer>
         <p>&copy; 2024 Shorty's Collection. All rights reserved.</p>
     </footer>
+
+    <script>
+        // Initialize Hammer.js
+        var swipeContainer = document.getElementById('swipe-container');
+        var hammer = new Hammer(swipeContainer);
+
+        hammer.on('swipeleft', function() {
+            // Scroll to the next item
+            swipeContainer.scrollBy({ left: swipeContainer.offsetWidth, behavior: 'smooth' });
+        });
+
+        hammer.on('swiperight', function() {
+            // Scroll to the previous item
+            swipeContainer.scrollBy({ left: -swipeContainer.offsetWidth, behavior: 'smooth' });
+        });
+    </script>
 </body>
 </html>
