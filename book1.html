@@ -79,25 +79,20 @@
         <p>&copy; 2024 Library DreamGirl. All rights reserved.</p>
     </footer>
 
-    <!-- Include Hammer.js library -->
+ <!-- Include Hammer.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
 
     <script>
-        // Initialize Hammer.js for swipe gestures
-        var mc = new Hammer.Manager(document.body);
-
-        mc.add(new Hammer.Swipe({
-            direction: Hammer.DIRECTION_ALL
-        }));
-
-        var scrollAmount = 100; // Adjust this value for smoother or faster scrolling
-
-        mc.on('swipe', function(event) {
+        // Get the current page URL and set up the swipe handler
+        var swipeHandler = function(event) {
             var currentPage = window.location.pathname.split('/').pop();
 
             if (event.direction === Hammer.DIRECTION_LEFT) {
                 // Swipe left: Go to the next book
                 switch (currentPage) {
+                    case 'studies.html':
+                        window.location.href = 'book1.html';
+                        break;
                     case 'book1.html':
                         window.location.href = 'book2.html';
                         break;
@@ -123,6 +118,9 @@
             } else if (event.direction === Hammer.DIRECTION_RIGHT) {
                 // Swipe right: Go to the previous book
                 switch (currentPage) {
+                    case 'book1.html':
+                        window.location.href = 'studies.html';
+                        break;
                     case 'book2.html':
                         window.location.href = 'book1.html';
                         break;
@@ -144,24 +142,19 @@
                     case 'book8.html':
                         window.location.href = 'book7.html';
                         break;
-                    case 'studies.html':
-                        window.location.href = 'book1.html';
-                        break;
                 }
             } else if (event.direction === Hammer.DIRECTION_UP) {
                 // Swipe up: Scroll down the page
-                window.scrollBy({
-                    top: scrollAmount,
-                    behavior: 'smooth'
-                });
+                window.scrollBy(0, window.innerHeight / 2); // Adjust scroll amount as needed
             } else if (event.direction === Hammer.DIRECTION_DOWN) {
                 // Swipe down: Scroll up the page
-                window.scrollBy({
-                    top: -scrollAmount,
-                    behavior: 'smooth'
-                });
+                window.scrollBy(0, -window.innerHeight / 2); // Adjust scroll amount as needed
             }
-        });
+        };
+
+        var mc = new Hammer.Manager(document.body);
+        mc.add(new Hammer.Swipe());
+        mc.on('swipe', swipeHandler);
     </script>
 </body>
 </html>
