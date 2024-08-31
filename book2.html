@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book 2</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
     <style>
         /* Custom styling for book page */
         .book-container {
@@ -47,17 +48,15 @@
 </head>
 <body>
     <header>
-<left>
-        <h1>THE SINGULAR VOICE OF BEING:
-JOHN DUNS SCOTUS AND ULTIMATE DIFFERENCE</h1>
-
-<right>
+        <h1>THE SINGULAR VOICE OF BEING: JOHN DUNS SCOTUS AND ULTIMATE DIFFERENCE</h1>
     </header>
 
     <nav>
         <a href="index.html"><img src="header-image.png" alt="Home"></a>
         <a href="kaguya.html"><img src="Kaguya.png" alt="Kaguya"></a>
         <a href="studies.html"><img src="studies.gif" alt="studies"></a>
+        <a href="book1.html"><img src="book1.png" alt="Book 1"></a>
+        <a href="book3.html"><img src="book3.png" alt="Book 3"></a>
         <!-- Add links to other book HTML files here -->
     </nav>
 
@@ -76,5 +75,20 @@ JOHN DUNS SCOTUS AND ULTIMATE DIFFERENCE</h1>
     <footer>
         <p>&copy; 2024 Library DreamGirl. All rights reserved.</p>
     </footer>
+
+    <!-- Hammer.js Swipe Functionality -->
+    <script>
+        // Initialize Hammer.js
+        var hammertime = new Hammer(document.body);
+
+        // Set up swipe event listeners
+        hammertime.on('swipeleft', function() {
+            window.location.href = 'book3.html'; // Go to the next book
+        });
+
+        hammertime.on('swiperight', function() {
+            window.location.href = 'book1.html'; // Go to the previous book
+        });
+    </script>
 </body>
 </html>
