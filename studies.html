@@ -95,7 +95,7 @@
         // Get the current page URL and set up the swipe handler
         var swipeHandler = function(event) {
             var currentPage = window.location.pathname.split('/').pop();
-
+            
             if (event.direction === Hammer.DIRECTION_LEFT) {
                 // Swipe left: Go to the next book
                 switch (currentPage) {
@@ -154,6 +154,9 @@
                         break;
                     // No action if on first book
                 }
+            } else if (event.direction === Hammer.DIRECTION_UP || event.direction === Hammer.DIRECTION_DOWN) {
+                // Allow vertical scrolling
+                // For additional functionality, you can implement logic here if needed
             }
         };
 
