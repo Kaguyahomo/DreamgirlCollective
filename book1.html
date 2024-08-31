@@ -43,6 +43,11 @@
         .chapter-navigation a:hover {
             text-decoration: underline;
         }
+
+        /* Add this CSS rule for smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
     </style>
 </head>
 <body>
@@ -84,6 +89,8 @@
         mc.add(new Hammer.Swipe({
             direction: Hammer.DIRECTION_ALL
         }));
+
+        var scrollAmount = 100; // Adjust this value for smoother or faster scrolling
 
         mc.on('swipe', function(event) {
             var currentPage = window.location.pathname.split('/').pop();
@@ -143,10 +150,16 @@
                 }
             } else if (event.direction === Hammer.DIRECTION_UP) {
                 // Swipe up: Scroll down the page
-                window.scrollBy(0, window.innerHeight / 2); // Adjust scroll amount as needed
+                window.scrollBy({
+                    top: scrollAmount,
+                    behavior: 'smooth'
+                });
             } else if (event.direction === Hammer.DIRECTION_DOWN) {
                 // Swipe down: Scroll up the page
-                window.scrollBy(0, -window.innerHeight / 2); // Adjust scroll amount as needed
+                window.scrollBy({
+                    top: -scrollAmount,
+                    behavior: 'smooth'
+                });
             }
         });
     </script>
