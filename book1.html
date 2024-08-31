@@ -78,8 +78,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
 
     <script>
-        // Get the current page URL and set up the swipe handler
-        var swipeHandler = function(event) {
+        // Initialize Hammer.js for swipe gestures
+        var mc = new Hammer.Manager(document.body);
+
+        mc.add(new Hammer.Swipe({
+            direction: Hammer.DIRECTION_ALL
+        }));
+
+        mc.on('swipe', function(event) {
             var currentPage = window.location.pathname.split('/').pop();
 
             if (event.direction === Hammer.DIRECTION_LEFT) {
@@ -142,11 +148,7 @@
                 // Swipe down: Scroll up the page
                 window.scrollBy(0, -window.innerHeight / 2); // Adjust scroll amount as needed
             }
-        };
-
-        var mc = new Hammer.Manager(document.body);
-        mc.add(new Hammer.Swipe());
-        mc.on('swipe', swipeHandler);
+        });
     </script>
 </body>
 </html>
