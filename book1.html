@@ -54,6 +54,7 @@
         <a href="index.html"><img src="header-image.png" alt="Home"></a>
         <a href="kaguya.html"><img src="Kaguya.png" alt="Kaguya"></a>
         <a href="studies.html"><img src="studies.gif" alt="studies"></a>
+        <a href="book2.html"><img src="book2.png" alt="Book 2"></a>
         <!-- Add links to other book HTML files here -->
     </nav>
 
@@ -83,13 +84,57 @@
 
             if (event.direction === Hammer.DIRECTION_LEFT) {
                 // Swipe left: Go to the next book
-                if (currentPage === 'book1.html') {
-                    window.location.href = 'book2.html';
+                switch (currentPage) {
+                    case 'book1.html':
+                        window.location.href = 'book2.html';
+                        break;
+                    case 'book2.html':
+                        window.location.href = 'book3.html';
+                        break;
+                    case 'book3.html':
+                        window.location.href = 'book4.html';
+                        break;
+                    case 'book4.html':
+                        window.location.href = 'book5.html';
+                        break;
+                    case 'book5.html':
+                        window.location.href = 'book6.html';
+                        break;
+                    case 'book6.html':
+                        window.location.href = 'book7.html';
+                        break;
+                    case 'book7.html':
+                        window.location.href = 'book8.html';
+                        break;
+                    // No action if on last book
                 }
             } else if (event.direction === Hammer.DIRECTION_RIGHT) {
-                // Swipe right: Go to the studies page
-                if (currentPage === 'book1.html') {
-                    window.location.href = 'studies.html';
+                // Swipe right: Go to the previous book
+                switch (currentPage) {
+                    case 'book2.html':
+                        window.location.href = 'book1.html';
+                        break;
+                    case 'book3.html':
+                        window.location.href = 'book2.html';
+                        break;
+                    case 'book4.html':
+                        window.location.href = 'book3.html';
+                        break;
+                    case 'book5.html':
+                        window.location.href = 'book4.html';
+                        break;
+                    case 'book6.html':
+                        window.location.href = 'book5.html';
+                        break;
+                    case 'book7.html':
+                        window.location.href = 'book6.html';
+                        break;
+                    case 'book8.html':
+                        window.location.href = 'book7.html';
+                        break;
+                    case 'studies.html':
+                        window.location.href = 'book1.html';
+                        break;
                 }
             }
         };
