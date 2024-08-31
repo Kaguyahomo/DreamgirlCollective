@@ -140,9 +140,15 @@
             } else if (event.direction === Hammer.DIRECTION_UP) {
                 // Swipe up: Action for vertical swipe up (if needed)
                 console.log('Swiped up!');
+                // Example action: Scroll up by 100px
+                window.scrollBy(0, -100);
+                event.preventDefault();
             } else if (event.direction === Hammer.DIRECTION_DOWN) {
                 // Swipe down: Action for vertical swipe down (if needed)
                 console.log('Swiped down!');
+                // Example action: Scroll down by 100px
+                window.scrollBy(0, 100);
+                event.preventDefault();
             }
         };
 
