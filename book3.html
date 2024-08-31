@@ -47,16 +47,15 @@
 </head>
 <body>
     <header>
-<left>
         <h1>Deleuze's Philosophical Lineage</h1>
-
-<right>
     </header>
 
     <nav>
         <a href="index.html"><img src="header-image.png" alt="Home"></a>
         <a href="kaguya.html"><img src="Kaguya.png" alt="Kaguya"></a>
         <a href="studies.html"><img src="studies.gif" alt="studies"></a>
+        <a href="book2.html"><img src="book2.png" alt="Book 2"></a>
+        <a href="book4.html"><img src="book4.png" alt="Book 4"></a>
         <!-- Add links to other book HTML files here -->
     </nav>
 
@@ -75,5 +74,75 @@
     <footer>
         <p>&copy; 2024 Library DreamGirl. All rights reserved.</p>
     </footer>
+
+    <!-- Include Hammer.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+
+    <script>
+        // Get the current page URL and set up the swipe handler
+        var swipeHandler = function(event) {
+            var currentPage = window.location.pathname.split('/').pop();
+
+            if (event.direction === Hammer.DIRECTION_LEFT) {
+                // Swipe left: Go to the next book
+                switch (currentPage) {
+                    case 'book1.html':
+                        window.location.href = 'book2.html';
+                        break;
+                    case 'book2.html':
+                        window.location.href = 'book3.html';
+                        break;
+                    case 'book3.html':
+                        window.location.href = 'book4.html';
+                        break;
+                    case 'book4.html':
+                        window.location.href = 'book5.html';
+                        break;
+                    case 'book5.html':
+                        window.location.href = 'book6.html';
+                        break;
+                    case 'book6.html':
+                        window.location.href = 'book7.html';
+                        break;
+                    case 'book7.html':
+                        window.location.href = 'book8.html';
+                        break;
+                    // No action if on last book
+                }
+            } else if (event.direction === Hammer.DIRECTION_RIGHT) {
+                // Swipe right: Go to the previous book
+                switch (currentPage) {
+                    case 'book2.html':
+                        window.location.href = 'book1.html';
+                        break;
+                    case 'book3.html':
+                        window.location.href = 'book2.html';
+                        break;
+                    case 'book4.html':
+                        window.location.href = 'book3.html';
+                        break;
+                    case 'book5.html':
+                        window.location.href = 'book4.html';
+                        break;
+                    case 'book6.html':
+                        window.location.href = 'book5.html';
+                        break;
+                    case 'book7.html':
+                        window.location.href = 'book6.html';
+                        break;
+                    case 'book8.html':
+                        window.location.href = 'book7.html';
+                        break;
+                    case 'studies.html':
+                        window.location.href = 'book1.html';
+                        break;
+                }
+            }
+        };
+
+        var mc = new Hammer.Manager(document.body);
+        mc.add(new Hammer.Swipe());
+        mc.on('swipe', swipeHandler);
+    </script>
 </body>
 </html>
