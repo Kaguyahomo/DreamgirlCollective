@@ -16,11 +16,16 @@
             gap: 20px;
             padding: 20px;
             background-color: #ffd1dc; /* Pastel pink background */
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .book-links {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 20px;
         }
         .book-links a {
-            display: inline-block;
-            scroll-snap-align: start;
-            margin: 0;
+            flex: 0 0 auto; /* Prevent flex items from growing or shrinking */
         }
         .book-links img {
             width: 150px; /* Standardized width */
