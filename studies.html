@@ -6,9 +6,55 @@
     <title>Books Collection</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* Inline CSS for vertical scrolling */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Hide horizontal overflow */
+            overflow-y: auto; /* Allow vertical scrolling */
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e6e6fa; /* Light pastel purple background */
+        }
+        header, nav, section, footer {
+            background-color: #ffd1dc; /* Pastel pink background */
+        }
         .book-links a img {
             width: 150px;
             height: auto;
+        }
+        header {
+            max-width: 60%;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        nav {
+            max-width: 60%;
+            margin: 1rem auto;
+            padding: 0.5rem;
+            text-align: center;
+            border-radius: 8px;
+        }
+        section {
+            max-width: 60%;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            max-width: 60%;
+            margin: 1rem auto;
+            padding: 1rem 0;
+            border-radius: 8px;
+            text-align: center;
         }
     </style>
 </head>
