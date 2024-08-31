@@ -76,24 +76,20 @@
     </footer>
 
     <script>
-        // Variables for touch event
         let startY, startX, deltaY, deltaX;
 
-        // Function to handle touch start
         function handleTouchStart(event) {
             const touch = event.touches[0];
             startY = touch.clientY;
             startX = touch.clientX;
         }
 
-        // Function to handle touch move
         function handleTouchMove(event) {
             const touch = event.touches[0];
             deltaY = touch.clientY - startY;
             deltaX = touch.clientX - startX;
         }
 
-        // Function to handle touch end
         function handleTouchEnd(event) {
             if (Math.abs(deltaX) > Math.abs(deltaY)) {
                 // Horizontal swipe
@@ -108,15 +104,14 @@
                 // Vertical swipe
                 if (deltaY > 0) {
                     // Swipe down
-                    scroll('down');
+                    scroll('up');
                 } else {
                     // Swipe up
-                    scroll('up');
+                    scroll('down');
                 }
             }
         }
 
-        // Function to handle navigation
         function navigate(direction) {
             const currentPage = window.location.pathname.split('/').pop();
 
@@ -174,7 +169,6 @@
             }
         }
 
-        // Function to handle scrolling
         function scroll(direction) {
             const scrollAmount = window.innerHeight / 2;
             window.scrollBy({
@@ -183,7 +177,6 @@
             });
         }
 
-        // Attach touch event listeners
         document.addEventListener('touchstart', handleTouchStart);
         document.addEventListener('touchmove', handleTouchMove);
         document.addEventListener('touchend', handleTouchEnd);
