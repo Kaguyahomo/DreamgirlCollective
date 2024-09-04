@@ -12,14 +12,8 @@ body {
     background-attachment: fixed;
     animation: bunny-hop-diagonal 2s infinite ease-in-out; /* Diagonal hopping animation */
     min-height: 100vh; /* Ensure body covers the full viewport height */
-    overflow-x: hidden; /* Hide horizontal overflow */
-    overflow-y: auto; /* Allow vertical scrolling */
-}
-
-/* Ensure full height and scrolling on the html element */
-html {
-    height: 100%;
-    overflow-y: auto; /* Ensure vertical scrolling */
+    overflow-y: scroll; /* Ensure vertical scrolling */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
 }
 
 /* Header styling */
@@ -71,10 +65,11 @@ nav a {
     vertical-align: middle; /* Align images and text in the middle */
 }
 
+/* Standardized size for all navigation images */
 nav img {
-    width: 80px; /* Standardized width (doubled size) */
-    height: 80px; /* Standardized height (doubled size) */
-    vertical-align: middle; /* Align images with text */
+    width: 80px; /* Standardized width for all navigation images */
+    height: 80px; /* Standardized height for all navigation images */
+    vertical-align: middle;
     margin-right: 0.5rem; /* Space between the image and the text */
 }
 
@@ -86,7 +81,6 @@ section {
     background-color: #ffd1dc; /* Pastel pink background */
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    overflow-y: auto; /* Allow vertical scrolling within sections */
 }
 
 /* Styling the form elements */
@@ -187,7 +181,4 @@ footer {
         width: 50px;
         height: 50px;
     }
-    html {
-    scroll-behavior: smooth;
-}
 }
