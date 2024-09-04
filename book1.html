@@ -1,90 +1,111 @@
-<!-- Include Hammer.js library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
-
-<script>
-    // Initialize Hammer.js for swipe gestures
-    var mc = new Hammer.Manager(document.body);
-
-    mc.add(new Hammer.Swipe({
-        direction: Hammer.DIRECTION_ALL
-    }));
-
-    // Configure smoother scrolling amount
-    var scrollAmount = window.innerHeight / 10; // Smaller value for smoother scrolling
-
-    var swipeHandler = function(event) {
-        var currentPage = window.location.pathname.split('/').pop();
-
-        if (event.direction === Hammer.DIRECTION_LEFT) {
-            // Swipe left: Go to the next book
-            switch (currentPage) {
-                case 'studies.html':
-                    window.location.href = 'book1.html';
-                    break;
-                case 'book1.html':
-                    window.location.href = 'book2.html';
-                    break;
-                case 'book2.html':
-                    window.location.href = 'book3.html';
-                    break;
-                case 'book3.html':
-                    window.location.href = 'book4.html';
-                    break;
-                case 'book4.html':
-                    window.location.href = 'book5.html';
-                    break;
-                case 'book5.html':
-                    window.location.href = 'book6.html';
-                    break;
-                case 'book6.html':
-                    window.location.href = 'book7.html';
-                    break;
-                case 'book7.html':
-                    window.location.href = 'book8.html';
-                    break;
-            }
-        } else if (event.direction === Hammer.DIRECTION_RIGHT) {
-            // Swipe right: Go to the previous book
-            switch (currentPage) {
-                case 'book1.html':
-                    window.location.href = 'studies.html';
-                    break;
-                case 'book2.html':
-                    window.location.href = 'book1.html';
-                    break;
-                case 'book3.html':
-                    window.location.href = 'book2.html';
-                    break;
-                case 'book4.html':
-                    window.location.href = 'book3.html';
-                    break;
-                case 'book5.html':
-                    window.location.href = 'book4.html';
-                    break;
-                case 'book6.html':
-                    window.location.href = 'book5.html';
-                    break;
-                case 'book7.html':
-                    window.location.href = 'book6.html';
-                    break;
-                case 'book8.html':
-                    window.location.href = 'book7.html';
-                    break;
-            }
-        } else if (event.direction === Hammer.DIRECTION_UP) {
-            // Swipe up: Scroll down the page
-            window.scrollBy({
-                top: scrollAmount,
-                behavior: 'smooth'
-            });
-        } else if (event.direction === Hammer.DIRECTION_DOWN) {
-            // Swipe down: Scroll up the page
-            window.scrollBy({
-                top: -scrollAmount,
-                behavior: 'smooth'
-            });
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book 1</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Custom styling for the book page */
+        .book-container {
+            max-width: 70%;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffd1dc; /* Pastel pink background */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
-    };
 
-    mc.on('swipe', swipeHandler);
-</script>
+        .book-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        .chapter-navigation {
+            background-color: #fff;
+            color: #000;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .chapter-navigation a {
+            display: block;
+            color: #ffd1dc;
+            text-decoration: none;
+            margin: 0.5rem 0;
+            font-weight: bold;
+        }
+
+        .chapter-navigation a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>The Forge of Doctrine: The Academic Year 1330-31 and the Rise of Scotism at the University of Paris</h1>
+    </header>
+
+    <nav>
+        <a href="index.html"><img src="header-image.png" alt="Home"></a>
+        <a href="kaguya.html"><img src="Kaguya.png" alt="Kaguya"></a>
+        <a href="studies.html"><img src="studies.gif" alt="studies"></a>
+        <!-- Add links to other book HTML files here -->
+    </nav>
+
+    <div class="book-container">
+        <img src="book1.png" alt="Book 1 Cover" class="book-image">
+
+        <div class="chapter-navigation">
+            <h2>Chapters</h2>
+            <a href="#chapter1">Chapter 1: Title</a>
+            <a href="#chapter2">Chapter 2: Title</a>
+            <a href="#chapter3">Chapter 3: Title</a>
+            <!-- Add more chapter links here -->
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Library DreamGirl. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
+
+            function handleSwipe() {
+                const threshold = 50; // Minimum distance to be considered a swipe
+                const swipeX = endX - startX;
+                const swipeY = endY - startY;
+
+                if (Math.abs(swipeX) > Math.abs(swipeY)) {
+                    if (Math.abs(swipeX) > threshold) {
+                        if (swipeX < 0) {
+                            // Swipe left (go to next book page)
+                            window.location.href = 'book2.html';  // Adjust for next book
+                        } else {
+                            // Swipe right (go to previous book page)
+                            window.location.href = 'studies.html';  // Adjust for previous book
+                        }
+                    }
+                }
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+        });
+    </script>
+</body>
+</html>
