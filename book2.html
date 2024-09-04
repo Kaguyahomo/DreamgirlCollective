@@ -6,70 +6,105 @@
     <title>Book 2</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Your existing styles here */
+        /* Custom styling for book page */
+        .book-container {
+            max-width: 70%;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffd1dc; /* Pastel pink background */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .book-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        .chapter-navigation {
+            background-color: #fff;
+            color: #000;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .chapter-navigation a {
+            display: block;
+            color: #ffd1dc;
+            text-decoration: none;
+            margin: 0.5rem 0;
+            font-weight: bold;
+        }
+
+        .chapter-navigation a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <!-- Your existing HTML structure here -->
+    <header>
+        <h1>THE SINGULAR VOICE OF BEING: JOHN DUNS SCOTUS AND ULTIMATE DIFFERENCE</h1>
+    </header>
 
-    <!-- Include Hammer.js library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <nav>
+        <a href="index.html"><img src="header-image.png" alt="Home"></a>
+        <a href="kaguya.html"><img src="Kaguya.png" alt="Kaguya"></a>
+        <a href="studies.html"><img src="studies.gif" alt="Studies"></a>
+        <!-- Add links to other book HTML files here -->
+    </nav>
+
+    <div class="book-container">
+        <img src="book2.png" alt="Book 2 Cover" class="book-image">
+
+        <div class="chapter-navigation">
+            <h2>Chapters</h2>
+            <a href="#chapter1">Chapter 1: Title</a>
+            <a href="#chapter2">Chapter 2: Title</a>
+            <a href="#chapter3">Chapter 3: Title</a>
+            <!-- Add more chapter links here -->
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Library DreamGirl. All rights reserved.</p>
+    </footer>
 
     <script>
-        var mc = new Hammer.Manager(document.body);
+        document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
 
-        // Define swipe recognizers
-        var swipe = new Hammer.Swipe();
-        var pan = new Hammer.Pan();
+            function handleSwipe() {
+                const threshold = 50; // Minimum distance to be considered a swipe
+                const swipeX = endX - startX;
+                const swipeY = endY - startY;
 
-        // Add swipe recognizer
-        mc.add(swipe);
-        mc.add(pan);
-
-        // Handle swipe events
-        mc.on('swipe', function(event) {
-            var currentPage = window.location.pathname.split('/').pop();
-
-            if (event.direction === Hammer.DIRECTION_LEFT) {
-                // Swipe left: Go to the next book
-                switch (currentPage) {
-                    case 'book1.html':
-                        window.location.href = 'book2.html';
-                        break;
-                    case 'book2.html':
-                        window.location.href = 'book3.html';
-                        break;
-                    // Add more cases as needed
+                if (Math.abs(swipeX) > Math.abs(swipeY)) {
+                    if (Math.abs(swipeX) > threshold) {
+                        if (swipeX < 0) {
+                            // Swipe left (go to next book page)
+                            window.location.href = 'book3.html';  // Adjust for next book
+                        } else {
+                            // Swipe right (go to previous book page)
+                            window.location.href = 'book1.html';  // Adjust for previous book
+                        }
+                    }
                 }
-            } else if (event.direction === Hammer.DIRECTION_RIGHT) {
-                // Swipe right: Go to the previous book
-                switch (currentPage) {
-                    case 'book2.html':
-                        window.location.href = 'book1.html';
-                        break;
-                    case 'book3.html':
-                        window.location.href = 'book2.html';
-                        break;
-                    // Add more cases as needed
-                }
-            } else if (event.direction === Hammer.DIRECTION_UP) {
-                // Swipe up: Scroll down the page
-                window.scrollBy(0, window.innerHeight / 2); // Adjust scroll amount as needed
-            } else if (event.direction === Hammer.DIRECTION_DOWN) {
-                // Swipe down: Scroll up the page
-                window.scrollBy(0, -window.innerHeight / 2); // Adjust scroll amount as needed
             }
-        });
 
-        // Prevent vertical scrolling interference
-        mc.on('pan', function(event) {
-            if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
-                // If horizontal pan is more significant, allow it
-                mc.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL });
-            } else {
-                // Otherwise, it's a vertical scroll
-                mc.get('pan').set({ direction: Hammer.DIRECTION_VERTICAL });
-            }
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
         });
     </script>
 </body>
