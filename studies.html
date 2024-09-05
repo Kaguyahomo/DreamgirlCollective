@@ -22,6 +22,7 @@
     <nav>
         <a href="index.html"><img src="header-image.png" alt="Home"></a>
         <a href="kaguya.html"><img src="Kaguya.png" alt="Kaguya"></a>
+           <a href="request.html"><img src= "request.png" alt="Request"</a>
     </nav>
 
     <section>
@@ -41,40 +42,3 @@
     <footer>
         <p>&copy; 2024 Library DreamGirl. All rights reserved.</p>
     </footer>
-
-<script>
-        document.addEventListener('DOMContentLoaded', function () {
-            let startX, startY, endX, endY;
-
-            function handleSwipe() {
-                const threshold = 50; // Minimum distance to be considered a swipe
-                const swipeX = endX - startX;
-                const swipeY = endY - startY;
-
-                if (Math.abs(swipeX) > Math.abs(swipeY)) {
-                    if (Math.abs(swipeX) > threshold) {
-                        if (swipeX < 0) {
-                            // Swipe left (go to next book page)
-                            window.location.href = 'book9.html';  // Adjust for next book
-                        } else {
-                            // Swipe right (go to previous book page)
-                            window.location.href = 'book7.html';  // Adjust for previous book
-                        }
-                    }
-                }
-            }
-
-            document.addEventListener('touchstart', function (e) {
-                startX = e.changedTouches[0].screenX;
-                startY = e.changedTouches[0].screenY;
-            });
-
-            document.addEventListener('touchend', function (e) {
-                endX = e.changedTouches[0].screenX;
-                endY = e.changedTouches[0].screenY;
-                handleSwipe();
-            });
-        });
-    </script>
-</body>
-</html>
