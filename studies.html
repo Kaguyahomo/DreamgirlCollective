@@ -6,6 +6,12 @@
     <title>Books Collection</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* Ensure vertical scrolling */
+        body {
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
+        }
+
         .book-links a img {
             width: 150px;
             height: auto;
@@ -22,7 +28,7 @@
     <nav>
         <a href="index.html"><img src="header-image.png" alt="Home"></a>
         <a href="kaguya.html"><img src="Kaguya.png" alt="Kaguya"></a>
-           <a href="request.html"><img src= "request.png" alt="Request"</a>
+        <a href="request.html"><img src="request.png" alt="Request"></a>
     </nav>
 
     <section>
@@ -35,10 +41,44 @@
             <a href="book5.html"><img src="book5.png" alt="Title of Book 5"></a>
             <a href="book6.html"><img src="book6.png" alt="Title of Book 6"></a>
             <a href="book7.html"><img src="book7.png" alt="Title of Book 7"></a>
-            <a href="book8.html"><img src="Book8.png" alt="Title of Book 8"></a>
+            <a href="book8.html"><img src="book8.png" alt="Title of Book 8"></a>
         </div>
     </section>
 
     <footer>
         <p>&copy; 2024 Library DreamGirl. All rights reserved.</p>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
+
+            function handleSwipe() {
+                const threshold = 50; // Minimum distance to be considered a swipe
+                const swipeX = endX - startX;
+                const swipeY = endY - startY;
+
+                if (Math.abs(swipeX) > Math.abs(swipeY)) {
+                    if (Math.abs(swipeX) > threshold) {
+                        if (swipeX < 0) {
+                            // Swipe left (go to book1.html)
+                            window.location.href = 'book1.html';
+                        }
+                    }
+                }
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+        });
+    </script>
+</body>
+</html>
