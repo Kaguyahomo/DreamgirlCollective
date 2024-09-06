@@ -6,6 +6,12 @@
     <title>The Beatles Discography</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* Ensure vertical scrolling */
+        body {
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
+        }
+
         /* Add styles for the album grid */
         .album-list {
             display: grid;
@@ -42,38 +48,127 @@
 
     <section>
         <div class="album-list">
-            <!-- Example for one album, repeat for others -->
+            <!-- 1. Please Please Me (1963) -->
             <div class="album">
-                <a href="album1.html">
-                    <img src="abbey-road.jpg" alt="Abbey Road">
+                <a href="please-please-me.html">
+                    <img src="please-please-me.png" alt="Please Please Me">
                 </a>
-                <p>Abbey Road</p>
+                <p>Please Please Me (1963)</p>
             </div>
+            <!-- 2. With The Beatles (1963) -->
             <div class="album">
-                <a href="album2.html">
-                    <img src="revolver.jpg" alt="Revolver">
+                <a href="with-the-beatles.html">
+                    <img src="with-the-beatles.png" alt="With The Beatles">
                 </a>
-                <p>Revolver</p>
+                <p>With The Beatles (1963)</p>
             </div>
+            <!-- 3. A Hard Day’s Night (1964) -->
             <div class="album">
-                <a href="album3.html">
-                    <img src="rubber-soul.jpg" alt="Rubber Soul">
+                <a href="a-hard-days-night.html">
+                    <img src="a-hard-days-night.png" alt="A Hard Day’s Night">
                 </a>
-                <p>Rubber Soul</p>
+                <p>A Hard Day’s Night (1964)</p>
             </div>
+            <!-- 4. Beatles For Sale (1964) -->
             <div class="album">
-                <a href="album4.html">
-                    <img src="sgt-peppers.jpg" alt="Sgt. Pepper's Lonely Hearts Club Band">
+                <a href="beatles-for-sale.html">
+                    <img src="beatles-for-sale.png" alt="Beatles For Sale">
                 </a>
-                <p>Sgt. Pepper's Lonely Hearts Club Band</p>
+                <p>Beatles For Sale (1964)</p>
             </div>
-            <!-- Add more albums as necessary -->
-            <!-- This is a sample for a few albums, you'll need to add 13 in total -->
+            <!-- 5. Help! (1965) -->
+            <div class="album">
+                <a href="help.html">
+                    <img src="help.png" alt="Help!">
+                </a>
+                <p>Help! (1965)</p>
+            </div>
+            <!-- 6. Rubber Soul (1965) -->
+            <div class="album">
+                <a href="rubber-soul.html">
+                    <img src="rubber-soul.png" alt="Rubber Soul">
+                </a>
+                <p>Rubber Soul (1965)</p>
+            </div>
+            <!-- 7. Revolver (1966) -->
+            <div class="album">
+                <a href="revolver.html">
+                    <img src="revolver.png" alt="Revolver">
+                </a>
+                <p>Revolver (1966)</p>
+            </div>
+            <!-- 8. Sgt Pepper’s Lonely Hearts Club Band (1967) -->
+            <div class="album">
+                <a href="sgt-peppers.html">
+                    <img src="sgt-peppers.png" alt="Sgt Pepper’s Lonely Hearts Club Band">
+                </a>
+                <p>Sgt Pepper’s Lonely Hearts Club Band (1967)</p>
+            </div>
+            <!-- 9. The Beatles (White Album) (1968) -->
+            <div class="album">
+                <a href="white-album.html">
+                    <img src="white-album.png" alt="The Beatles (White Album)">
+                </a>
+                <p>The Beatles (White Album) (1968)</p>
+            </div>
+            <!-- 10. Yellow Submarine (1969) -->
+            <div class="album">
+                <a href="yellow-submarine.html">
+                    <img src="yellow-submarine.png" alt="Yellow Submarine">
+                </a>
+                <p>Yellow Submarine (1969)</p>
+            </div>
+            <!-- 11. Abbey Road (1969) -->
+            <div class="album">
+                <a href="abbey-road.html">
+                    <img src="abbey-road.png" alt="Abbey Road">
+                </a>
+                <p>Abbey Road (1969)</p>
+            </div>
+            <!-- 12. Let It Be (1970) -->
+            <div class="album">
+                <a href="let-it-be.html">
+                    <img src="let-it-be.png" alt="Let It Be">
+                </a>
+                <p>Let It Be (1970)</p>
+            </div>
         </div>
     </section>
 
     <footer>
         <p>&copy; 2024 KMusic Reviews. All rights reserved.</p>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
+
+            function handleSwipe() {
+                const threshold = 50; // Minimum distance to be considered a swipe
+                const swipeX = endX - startX;
+                const swipeY = endY - startY;
+
+                if (Math.abs(swipeX) > Math.abs(swipeY)) {
+                    if (Math.abs(swipeX) > threshold) {
+                        if (swipeX < 0) {
+                            // Swipe left (go to next album)
+                            window.location.href = 'please-please-me.html'; // Adjust this for each album swipe
+                        }
+                    }
+                }
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+        });
+    </script>
 </body>
 </html>
