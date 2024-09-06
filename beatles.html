@@ -5,6 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Beatles Discography</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Add styles for the album grid */
+        .album-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            justify-items: center;
+            margin: 20px;
+        }
+
+        .album-list img {
+            width: 200px;
+            height: auto;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .album-list img:hover {
+            transform: scale(1.05);
+        }
+
+        .album p {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -15,14 +44,31 @@
         <div class="album-list">
             <!-- Example for one album, repeat for others -->
             <div class="album">
-                <a href="album1.html"><button>Abbey Road</button></a>
-                <p>This is where you can write a blurb overview about the Abbey Road album.</p>
+                <a href="album1.html">
+                    <img src="abbey-road.jpg" alt="Abbey Road">
+                </a>
+                <p>Abbey Road</p>
             </div>
             <div class="album">
-                <a href="album2.html"><button>Revolver</button></a>
-                <p>This is where you can write a blurb overview about the Revolver album.</p>
+                <a href="album2.html">
+                    <img src="revolver.jpg" alt="Revolver">
+                </a>
+                <p>Revolver</p>
+            </div>
+            <div class="album">
+                <a href="album3.html">
+                    <img src="rubber-soul.jpg" alt="Rubber Soul">
+                </a>
+                <p>Rubber Soul</p>
+            </div>
+            <div class="album">
+                <a href="album4.html">
+                    <img src="sgt-peppers.jpg" alt="Sgt. Pepper's Lonely Hearts Club Band">
+                </a>
+                <p>Sgt. Pepper's Lonely Hearts Club Band</p>
             </div>
             <!-- Add more albums as necessary -->
+            <!-- This is a sample for a few albums, you'll need to add 13 in total -->
         </div>
     </section>
 
