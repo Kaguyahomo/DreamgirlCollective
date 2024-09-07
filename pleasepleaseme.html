@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Please Please Me - The Beatles</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: row;
+            margin: 20px;
+        }
+
+        /* Album cover on the left */
+        .album-cover {
+            width: 250px;
+            margin-right: 30px;
+        }
+
+        .album-cover img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        /* Song list on the right */
+        .song-list {
+            flex: 1;
+        }
+
+        .song {
+            margin-bottom: 20px;
+        }
+
+        .song-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .audio-player {
+            display: flex;
+            align-items: center;
+        }
+
+        .audio-player audio {
+            margin-right: 20px;
+        }
+
+        .eq-bar {
+            width: 100px;
+            height: 10px;
+            background-color: #ddd;
+            position: relative;
+        }
+
+        .progress {
+            width: 0;
+            height: 100%;
+            background-color: #4CAF50;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Song review dropdown */
+        .review {
+            display: none;
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+
+        .show-review {
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Album Cover -->
+    <div class="album-cover">
+        <img src="please-please-me.png" alt="Please Please Me">
+    </div>
+
+    <!-- Song List -->
+    <div class="song-list">
+        <!-- Song 1: I Saw Her Standing There -->
+        <div class="song">
+            <div class="song-title">I Saw Her Standing There</div>
+            <div class="audio-player">
+                <audio controls id="audio1">
+                    <source src="mp3/i-saw-her-standing-there.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="eq-bar" id="eq-bar1">
+                    <div class="progress" id="progress1"></div>
+                </div>
+            </div>
+            <button class="show-review" onclick="toggleReview('review1')">Show Review</button>
+            <div class="review" id="review1">
+                <p>This is where you can write your thoughts about the song "I Saw Her Standing There".</p>
+            </div>
+        </div>
+
+        <!-- Song 2: Misery -->
+        <div class="song">
+            <div class="song-title">Misery</div>
+            <div class="audio-player">
+                <audio controls id="audio2">
+                    <source src="mp3/misery.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="eq-bar" id="eq-bar2">
+                    <div class="progress" id="progress2"></div>
+                </div>
+            </div>
+            <button class="show-review" onclick="toggleReview('review2')">Show Review</button>
+            <div class="review" id="review2">
+                <p>This is where you can write your thoughts about the song "Misery".</p>
+            </div>
+        </div>
+
+        <!-- Song 3: Anna (Go to Him) -->
+        <div class="song">
+            <div class="song-title">Anna (Go to Him)</div>
+            <div class="audio-player">
+                <audio controls id="audio3">
+                    <source src="mp3/anna-go-to-him.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="eq-bar" id="eq-bar3">
+                    <div class="progress" id="progress3"></div>
+                </div>
+            </div>
+            <button class="show-review" onclick="toggleReview('review3')">Show Review</button>
+            <div class="review" id="review3">
+                <p>This is where you can write your thoughts about the song "Anna (Go to Him)".</p>
+            </div>
+        </div>
+
+        <!-- Song 4: Chains -->
+        <div class="song">
+            <div class="song-title">Chains</div>
+            <div class="audio-player">
+                <audio controls id="audio4">
+                    <source src="mp3/chains.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="eq-bar" id="eq-bar4">
+                    <div class="progress" id="progress4"></div>
+                </div>
+            </div>
+            <button class="show-review" onclick="toggleReview('review4')">Show Review</button>
+            <div class="review" id="review4">
+                <p>This is where you can write your thoughts about the song "Chains".</p>
+            </div>
+        </div>
+
+        <!-- Song 5: Boys -->
+        <div class="song">
+            <div class="song-title">Boys</div>
+            <div class="audio-player">
+                <audio controls id="audio5">
+                    <source src="mp3/boys.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="eq-bar" id="eq-bar5">
+                    <div class="progress" id="progress5"></div>
+                </div>
+            </div>
+            <button class="show-review" onclick="toggleReview('review5')">Show Review</button>
+            <div class="review" id="review5">
+                <p>This is where you can write your thoughts about the song "Boys".</p>
+            </div>
+        </div>
+
+        <!-- Song 6: Ask Me Why -->
+        <div class="song">
+            <div class="song-title">Ask Me Why</div>
+            <div class="audio-player">
+                <audio controls id="audio6">
+                    <source src="mp3/ask-me-why.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="eq-bar" id="eq-bar6">
+                    <div class="progress" id="progress6"></div>
+                </div>
+            </div>
+            <button class="show-review" onclick="toggleReview('review6')">Show Review</button>
+            <div class="review" id="review6">
+                <p>This is where you can write your thoughts about the song "Ask Me Why".</p>
+            </div>
+        </div>
+
+        <!-- Song 7: Please Please Me -->
+        <div class="song">
+            <div class="song-title">Please Please Me</div>
+            <div class="audio-player">
+                <audio controls id="audio7">
+                    <source src="mp3/please-please-me.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="eq-bar" id="eq-bar7">
+                    <div class="progress" id="progress7"></div>
+                </div>
+            </div>
+            <button class="show-review" onclick="toggleReview('review7')">Show Review</button>
+            <div class="review" id="review7">
+                <p>This is where you can write your thoughts about the song "Please Please Me".</p>
+            </div>
+        </div>
+
+        <!-- Song 8: Love Me Do -->
+        <div class="song">
+            <div class="song-title">Love Me Do</div>
+            <div class="audio-player">
+                <audio controls id="audio8">
+                    <source src="mp3/love-me-do.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="eq-bar" id="eq-bar8">
+                    <div class="progress" id="progress8"></div>
+                </div>
+            </div>
+            <button class="show-review" onclick="toggleReview('review8')">Show Review</button>
+            <div class="review" id="review8">
+                <p>This is where you can write your thoughts about the song "Love Me Do".</p>
+            </div>
+        </div>
+
+        <!-- Song 9: P.S. I Love You -->
+        <div class="song">
+            <div class="song-title">P.S. I Love You</div>
+            <div class="audio-player">
+                <audio controls id="audio9">
+                    <source src="mp3/ps-i-love-you.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="eq-bar" id="eq-bar9">
+                    <div class="progress" id="progress9"></div>
+                </div>
+            </div>
+            <button class="show-review" onclick="toggleReview('review9')">Show Review</button>
+            <div class="review" id="review9">
+                <p>This is where you can write your thoughts about the song "P.S. I Love You".</p>
+            </div>
+        </div>
+
+        <!-- Song 10: Baby It's You -->
+        <div class="song">
+            <div class="song-title">Baby It's You</div>
+            <div class="audio-player">
+                <audio controls id="audio10">
+                    <source src="mp3/baby-its-you.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="eq-bar" id="eq-bar10">
+                    <div class="progress" id="progress10"></div>
+                </div>
+            </div>
+            <button class="show-review" onclick="toggleReview('review10')">Show Review</button>
+            <div class="review" id="review10">
+                <p>This is where you can write your thoughts about the song "Baby It's You".</p>
+            </div>
+        </div>
+
+        <!-- Song 11: Do You Want to Know a Secret -->
+        <div class="song">
+            <div class="song-title">Do You Want to Know a Secret</div>
+            <div class="audio-player">
+                <audio controls id="audio11">
+                    <source src="mp3/do-you-want-to-know-a-secret.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="eq-bar" id="eq-bar11">
+                    <div class="progress" id="progress11"></div>
+                </div>
+            </div>
+            <button class="show-review" onclick="toggleReview('review11')">Show Review</button>
+            <div class="review" id="review11">
+                <p>This is where you can write your thoughts about the song "Do You Want to Know a Secret".</p>
+            </div>
+        </div>
+
+        <!-- Song 12: A Taste of Honey -->
+        <div class="song">
+            <div class="song-title">A Taste of Honey</div>
+            <div class="audio-player">
+                <audio controls id="audio12">
+                    <source src="mp3/a-taste-of-honey.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="eq-bar" id="eq-bar12">
+                    <div class="progress" id="progress12"></div>
+                </div>
+            </div>
+            <button class="show-review" onclick="toggleReview('review12')">Show Review</button>
+            <div class="review" id="review12">
+                <p>This is where you can write your thoughts about the song "A Taste of Honey".</p>
+            </div>
+        </div>
+
+        <!-- Song 13: There's a Place -->
+        <div class="song">
+            <div class="song-title">There's a Place</div>
+            <div class="audio-player">
+                <audio controls id="audio13">
+                    <source src="mp3/theres-a-place.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="eq-bar" id="eq-bar13">
+                    <div class="progress" id="progress13"></div>
+                </div>
+            </div>
+            <button class="show-review" onclick="toggleReview('review13')">Show Review</button>
+            <div class="review" id="review13">
+                <p>This is where you can write your thoughts about the song "There's a Place".</p>
+            </div>
+        </div>
+
+        <!-- Song 14: Twist and Shout -->
+        <div class="song">
+            <div class="song-title">Twist and Shout</div>
+            <div class="audio-player">
+                <audio controls id="audio14">
+                    <source src="mp3/twist-and-shout.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="eq-bar" id="eq-bar14">
+                    <div class="progress" id="progress14"></div>
+                </div>
+            </div>
+            <button class="show-review" onclick="toggleReview('review14')">Show Review</button>
+            <div class="review" id="review14">
+                <p>This is where you can write your thoughts about the song "Twist and Shout".</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to toggle the display of the song review
+        function toggleReview(reviewId) {
+            const reviewElement = document.getElementById(reviewId);
+            if (reviewElement.style.display === "block") {
+                reviewElement.style.display = "none";
+            } else {
+                reviewElement.style.display = "block";
+            }
+        }
+
+        // Progress bar function for the EQ visualization
+        function updateProgress(audioId, progressId) {
+            const audio = document.getElementById(audioId);
+            const progress = document.getElementById(progressId);
+            audio.addEventListener('timeupdate', function() {
+                const percent = (audio.currentTime / audio.duration) * 100;
+                progress.style.width = percent + '%';
+            });
+        }
+
+        // Initialize progress bars for each song
+        updateProgress('audio1', 'progress1');
+        updateProgress('audio2', 'progress2');
+        updateProgress('audio3', 'progress3');
+        updateProgress('audio4', 'progress4');
+        updateProgress('audio5', 'progress5');
+        updateProgress('audio6', 'progress6');
+        updateProgress('audio7', 'progress7');
+        updateProgress('audio8', 'progress8');
+        updateProgress('audio9', 'progress9');
+        updateProgress('audio10', 'progress10');
+        updateProgress('audio11', 'progress11');
+        updateProgress('audio12', 'progress12');
+        updateProgress('audio13', 'progress13');
+        updateProgress('audio14', 'progress14');
+    </script>
+</body>
+</html>
