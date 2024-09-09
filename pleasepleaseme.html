@@ -38,16 +38,22 @@
             border: none; /* Remove the border */
         }
 
-        /* Song title with pink background */
-        .song-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #333;
+        /* Song title and review button together in pink background */
+        .song-content {
+            display: flex;
+            align-items: center;
             background-color: #ffd1dc; /* Pastel pink background */
             padding: 5px 10px;
             border-radius: 8px;
             flex-grow: 1;
-            margin-right: 15px;
+            justify-content: space-between;
+        }
+
+        /* Song title styling */
+        .song-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
             text-align: center;
         }
 
@@ -90,8 +96,10 @@
     <div class="song-list">
         <!-- Song 1: I Saw Her Standing There -->
         <div class="song">
-            <div class="song-title">I Saw Her Standing There</div>
-            <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review1')">
+            <div class="song-content">
+                <div class="song-title">I Saw Her Standing There</div>
+                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review1')">
+            </div>
         </div>
         <div class="review-box" id="review1">
             <p>This is my review for the song "I Saw Her Standing There".</p>
@@ -99,8 +107,10 @@
 
         <!-- Song 2: Misery -->
         <div class="song">
-            <div class="song-title">Misery</div>
-            <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review2')">
+            <div class="song-content">
+                <div class="song-title">Misery</div>
+                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review2')">
+            </div>
         </div>
         <div class="review-box" id="review2">
             <p>This is my review for the song "Misery".</p>
@@ -108,8 +118,10 @@
 
         <!-- Song 3: Anna (Go to Him) -->
         <div class="song">
-            <div class="song-title">Anna (Go to Him)</div>
-            <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review3')">
+            <div class="song-content">
+                <div class="song-title">Anna (Go to Him)</div>
+                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review3')">
+            </div>
         </div>
         <div class="review-box" id="review3">
             <p>This is my review for the song "Anna (Go to Him)".</p>
@@ -117,8 +129,10 @@
 
         <!-- Song 4: Chains -->
         <div class="song">
-            <div class="song-title">Chains</div>
-            <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review4')">
+            <div class="song-content">
+                <div class="song-title">Chains</div>
+                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review4')">
+            </div>
         </div>
         <div class="review-box" id="review4">
             <p>This is my review for the song "Chains".</p>
@@ -126,8 +140,10 @@
 
         <!-- Song 5: Boys -->
         <div class="song">
-            <div class="song-title">Boys</div>
-            <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review5')">
+            <div class="song-content">
+                <div class="song-title">Boys</div>
+                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review5')">
+            </div>
         </div>
         <div class="review-box" id="review5">
             <p>This is my review for the song "Boys".</p>
@@ -135,8 +151,10 @@
 
         <!-- Song 6: Ask Me Why -->
         <div class="song">
-            <div class="song-title">Ask Me Why</div>
-            <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review6')">
+            <div class="song-content">
+                <div class="song-title">Ask Me Why</div>
+                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review6')">
+            </div>
         </div>
         <div class="review-box" id="review6">
             <p>This is my review for the song "Ask Me Why".</p>
@@ -144,8 +162,10 @@
 
         <!-- Song 7: Please Please Me -->
         <div class="song">
-            <div class="song-title">Please Please Me</div>
-            <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review7')">
+            <div class="song-content">
+                <div class="song-title">Please Please Me</div>
+                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review7')">
+            </div>
         </div>
         <div class="review-box" id="review7">
             <p>This is my review for the song "Please Please Me".</p>
@@ -153,8 +173,10 @@
 
         <!-- Song 8: Love Me Do -->
         <div class="song">
-            <div class="song-title">Love Me Do</div>
-            <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review8')">
+            <div class="song-content">
+                <div class="song-title">Love Me Do</div>
+                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review8')">
+            </div>
         </div>
         <div class="review-box" id="review8">
             <p>This is my review for the song "Love Me Do".</p>
@@ -162,8 +184,10 @@
 
         <!-- Song 9: P.S. I Love You -->
         <div class="song">
-            <div class="song-title">P.S. I Love You</div>
-            <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review9')">
+            <div class="song-content">
+                <div class="song-title">P.S. I Love You</div>
+                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review9')">
+            </div>
         </div>
         <div class="review-box" id="review9">
             <p>This is my review for the song "P.S. I Love You".</p>
@@ -171,8 +195,10 @@
 
         <!-- Song 10: Baby It's You -->
         <div class="song">
-            <div class="song-title">Baby It's You</div>
-            <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review10')">
+            <div class="song-content">
+                <div class="song-title">Baby It's You</div>
+                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review10')">
+            </div>
         </div>
         <div class="review-box" id="review10">
             <p>This is my review for the song "Baby It's You".</p>
@@ -180,8 +206,10 @@
 
         <!-- Song 11: Do You Want to Know a Secret -->
         <div class="song">
-            <div class="song-title">Do You Want to Know a Secret</div>
-            <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review11')">
+            <div class="song-content">
+                <div class="song-title">Do You Want to Know a Secret</div>
+                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review11')">
+            </div>
         </div>
         <div class="review-box" id="review11">
             <p>This is my review for the song "Do You Want to Know a Secret".</p>
@@ -189,8 +217,10 @@
 
         <!-- Song 12: A Taste of Honey -->
         <div class="song">
-            <div class="song-title">A Taste of Honey</div>
-            <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review12')">
+            <div class="song-content">
+                <div class="song-title">A Taste of Honey</div>
+                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review12')">
+            </div>
         </div>
         <div class="review-box" id="review12">
             <p>This is my review for the song "A Taste of Honey".</p>
@@ -198,8 +228,10 @@
 
         <!-- Song 13: There's a Place -->
         <div class="song">
-            <div class="song-title">There's a Place</div>
-            <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review13')">
+            <div class="song-content">
+                <div class="song-title">There's a Place</div>
+                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review13')">
+            </div>
         </div>
         <div class="review-box" id="review13">
             <p>This is my review for the song "There's a Place".</p>
@@ -207,8 +239,10 @@
 
         <!-- Song 14: Twist and Shout -->
         <div class="song">
-            <div class="song-title">Twist and Shout</div>
-            <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review14')">
+            <div class="song-content">
+                <div class="song-title">Twist and Shout</div>
+                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review14')">
+            </div>
         </div>
         <div class="review-box" id="review14">
             <p>This is my review for the song "Twist and Shout".</p>
