@@ -32,7 +32,7 @@
             margin-bottom: 30px;
         }
 
-        /* Song title pink background */
+        /* Song title pink background, fits to text width */
         .song-title {
             font-size: 1.2rem;
             font-weight: bold;
@@ -40,9 +40,10 @@
             padding: 10px;
             border-radius: 8px;
             color: #333; /* Dark text for legibility */
+            display: inline-block; /* Makes background fit to text */
         }
 
-        /* Review box styling (read-only) */
+        /* Review box styling (read-only), pink background fits to text */
         .review-box {
             background-color: #ffd1dc; /* Pastel pink background */
             padding: 15px;
@@ -50,42 +51,29 @@
             margin-top: 10px;
             font-size: 1rem;
             color: #333;
+            display: inline-block; /* Makes background fit to text */
         }
 
-        /* Read-only styling */
-        .review-box p {
-            margin: 0;
-        }
-
-        /* Song ranking form */
+        /* Song ranking display */
         .song-ranking {
             margin-top: 30px;
         }
 
-        .song-ranking form {
-            display: flex;
-            flex-direction: column;
+        .song-ranking ul {
+            list-style: none;
+            padding: 0;
         }
 
-        .song-ranking select {
-            width: 250px;
-            margin-bottom: 10px;
-            padding: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        .song-ranking button {
+        .song-ranking li {
+            background-color: #f2f2f2;
             padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
+            margin-bottom: 5px;
             border-radius: 5px;
-            cursor: pointer;
         }
 
-        .song-ranking button:hover {
-            background-color: #45a049;
+        .song-ranking li span {
+            font-weight: bold;
+            color: #333;
         }
     </style>
 </head>
@@ -212,66 +200,23 @@
 
     <!-- Ranking Section for All Songs -->
     <div class="song-ranking">
-        <h3>Rank the Songs on this Album from 1 (favorite) to 14 (least favorite)</h3>
-        <form>
-            <label for="ranking1">1st Favorite Song:</label>
-            <select id="ranking1">
-                <option value="I Saw Her Standing There">I Saw Her Standing There</option>
-                <option value="Misery">Misery</option>
-                <option value="Anna (Go to Him)">Anna (Go to Him)</option>
-                <option value="Chains">Chains</option>
-                <option value="Boys">Boys</option>
-                <option value="Ask Me Why">Ask Me Why</option>
-                <option value="Please Please Me">Please Please Me</option>
-                <option value="Love Me Do">Love Me Do</option>
-                <option value="P.S. I Love You">P.S. I Love You</option>
-                <option value="Baby It's You">Baby It's You</option>
-                <option value="Do You Want to Know a Secret">Do You Want to Know a Secret</option>
-                <option value="A Taste of Honey">A Taste of Honey</option>
-                <option value="There's a Place">There's a Place</option>
-                <option value="Twist and Shout">Twist and Shout</option>
-            </select>
-
-            <label for="ranking2">2nd Favorite Song:</label>
-            <select id="ranking2">
-                <option value="I Saw Her Standing There">I Saw Her Standing There</option>
-                <option value="Misery">Misery</option>
-                <option value="Anna (Go to Him)">Anna (Go to Him)</option>
-                <option value="Chains">Chains</option>
-                <option value="Boys">Boys</option>
-                <option value="Ask Me Why">Ask Me Why</option>
-                <option value="Please Please Me">Please Please Me</option>
-                <option value="Love Me Do">Love Me Do</option>
-                <option value="P.S. I Love You">P.S. I Love You</option>
-                <option value="Baby It's You">Baby It's You</option>
-                <option value="Do You Want to Know a Secret">Do You Want to Know a Secret</option>
-                <option value="A Taste of Honey">A Taste of Honey</option>
-                <option value="There's a Place">There's a Place</option>
-                <option value="Twist and Shout">Twist and Shout</option>
-            </select>
-
-            <!-- Repeat this for all rankings up to 14 -->
-
-            <label for="ranking14">14th Favorite Song:</label>
-            <select id="ranking14">
-                <option value="I Saw Her Standing There">I Saw Her Standing There</option>
-                <option value="Misery">Misery</option>
-                <option value="Anna (Go to Him)">Anna (Go to Him)</option>
-                <option value="Chains">Chains</option>
-                <option value="Boys">Boys</option>
-                <option value="Ask Me Why">Ask Me Why</option>
-                <option value="Please Please Me">Please Please Me</option>
-                <option value="Love Me Do">Love Me Do</option>
-                <option value="P.S. I Love You">P.S. I Love You</option>
-                <option value="Baby It's You">Baby It's You</option>
-                <option value="Do You Want to Know a Secret">Do You Want to Know a Secret</option>
-                <option value="A Taste of Honey">A Taste of Honey</option>
-                <option value="There's a Place">There's a Place</option>
-                <option value="Twist and Shout">Twist and Shout</option>
-            </select>
-
-            <button type="submit">Submit Rankings</button>
-        </form>
+        <h3>My Ranking of the Songs on this Album from 1 (favorite) to 14 (least favorite)</h3>
+        <ul>
+            <li><span>1st:</span> Twist and Shout</li>
+            <li><span>2nd:</span> I Saw Her Standing There</li>
+            <li><span>3rd:</span> Please Please Me</li>
+            <li><span>4th:</span> Love Me Do</li>
+            <li><span>5th:</span> P.S. I Love You</li>
+            <li><span>6th:</span> Boys</li>
+            <li><span>7th:</span> Do You Want to Know a Secret</li>
+            <li><span>8th:</span> Baby It's You</li>
+            <li><span>9th:</span> There's a Place</li>
+            <li><span>10th:</span> A Taste of Honey</li>
+            <li><span>11th:</span> Chains</li>
+            <li><span>12th:</span> Anna (Go to Him)</li>
+            <li><span>13th:</span> Misery</li>
+            <li><span>14th:</span> Ask Me Why</li>
+        </ul>
     </div>
 </body>
 </html>
