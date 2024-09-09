@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,14 +8,14 @@
     <style>
         body {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             margin: 20px;
         }
 
         /* Album cover on the left */
         .album-cover {
             width: 250px;
-            margin-right: 30px;
+            margin-bottom: 30px;
         }
 
         .album-cover img {
@@ -23,37 +23,69 @@
             border-radius: 10px;
         }
 
-        /* Song list on the right */
+        /* Song list styling */
         .song-list {
             flex: 1;
         }
 
         .song {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
+        /* Song title pink background */
         .song-title {
             font-size: 1.2rem;
             font-weight: bold;
-            margin-bottom: 10px;
+            background-color: #ffd1dc; /* Pastel pink background */
+            padding: 10px;
+            border-radius: 8px;
+            color: #333; /* Dark text for legibility */
         }
 
+        /* Review box styling (read-only) */
         .review-box {
             background-color: #ffd1dc; /* Pastel pink background */
             padding: 15px;
             border-radius: 8px;
             margin-top: 10px;
             font-size: 1rem;
-            color: #333; /* Dark text */
+            color: #333;
         }
 
-        .review-box textarea {
-            width: 100%;
-            padding: 10px;
-            font-size: 1rem;
+        /* Read-only styling */
+        .review-box p {
+            margin: 0;
+        }
+
+        /* Song ranking form */
+        .song-ranking {
+            margin-top: 30px;
+        }
+
+        .song-ranking form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .song-ranking select {
+            width: 250px;
+            margin-bottom: 10px;
+            padding: 5px;
             border-radius: 5px;
             border: 1px solid #ccc;
-            background-color: #fff;
+        }
+
+        .song-ranking button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .song-ranking button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
@@ -69,8 +101,7 @@
         <div class="song">
             <div class="song-title">I Saw Her Standing There</div>
             <div class="review-box">
-                <label for="review1">Write your review:</label>
-                <textarea id="review1" rows="4" placeholder="Your thoughts on 'I Saw Her Standing There'..."></textarea>
+                <p>This is a review of the song "I Saw Her Standing There". You can give your thoughts below.</p>
             </div>
         </div>
 
@@ -78,8 +109,7 @@
         <div class="song">
             <div class="song-title">Misery</div>
             <div class="review-box">
-                <label for="review2">Write your review:</label>
-                <textarea id="review2" rows="4" placeholder="Your thoughts on 'Misery'..."></textarea>
+                <p>This is a review of the song "Misery". You can give your thoughts below.</p>
             </div>
         </div>
 
@@ -87,8 +117,7 @@
         <div class="song">
             <div class="song-title">Anna (Go to Him)</div>
             <div class="review-box">
-                <label for="review3">Write your review:</label>
-                <textarea id="review3" rows="4" placeholder="Your thoughts on 'Anna (Go to Him)'..."></textarea>
+                <p>This is a review of the song "Anna (Go to Him)". You can give your thoughts below.</p>
             </div>
         </div>
 
@@ -96,8 +125,7 @@
         <div class="song">
             <div class="song-title">Chains</div>
             <div class="review-box">
-                <label for="review4">Write your review:</label>
-                <textarea id="review4" rows="4" placeholder="Your thoughts on 'Chains'..."></textarea>
+                <p>This is a review of the song "Chains". You can give your thoughts below.</p>
             </div>
         </div>
 
@@ -105,8 +133,7 @@
         <div class="song">
             <div class="song-title">Boys</div>
             <div class="review-box">
-                <label for="review5">Write your review:</label>
-                <textarea id="review5" rows="4" placeholder="Your thoughts on 'Boys'..."></textarea>
+                <p>This is a review of the song "Boys". You can give your thoughts below.</p>
             </div>
         </div>
 
@@ -114,8 +141,7 @@
         <div class="song">
             <div class="song-title">Ask Me Why</div>
             <div class="review-box">
-                <label for="review6">Write your review:</label>
-                <textarea id="review6" rows="4" placeholder="Your thoughts on 'Ask Me Why'..."></textarea>
+                <p>This is a review of the song "Ask Me Why". You can give your thoughts below.</p>
             </div>
         </div>
 
@@ -123,8 +149,7 @@
         <div class="song">
             <div class="song-title">Please Please Me</div>
             <div class="review-box">
-                <label for="review7">Write your review:</label>
-                <textarea id="review7" rows="4" placeholder="Your thoughts on 'Please Please Me'..."></textarea>
+                <p>This is a review of the song "Please Please Me". You can give your thoughts below.</p>
             </div>
         </div>
 
@@ -132,8 +157,7 @@
         <div class="song">
             <div class="song-title">Love Me Do</div>
             <div class="review-box">
-                <label for="review8">Write your review:</label>
-                <textarea id="review8" rows="4" placeholder="Your thoughts on 'Love Me Do'..."></textarea>
+                <p>This is a review of the song "Love Me Do". You can give your thoughts below.</p>
             </div>
         </div>
 
@@ -141,8 +165,7 @@
         <div class="song">
             <div class="song-title">P.S. I Love You</div>
             <div class="review-box">
-                <label for="review9">Write your review:</label>
-                <textarea id="review9" rows="4" placeholder="Your thoughts on 'P.S. I Love You'..."></textarea>
+                <p>This is a review of the song "P.S. I Love You". You can give your thoughts below.</p>
             </div>
         </div>
 
@@ -150,8 +173,7 @@
         <div class="song">
             <div class="song-title">Baby It's You</div>
             <div class="review-box">
-                <label for="review10">Write your review:</label>
-                <textarea id="review10" rows="4" placeholder="Your thoughts on 'Baby It's You'..."></textarea>
+                <p>This is a review of the song "Baby It's You". You can give your thoughts below.</p>
             </div>
         </div>
 
@@ -159,8 +181,7 @@
         <div class="song">
             <div class="song-title">Do You Want to Know a Secret</div>
             <div class="review-box">
-                <label for="review11">Write your review:</label>
-                <textarea id="review11" rows="4" placeholder="Your thoughts on 'Do You Want to Know a Secret'..."></textarea>
+                <p>This is a review of the song "Do You Want to Know a Secret". You can give your thoughts below.</p>
             </div>
         </div>
 
@@ -168,8 +189,7 @@
         <div class="song">
             <div class="song-title">A Taste of Honey</div>
             <div class="review-box">
-                <label for="review12">Write your review:</label>
-                <textarea id="review12" rows="4" placeholder="Your thoughts on 'A Taste of Honey'..."></textarea>
+                <p>This is a review of the song "A Taste of Honey". You can give your thoughts below.</p>
             </div>
         </div>
 
@@ -177,8 +197,7 @@
         <div class="song">
             <div class="song-title">There's a Place</div>
             <div class="review-box">
-                <label for="review13">Write your review:</label>
-                <textarea id="review13" rows="4" placeholder="Your thoughts on 'There's a Place'..."></textarea>
+                <p>This is a review of the song "There's a Place". You can give your thoughts below.</p>
             </div>
         </div>
 
@@ -186,10 +205,73 @@
         <div class="song">
             <div class="song-title">Twist and Shout</div>
             <div class="review-box">
-                <label for="review14">Write your review:</label>
-                <textarea id="review14" rows="4" placeholder="Your thoughts on 'Twist and Shout'..."></textarea>
+                <p>This is a review of the song "Twist and Shout". You can give your thoughts below.</p>
             </div>
         </div>
+    </div>
+
+    <!-- Ranking Section for All Songs -->
+    <div class="song-ranking">
+        <h3>Rank the Songs on this Album from 1 (favorite) to 14 (least favorite)</h3>
+        <form>
+            <label for="ranking1">1st Favorite Song:</label>
+            <select id="ranking1">
+                <option value="I Saw Her Standing There">I Saw Her Standing There</option>
+                <option value="Misery">Misery</option>
+                <option value="Anna (Go to Him)">Anna (Go to Him)</option>
+                <option value="Chains">Chains</option>
+                <option value="Boys">Boys</option>
+                <option value="Ask Me Why">Ask Me Why</option>
+                <option value="Please Please Me">Please Please Me</option>
+                <option value="Love Me Do">Love Me Do</option>
+                <option value="P.S. I Love You">P.S. I Love You</option>
+                <option value="Baby It's You">Baby It's You</option>
+                <option value="Do You Want to Know a Secret">Do You Want to Know a Secret</option>
+                <option value="A Taste of Honey">A Taste of Honey</option>
+                <option value="There's a Place">There's a Place</option>
+                <option value="Twist and Shout">Twist and Shout</option>
+            </select>
+
+            <label for="ranking2">2nd Favorite Song:</label>
+            <select id="ranking2">
+                <option value="I Saw Her Standing There">I Saw Her Standing There</option>
+                <option value="Misery">Misery</option>
+                <option value="Anna (Go to Him)">Anna (Go to Him)</option>
+                <option value="Chains">Chains</option>
+                <option value="Boys">Boys</option>
+                <option value="Ask Me Why">Ask Me Why</option>
+                <option value="Please Please Me">Please Please Me</option>
+                <option value="Love Me Do">Love Me Do</option>
+                <option value="P.S. I Love You">P.S. I Love You</option>
+                <option value="Baby It's You">Baby It's You</option>
+                <option value="Do You Want to Know a Secret">Do You Want to Know a Secret</option>
+                <option value="A Taste of Honey">A Taste of Honey</option>
+                <option value="There's a Place">There's a Place</option>
+                <option value="Twist and Shout">Twist and Shout</option>
+            </select>
+
+            <!-- Repeat this for all rankings up to 14 -->
+
+            <label for="ranking14">14th Favorite Song:</label>
+            <select id="ranking14">
+                <option value="I Saw Her Standing There">I Saw Her Standing There</option>
+                <option value="Misery">Misery</option>
+                <option value="Anna (Go to Him)">Anna (Go to Him)</option>
+                <option value="Chains">Chains</option>
+                <option value="Boys">Boys</option>
+                <option value="Ask Me Why">Ask Me Why</option>
+                <option value="Please Please Me">Please Please Me</option>
+                <option value="Love Me Do">Love Me Do</option>
+                <option value="P.S. I Love You">P.S. I Love You</option>
+                <option value="Baby It's You">Baby It's You</option>
+                <option value="Do You Want to Know a Secret">Do You Want to Know a Secret</option>
+                <option value="A Taste of Honey">A Taste of Honey</option>
+                <option value="There's a Place">There's a Place</option>
+                <option value="Twist and Shout">Twist and Shout</option>
+            </select>
+
+            <button type="submit">Submit Rankings</button>
+        </form>
     </div>
 </body>
 </html>
