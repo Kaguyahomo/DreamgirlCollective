@@ -12,7 +12,7 @@
             margin: 20px;
         }
 
-        /* Album cover on the left */
+        /* Album cover styling */
         .album-cover {
             width: 250px;
             margin-bottom: 30px;
@@ -23,59 +23,78 @@
             border-radius: 10px;
         }
 
-        /* Song list styling */
+        /* Song list container */
         .song-list {
-            flex: 1;
+            width: 100%;
         }
 
         .song {
-            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
         }
 
-        /* Song title pink background, fits to text width */
+        /* Song ranking on the left */
+        .song-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #555;
+            margin-right: 15px;
+        }
+
+        /* Song title with pink background */
         .song-title {
             font-size: 1.2rem;
             font-weight: bold;
+            color: #333;
             background-color: #ffd1dc; /* Pastel pink background */
-            padding: 10px;
+            padding: 5px 10px;
             border-radius: 8px;
-            color: #333; /* Dark text for legibility */
-            display: inline-block; /* Makes background fit to text */
+            flex-grow: 1;
+            margin-right: 15px;
+            text-align: center;
         }
 
-        /* Review box styling (read-only), pink background fits to text */
+        /* Toggle button on the right */
+        .toggle-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .toggle-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Review box (hidden by default) */
         .review-box {
-            background-color: #ffd1dc; /* Pastel pink background */
+            background-color: #ffd1dc; /* Pink background */
             padding: 15px;
             border-radius: 8px;
             margin-top: 10px;
-            font-size: 1rem;
-            color: #333;
-            display: inline-block; /* Makes background fit to text */
+            display: none; /* Hidden by default */
         }
 
-        /* Song ranking display */
-        .song-ranking {
-            margin-top: 30px;
-        }
-
-        .song-ranking ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .song-ranking li {
-            background-color: #f2f2f2;
-            padding: 10px;
-            margin-bottom: 5px;
-            border-radius: 5px;
-        }
-
-        .song-ranking li span {
-            font-weight: bold;
-            color: #333;
-        }
     </style>
+    <script>
+        // Function to toggle visibility of the review
+        function toggleReview(reviewId) {
+            const review = document.getElementById(reviewId);
+            if (review.style.display === "none" || review.style.display === "") {
+                review.style.display = "block";
+            } else {
+                review.style.display = "none";
+            }
+        }
+    </script>
 </head>
 <body>
     <!-- Album Cover -->
@@ -83,140 +102,147 @@
         <img src="please-please-me.png" alt="Please Please Me">
     </div>
 
-    <!-- Song List -->
+    <!-- Song List (Ranked) -->
     <div class="song-list">
-        <!-- Song 1: I Saw Her Standing There -->
+        <!-- Song 1: Twist and Shout -->
         <div class="song">
-            <div class="song-title">I Saw Her Standing There</div>
-            <div class="review-box">
-                <p>This is a review of the song "I Saw Her Standing There". You can give your thoughts below.</p>
-            </div>
-        </div>
-
-        <!-- Song 2: Misery -->
-        <div class="song">
-            <div class="song-title">Misery</div>
-            <div class="review-box">
-                <p>This is a review of the song "Misery". You can give your thoughts below.</p>
-            </div>
-        </div>
-
-        <!-- Song 3: Anna (Go to Him) -->
-        <div class="song">
-            <div class="song-title">Anna (Go to Him)</div>
-            <div class="review-box">
-                <p>This is a review of the song "Anna (Go to Him)". You can give your thoughts below.</p>
-            </div>
-        </div>
-
-        <!-- Song 4: Chains -->
-        <div class="song">
-            <div class="song-title">Chains</div>
-            <div class="review-box">
-                <p>This is a review of the song "Chains". You can give your thoughts below.</p>
-            </div>
-        </div>
-
-        <!-- Song 5: Boys -->
-        <div class="song">
-            <div class="song-title">Boys</div>
-            <div class="review-box">
-                <p>This is a review of the song "Boys". You can give your thoughts below.</p>
-            </div>
-        </div>
-
-        <!-- Song 6: Ask Me Why -->
-        <div class="song">
-            <div class="song-title">Ask Me Why</div>
-            <div class="review-box">
-                <p>This is a review of the song "Ask Me Why". You can give your thoughts below.</p>
-            </div>
-        </div>
-
-        <!-- Song 7: Please Please Me -->
-        <div class="song">
-            <div class="song-title">Please Please Me</div>
-            <div class="review-box">
-                <p>This is a review of the song "Please Please Me". You can give your thoughts below.</p>
-            </div>
-        </div>
-
-        <!-- Song 8: Love Me Do -->
-        <div class="song">
-            <div class="song-title">Love Me Do</div>
-            <div class="review-box">
-                <p>This is a review of the song "Love Me Do". You can give your thoughts below.</p>
-            </div>
-        </div>
-
-        <!-- Song 9: P.S. I Love You -->
-        <div class="song">
-            <div class="song-title">P.S. I Love You</div>
-            <div class="review-box">
-                <p>This is a review of the song "P.S. I Love You". You can give your thoughts below.</p>
-            </div>
-        </div>
-
-        <!-- Song 10: Baby It's You -->
-        <div class="song">
-            <div class="song-title">Baby It's You</div>
-            <div class="review-box">
-                <p>This is a review of the song "Baby It's You". You can give your thoughts below.</p>
-            </div>
-        </div>
-
-        <!-- Song 11: Do You Want to Know a Secret -->
-        <div class="song">
-            <div class="song-title">Do You Want to Know a Secret</div>
-            <div class="review-box">
-                <p>This is a review of the song "Do You Want to Know a Secret". You can give your thoughts below.</p>
-            </div>
-        </div>
-
-        <!-- Song 12: A Taste of Honey -->
-        <div class="song">
-            <div class="song-title">A Taste of Honey</div>
-            <div class="review-box">
-                <p>This is a review of the song "A Taste of Honey". You can give your thoughts below.</p>
-            </div>
-        </div>
-
-        <!-- Song 13: There's a Place -->
-        <div class="song">
-            <div class="song-title">There's a Place</div>
-            <div class="review-box">
-                <p>This is a review of the song "There's a Place". You can give your thoughts below.</p>
-            </div>
-        </div>
-
-        <!-- Song 14: Twist and Shout -->
-        <div class="song">
+            <div class="song-number">1</div>
             <div class="song-title">Twist and Shout</div>
-            <div class="review-box">
-                <p>This is a review of the song "Twist and Shout". You can give your thoughts below.</p>
-            </div>
+            <button class="toggle-button" onclick="toggleReview('review1')">Review</button>
         </div>
-    </div>
+        <div class="review-box" id="review1">
+            <p>This is my review for the song "Twist and Shout".</p>
+        </div>
 
-    <!-- Ranking Section for All Songs -->
-    <div class="song-ranking">
-        <h3>My Ranking of the Songs on this Album from 1 (favorite) to 14 (least favorite)</h3>
-        <ul>
-            <li><span>1st:</span> Twist and Shout</li>
-            <li><span>2nd:</span> I Saw Her Standing There</li>
-            <li><span>3rd:</span> Please Please Me</li>
-            <li><span>4th:</span> Love Me Do</li>
-            <li><span>5th:</span> P.S. I Love You</li>
-            <li><span>6th:</span> Boys</li>
-            <li><span>7th:</span> Do You Want to Know a Secret</li>
-            <li><span>8th:</span> Baby It's You</li>
-            <li><span>9th:</span> There's a Place</li>
-            <li><span>10th:</span> A Taste of Honey</li>
-            <li><span>11th:</span> Chains</li>
-            <li><span>12th:</span> Anna (Go to Him)</li>
-            <li><span>13th:</span> Misery</li>
-            <li><span>14th:</span> Ask Me Why</li>
-        </ul>
+        <!-- Song 2: I Saw Her Standing There -->
+        <div class="song">
+            <div class="song-number">2</div>
+            <div class="song-title">I Saw Her Standing There</div>
+            <button class="toggle-button" onclick="toggleReview('review2')">Review</button>
+        </div>
+        <div class="review-box" id="review2">
+            <p>This is my review for the song "I Saw Her Standing There".</p>
+        </div>
+
+        <!-- Song 3: Please Please Me -->
+        <div class="song">
+            <div class="song-number">3</div>
+            <div class="song-title">Please Please Me</div>
+            <button class="toggle-button" onclick="toggleReview('review3')">Review</button>
+        </div>
+        <div class="review-box" id="review3">
+            <p>This is my review for the song "Please Please Me".</p>
+        </div>
+
+        <!-- Song 4: Love Me Do -->
+        <div class="song">
+            <div class="song-number">4</div>
+            <div class="song-title">Love Me Do</div>
+            <button class="toggle-button" onclick="toggleReview('review4')">Review</button>
+        </div>
+        <div class="review-box" id="review4">
+            <p>This is my review for the song "Love Me Do".</p>
+        </div>
+
+        <!-- Song 5: P.S. I Love You -->
+        <div class="song">
+            <div class="song-number">5</div>
+            <div class="song-title">P.S. I Love You</div>
+            <button class="toggle-button" onclick="toggleReview('review5')">Review</button>
+        </div>
+        <div class="review-box" id="review5">
+            <p>This is my review for the song "P.S. I Love You".</p>
+        </div>
+
+        <!-- Song 6: Boys -->
+        <div class="song">
+            <div class="song-number">6</div>
+            <div class="song-title">Boys</div>
+            <button class="toggle-button" onclick="toggleReview('review6')">Review</button>
+        </div>
+        <div class="review-box" id="review6">
+            <p>This is my review for the song "Boys".</p>
+        </div>
+
+        <!-- Song 7: Do You Want to Know a Secret -->
+        <div class="song">
+            <div class="song-number">7</div>
+            <div class="song-title">Do You Want to Know a Secret</div>
+            <button class="toggle-button" onclick="toggleReview('review7')">Review</button>
+        </div>
+        <div class="review-box" id="review7">
+            <p>This is my review for the song "Do You Want to Know a Secret".</p>
+        </div>
+
+        <!-- Song 8: Baby It's You -->
+        <div class="song">
+            <div class="song-number">8</div>
+            <div class="song-title">Baby It's You</div>
+            <button class="toggle-button" onclick="toggleReview('review8')">Review</button>
+        </div>
+        <div class="review-box" id="review8">
+            <p>This is my review for the song "Baby It's You".</p>
+        </div>
+
+        <!-- Song 9: There's a Place -->
+        <div class="song">
+            <div class="song-number">9</div>
+            <div class="song-title">There's a Place</div>
+            <button class="toggle-button" onclick="toggleReview('review9')">Review</button>
+        </div>
+        <div class="review-box" id="review9">
+            <p>This is my review for the song "There's a Place".</p>
+        </div>
+
+        <!-- Song 10: A Taste of Honey -->
+        <div class="song">
+            <div class="song-number">10</div>
+            <div class="song-title">A Taste of Honey</div>
+            <button class="toggle-button" onclick="toggleReview('review10')">Review</button>
+        </div>
+        <div class="review-box" id="review10">
+            <p>This is my review for the song "A Taste of Honey".</p>
+        </div>
+
+        <!-- Song 11: Chains -->
+        <div class="song">
+            <div class="song-number">11</div>
+            <div class="song-title">Chains</div>
+            <button class="toggle-button" onclick="toggleReview('review11')">Review</button>
+        </div>
+        <div class="review-box" id="review11">
+            <p>This is my review for the song "Chains".</p>
+        </div>
+
+        <!-- Song 12: Anna (Go to Him) -->
+        <div class="song">
+            <div class="song-number">12</div>
+            <div class="song-title">Anna (Go to Him)</div>
+            <button class="toggle-button" onclick="toggleReview('review12')">Review</button>
+        </div>
+        <div class="review-box" id="review12">
+            <p>This is my review for the song "Anna (Go to Him)".</p>
+        </div>
+
+        <!-- Song 13: Misery -->
+        <div class="song">
+            <div class="song-number">13</div>
+            <div class="song-title">Misery</div>
+            <button class="toggle-button" onclick="toggleReview('review13')">Review</button>
+        </div>
+        <div class="review-box" id="review13">
+            <p>This is my review for the song "Misery".</p>
+        </div>
+
+        <!-- Song 14: Ask Me Why -->
+        <div class="song">
+            <div class="song-number">14</div>
+            <div class="song-title">Ask Me Why</div>
+            <button class="toggle-button" onclick="toggleReview('review14')">Review</button>
+        </div>
+        <div class="review-box" id="review14">
+            <p>This is my review for the song "Ask Me Why".</p>
+        </div>
     </div>
 </body>
 </html>
