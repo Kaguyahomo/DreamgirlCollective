@@ -8,7 +8,6 @@
     <style>
         body {
             display: flex;
-            flex-direction: row;
             justify-content: center;
             margin: 20px;
         }
@@ -18,14 +17,13 @@
             display: flex;
             width: 100%;
             max-width: 1200px;
+            justify-content: center; /* Center the whole content */
         }
 
         /* Left column for album-related photos */
         .left-column {
             width: 30%;
             padding-right: 20px;
-            display: flex;
-            flex-direction: column;
         }
 
         /* Main content container with album cover and song list */
@@ -48,6 +46,9 @@
         /* Song list container */
         .song-list {
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center the song list */
         }
 
         .song {
@@ -56,8 +57,9 @@
             align-items: center;
             margin-bottom: 20px;
             padding: 10px;
-            background-color: transparent; /* No background */
-            border: none; /* Remove the border */
+            background-color: transparent;
+            border: none;
+            width: 100%; /* Make sure the song element takes up full width */
         }
 
         /* Song title and review button together in pink background */
@@ -68,7 +70,7 @@
             padding: 5px 10px;
             border-radius: 8px;
             width: 80%;
-            justify-content: center;
+            justify-content: space-between;
         }
 
         /* Center the song title */
@@ -85,7 +87,6 @@
             width: 50px;
             height: 50px;
             cursor: pointer;
-            margin-left: 10px;
         }
 
         /* Review box (hidden by default) */
