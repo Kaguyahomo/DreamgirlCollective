@@ -8,14 +8,36 @@
     <style>
         body {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            justify-content: center;
             margin: 20px;
         }
 
-        /* Album cover styling */
+        /* Container to hold the album content and the left column for photos */
+        .content-container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* Left column for album-related photos */
+        .left-column {
+            width: 30%;
+            padding-right: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Main content container with album cover and song list */
+        .main-content {
+            width: 70%;
+            text-align: center;
+        }
+
+        /* Centered album cover */
         .album-cover {
             width: 250px;
-            margin-bottom: 30px;
+            margin: 0 auto 30px auto;
         }
 
         .album-cover img {
@@ -30,7 +52,7 @@
 
         .song {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             margin-bottom: 20px;
             padding: 10px;
@@ -45,16 +67,17 @@
             background-color: #ffd1dc; /* Pastel pink background */
             padding: 5px 10px;
             border-radius: 8px;
-            flex-grow: 1;
-            justify-content: space-between;
+            width: 80%;
+            justify-content: center;
         }
 
-        /* Song title styling */
+        /* Center the song title */
         .song-title {
             font-size: 1.2rem;
             font-weight: bold;
             color: #333;
             text-align: center;
+            flex-grow: 1;
         }
 
         /* GIF for review button */
@@ -62,6 +85,7 @@
             width: 50px;
             height: 50px;
             cursor: pointer;
+            margin-left: 10px;
         }
 
         /* Review box (hidden by default) */
@@ -87,165 +111,175 @@
     </script>
 </head>
 <body>
-    <!-- Album Cover -->
-    <div class="album-cover">
-        <img src="please-please-me.png" alt="Please Please Me">
-    </div>
-
-    <!-- Song List -->
-    <div class="song-list">
-        <!-- Song 1: I Saw Her Standing There -->
-        <div class="song">
-            <div class="song-content">
-                <div class="song-title">I Saw Her Standing There</div>
-                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review1')">
-            </div>
-        </div>
-        <div class="review-box" id="review1">
-            <p>This is my review for the song "I Saw Her Standing There".</p>
+    <div class="content-container">
+        <!-- Left column for album photos -->
+        <div class="left-column">
+            <!-- You can add album-related photos here -->
         </div>
 
-        <!-- Song 2: Misery -->
-        <div class="song">
-            <div class="song-content">
-                <div class="song-title">Misery</div>
-                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review2')">
+        <!-- Main content section -->
+        <div class="main-content">
+            <!-- Centered Album Cover -->
+            <div class="album-cover">
+                <img src="please-please-me.png" alt="Please Please Me">
             </div>
-        </div>
-        <div class="review-box" id="review2">
-            <p>This is my review for the song "Misery".</p>
-        </div>
 
-        <!-- Song 3: Anna (Go to Him) -->
-        <div class="song">
-            <div class="song-content">
-                <div class="song-title">Anna (Go to Him)</div>
-                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review3')">
-            </div>
-        </div>
-        <div class="review-box" id="review3">
-            <p>This is my review for the song "Anna (Go to Him)".</p>
-        </div>
+            <!-- Song List -->
+            <div class="song-list">
+                <!-- Song 1: I Saw Her Standing There -->
+                <div class="song">
+                    <div class="song-content">
+                        <div class="song-title">I Saw Her Standing There</div>
+                        <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review1')">
+                    </div>
+                </div>
+                <div class="review-box" id="review1">
+                    <p>This is my review for the song "I Saw Her Standing There".</p>
+                </div>
 
-        <!-- Song 4: Chains -->
-        <div class="song">
-            <div class="song-content">
-                <div class="song-title">Chains</div>
-                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review4')">
-            </div>
-        </div>
-        <div class="review-box" id="review4">
-            <p>This is my review for the song "Chains".</p>
-        </div>
+                <!-- Song 2: Misery -->
+                <div class="song">
+                    <div class="song-content">
+                        <div class="song-title">Misery</div>
+                        <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review2')">
+                    </div>
+                </div>
+                <div class="review-box" id="review2">
+                    <p>This is my review for the song "Misery".</p>
+                </div>
 
-        <!-- Song 5: Boys -->
-        <div class="song">
-            <div class="song-content">
-                <div class="song-title">Boys</div>
-                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review5')">
-            </div>
-        </div>
-        <div class="review-box" id="review5">
-            <p>This is my review for the song "Boys".</p>
-        </div>
+                <!-- Song 3: Anna (Go to Him) -->
+                <div class="song">
+                    <div class="song-content">
+                        <div class="song-title">Anna (Go to Him)</div>
+                        <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review3')">
+                    </div>
+                </div>
+                <div class="review-box" id="review3">
+                    <p>This is my review for the song "Anna (Go to Him)".</p>
+                </div>
 
-        <!-- Song 6: Ask Me Why -->
-        <div class="song">
-            <div class="song-content">
-                <div class="song-title">Ask Me Why</div>
-                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review6')">
-            </div>
-        </div>
-        <div class="review-box" id="review6">
-            <p>This is my review for the song "Ask Me Why".</p>
-        </div>
+                <!-- Song 4: Chains -->
+                <div class="song">
+                    <div class="song-content">
+                        <div class="song-title">Chains</div>
+                        <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review4')">
+                    </div>
+                </div>
+                <div class="review-box" id="review4">
+                    <p>This is my review for the song "Chains".</p>
+                </div>
 
-        <!-- Song 7: Please Please Me -->
-        <div class="song">
-            <div class="song-content">
-                <div class="song-title">Please Please Me</div>
-                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review7')">
-            </div>
-        </div>
-        <div class="review-box" id="review7">
-            <p>This is my review for the song "Please Please Me".</p>
-        </div>
+                <!-- Song 5: Boys -->
+                <div class="song">
+                    <div class="song-content">
+                        <div class="song-title">Boys</div>
+                        <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review5')">
+                    </div>
+                </div>
+                <div class="review-box" id="review5">
+                    <p>This is my review for the song "Boys".</p>
+                </div>
 
-        <!-- Song 8: Love Me Do -->
-        <div class="song">
-            <div class="song-content">
-                <div class="song-title">Love Me Do</div>
-                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review8')">
-            </div>
-        </div>
-        <div class="review-box" id="review8">
-            <p>This is my review for the song "Love Me Do".</p>
-        </div>
+                <!-- Song 6: Ask Me Why -->
+                <div class="song">
+                    <div class="song-content">
+                        <div class="song-title">Ask Me Why</div>
+                        <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review6')">
+                    </div>
+                </div>
+                <div class="review-box" id="review6">
+                    <p>This is my review for the song "Ask Me Why".</p>
+                </div>
 
-        <!-- Song 9: P.S. I Love You -->
-        <div class="song">
-            <div class="song-content">
-                <div class="song-title">P.S. I Love You</div>
-                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review9')">
-            </div>
-        </div>
-        <div class="review-box" id="review9">
-            <p>This is my review for the song "P.S. I Love You".</p>
-        </div>
+                <!-- Song 7: Please Please Me -->
+                <div class="song">
+                    <div class="song-content">
+                        <div class="song-title">Please Please Me</div>
+                        <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review7')">
+                    </div>
+                </div>
+                <div class="review-box" id="review7">
+                    <p>This is my review for the song "Please Please Me".</p>
+                </div>
 
-        <!-- Song 10: Baby It's You -->
-        <div class="song">
-            <div class="song-content">
-                <div class="song-title">Baby It's You</div>
-                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review10')">
-            </div>
-        </div>
-        <div class="review-box" id="review10">
-            <p>This is my review for the song "Baby It's You".</p>
-        </div>
+                <!-- Song 8: Love Me Do -->
+                <div class="song">
+                    <div class="song-content">
+                        <div class="song-title">Love Me Do</div>
+                        <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review8')">
+                    </div>
+                </div>
+                <div class="review-box" id="review8">
+                    <p>This is my review for the song "Love Me Do".</p>
+                </div>
 
-        <!-- Song 11: Do You Want to Know a Secret -->
-        <div class="song">
-            <div class="song-content">
-                <div class="song-title">Do You Want to Know a Secret</div>
-                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review11')">
-            </div>
-        </div>
-        <div class="review-box" id="review11">
-            <p>This is my review for the song "Do You Want to Know a Secret".</p>
-        </div>
+                <!-- Song 9: P.S. I Love You -->
+                <div class="song">
+                    <div class="song-content">
+                        <div class="song-title">P.S. I Love You</div>
+                        <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review9')">
+                    </div>
+                </div>
+                <div class="review-box" id="review9">
+                    <p>This is my review for the song "P.S. I Love You".</p>
+                </div>
 
-        <!-- Song 12: A Taste of Honey -->
-        <div class="song">
-            <div class="song-content">
-                <div class="song-title">A Taste of Honey</div>
-                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review12')">
-            </div>
-        </div>
-        <div class="review-box" id="review12">
-            <p>This is my review for the song "A Taste of Honey".</p>
-        </div>
+                <!-- Song 10: Baby It's You -->
+                <div class="song">
+                    <div class="song-content">
+                        <div class="song-title">Baby It's You</div>
+                        <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review10')">
+                    </div>
+                </div>
+                <div class="review-box" id="review10">
+                    <p>This is my review for the song "Baby It's You".</p>
+                </div>
 
-        <!-- Song 13: There's a Place -->
-        <div class="song">
-            <div class="song-content">
-                <div class="song-title">There's a Place</div>
-                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review13')">
-            </div>
-        </div>
-        <div class="review-box" id="review13">
-            <p>This is my review for the song "There's a Place".</p>
-        </div>
+                <!-- Song 11: Do You Want to Know a Secret -->
+                <div class="song">
+                    <div class="song-content">
+                        <div class="song-title">Do You Want to Know a Secret</div>
+                        <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review11')">
+                    </div>
+                </div>
+                <div class="review-box" id="review11">
+                    <p>This is my review for the song "Do You Want to Know a Secret".</p>
+                </div>
 
-        <!-- Song 14: Twist and Shout -->
-        <div class="song">
-            <div class="song-content">
-                <div class="song-title">Twist and Shout</div>
-                <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review14')">
+                <!-- Song 12: A Taste of Honey -->
+                <div class="song">
+                    <div class="song-content">
+                        <div class="song-title">A Taste of Honey</div>
+                        <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review12')">
+                    </div>
+                </div>
+                <div class="review-box" id="review12">
+                    <p>This is my review for the song "A Taste of Honey".</p>
+                </div>
+
+                <!-- Song 13: There's a Place -->
+                <div class="song">
+                    <div class="song-content">
+                        <div class="song-title">There's a Place</div>
+                        <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review13')">
+                    </div>
+                </div>
+                <div class="review-box" id="review13">
+                    <p>This is my review for the song "There's a Place".</p>
+                </div>
+
+                <!-- Song 14: Twist and Shout -->
+                <div class="song">
+                    <div class="song-content">
+                        <div class="song-title">Twist and Shout</div>
+                        <img src="review.gif" alt="Review" class="review-gif" onclick="toggleReview('review14')">
+                    </div>
+                </div>
+                <div class="review-box" id="review14">
+                    <p>This is my review for the song "Twist and Shout".</p>
+                </div>
             </div>
-        </div>
-        <div class="review-box" id="review14">
-            <p>This is my review for the song "Twist and Shout".</p>
         </div>
     </div>
 </body>
