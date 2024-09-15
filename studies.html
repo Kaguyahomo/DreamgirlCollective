@@ -1,4 +1,4 @@
-=<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,9 +12,26 @@
             -webkit-overflow-scrolling: touch;
         }
 
+        /* Standardize book image sizes */
         .book-links a img {
             width: 150px;
             height: auto;
+            max-height: 250px; /* Ensure all images have a standardized height */
+            object-fit: contain; /* Make sure the images maintain aspect ratio */
+        }
+
+        /* Center the section and books */
+        .book-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* Space between books */
+            flex-wrap: wrap;
+        }
+
+        /* General layout styling */
+        header, nav, section, footer {
+            text-align: center;
+            margin-bottom: 20px;
         }
     </style>
 </head>
