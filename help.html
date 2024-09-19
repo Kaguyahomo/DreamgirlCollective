@@ -5,110 +5,249 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Help! - The Beatles</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .main-content {
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .album-cover {
+            width: 250px;
+            margin: 0 auto 30px auto;
+        }
+
+        .album-cover img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .song-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .song {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: transparent;
+            border: none;
+            width: 100%;
+        }
+
+        .song-content {
+            display: flex;
+            align-items: center;
+            background-color: #ffd1dc;
+            padding: 5px 10px;
+            border-radius: 8px;
+            width: 80%;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .song-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .review-gif {
+            width: 50px;
+            height: 50px;
+        }
+
+        .review-box {
+            background-color: #ffd1dc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+
+    </style>
+    <script>
+        function toggleReview(reviewId) {
+            const allReviews = document.querySelectorAll('.review-box');
+            allReviews.forEach(function(review) {
+                if (review.id !== reviewId) {
+                    review.style.display = 'none';
+                }
+            });
+
+            const review = document.getElementById(reviewId);
+            review.style.display = (review.style.display === "block") ? "none" : "block";
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const songs = document.querySelectorAll('.song-content');
+            songs.forEach(function(song) {
+                song.addEventListener('click', function() {
+                    const reviewId = song.getAttribute('data-review');
+                    toggleReview(reviewId);
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="main-content">
         <div class="album-cover">
-            <img src="help.png" alt="Help! Album Cover">
+            <img src="help.png" alt="Help!">
         </div>
+
         <div class="song-list">
             <div class="song">
                 <div class="song-content" data-review="review1">
                     <div class="song-title">Help!</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
                 </div>
             </div>
-            <div class="review-box" id="review1">Review pending...</div>
+            <div class="review-box" id="review1">
+                <p>Review pending...</p>
+            </div>
 
             <div class="song">
                 <div class="song-content" data-review="review2">
                     <div class="song-title">The Night Before</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
                 </div>
             </div>
-            <div class="review-box" id="review2">Review pending...</div>
+            <div class="review-box" id="review2">
+                <p>Review pending...</p>
+            </div>
 
             <div class="song">
                 <div class="song-content" data-review="review3">
                     <div class="song-title">You've Got to Hide Your Love Away</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
                 </div>
             </div>
-            <div class="review-box" id="review3">Review pending...</div>
+            <div class="review-box" id="review3">
+                <p>Review pending...</p>
+            </div>
 
             <div class="song">
                 <div class="song-content" data-review="review4">
                     <div class="song-title">I Need You</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
                 </div>
             </div>
-            <div class="review-box" id="review4">Review pending...</div>
+            <div class="review-box" id="review4">
+                <p>Review pending...</p>
+            </div>
 
             <div class="song">
                 <div class="song-content" data-review="review5">
                     <div class="song-title">Another Girl</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
                 </div>
             </div>
-            <div class="review-box" id="review5">Review pending...</div>
+            <div class="review-box" id="review5">
+                <p>Review pending...</p>
+            </div>
 
             <div class="song">
                 <div class="song-content" data-review="review6">
                     <div class="song-title">You're Going to Lose That Girl</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
                 </div>
             </div>
-            <div class="review-box" id="review6">Review pending...</div>
+            <div class="review-box" id="review6">
+                <p>Review pending...</p>
+            </div>
 
             <div class="song">
                 <div class="song-content" data-review="review7">
                     <div class="song-title">Ticket to Ride</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
                 </div>
             </div>
-            <div class="review-box" id="review7">Review pending...</div>
+            <div class="review-box" id="review7">
+                <p>Review pending...</p>
+            </div>
 
             <div class="song">
                 <div class="song-content" data-review="review8">
                     <div class="song-title">Act Naturally</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
                 </div>
             </div>
-            <div class="review-box" id="review8">Review pending...</div>
+            <div class="review-box" id="review8">
+                <p>Review pending...</p>
+            </div>
 
             <div class="song">
                 <div class="song-content" data-review="review9">
                     <div class="song-title">It's Only Love</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
                 </div>
             </div>
-            <div class="review-box" id="review9">Review pending...</div>
+            <div class="review-box" id="review9">
+                <p>Review pending...</p>
+            </div>
 
             <div class="song">
                 <div class="song-content" data-review="review10">
                     <div class="song-title">You Like Me Too Much</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
                 </div>
             </div>
-            <div class="review-box" id="review10">Review pending...</div>
+            <div class="review-box" id="review10">
+                <p>Review pending...</p>
+            </div>
 
             <div class="song">
                 <div class="song-content" data-review="review11">
                     <div class="song-title">Tell Me What You See</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
                 </div>
             </div>
-            <div class="review-box" id="review11">Review pending...</div>
+            <div class="review-box" id="review11">
+                <p>Review pending...</p>
+            </div>
 
             <div class="song">
                 <div class="song-content" data-review="review12">
                     <div class="song-title">I've Just Seen a Face</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
                 </div>
             </div>
-            <div class="review-box" id="review12">Review pending...</div>
+            <div class="review-box" id="review12">
+                <p>Review pending...</p>
+            </div>
 
             <div class="song">
                 <div class="song-content" data-review="review13">
                     <div class="song-title">Yesterday</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
                 </div>
             </div>
-            <div class="review-box" id="review13">Review pending...</div>
+            <div class="review-box" id="review13">
+                <p>Review pending...</p>
+            </div>
 
             <div class="song">
                 <div class="song-content" data-review="review14">
                     <div class="song-title">Dizzy Miss Lizzy</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
                 </div>
             </div>
-            <div class="review-box" id="review14">Review pending...</div>
+            <div class="review-box" id="review14">
+                <p>Review pending...</p>
+            </div>
         </div>
     </div>
 </body>
