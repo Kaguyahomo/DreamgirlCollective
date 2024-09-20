@@ -45,6 +45,31 @@
             text-decoration: underline;
         }
     </style>
+        <script>
+        // Function to toggle review visibility
+        function toggleReview(reviewId) {
+            const allReviews = document.querySelectorAll('.review-box');
+            allReviews.forEach(function(review) {
+                if (review.id !== reviewId) {
+                    review.style.display = 'none';
+                }
+            });
+
+            const review = document.getElementById(reviewId);
+            review.style.display = (review.style.display === "block") ? "none" : "block";
+        }
+
+        // Add click events to chapter titles
+        document.addEventListener('DOMContentLoaded', function () {
+            const chapters = document.querySelectorAll('.chapter');
+            chapters.forEach(function(chapter) {
+                chapter.addEventListener('click', function() {
+                    const reviewId = chapter.getAttribute('data-review');
+                    toggleReview(reviewId);
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <header>
