@@ -12,13 +12,11 @@
             margin: 20px;
         }
 
-        /* Main content container */
         .main-content {
             max-width: 800px;
             text-align: center;
         }
 
-        /* Centered album cover */
         .album-cover {
             width: 250px;
             margin: 0 auto 30px auto;
@@ -29,7 +27,6 @@
             border-radius: 10px;
         }
 
-        /* Song list container */
         .song-list {
             width: 100%;
             display: flex;
@@ -48,7 +45,6 @@
             width: 100%;
         }
 
-        /* Song title and review button together in pink background */
         .song-content {
             display: flex;
             align-items: center;
@@ -60,7 +56,6 @@
             cursor: pointer;
         }
 
-        /* Center the song title */
         .song-title {
             font-size: 1.2rem;
             font-weight: bold;
@@ -69,13 +64,11 @@
             flex-grow: 1;
         }
 
-        /* GIF for review button */
         .review-gif {
             width: 50px;
             height: 50px;
         }
 
-        /* Review box (hidden by default) */
         .review-box {
             background-color: #ffd1dc;
             padding: 15px;
@@ -83,10 +76,9 @@
             margin-top: 10px;
             display: none;
         }
-
     </style>
     <script>
-        // Function to toggle visibility of the review and close others
+        // Function to toggle visibility of the review
         function toggleReview(reviewId) {
             const allReviews = document.querySelectorAll('.review-box');
             allReviews.forEach(function(review) {
@@ -99,8 +91,40 @@
             review.style.display = (review.style.display === "block") ? "none" : "block";
         }
 
-        // Add event listeners to entire song-content div
+        // Add swipe navigation
         document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
+
+            function handleSwipe() {
+                const threshold = 50; // Minimum distance to be considered a swipe
+                const swipeX = endX - startX;
+                const swipeY = endY - startY;
+
+                if (Math.abs(swipeX) > Math.abs(swipeY)) {
+                    if (Math.abs(swipeX) > threshold) {
+                        if (swipeX < 0) {
+                            // Swipe left (next album: With The Beatles)
+                            window.location.href = 'withthebeatles.html';
+                        } else {
+                            // Swipe right (previous album: Beatles Overview)
+                            window.location.href = 'beatles.html';
+                        }
+                    }
+                }
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+
+            // Add click listeners for review toggling
             const songs = document.querySelectorAll('.song-content');
             songs.forEach(function(song) {
                 song.addEventListener('click', function() {
