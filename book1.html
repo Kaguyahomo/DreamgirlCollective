@@ -17,35 +17,84 @@
             text-align: center;
         }
 
-        /* Standardized size for the book image */
+        /* Standardized book image size */
         .book-image {
-            width: 250px; /* Set standardized width */
-            height: auto; /* Maintain aspect ratio */
+            width: 250px; /* Standardized width */
+            height: auto;
             margin-bottom: 1rem;
         }
 
-        /* Chapter navigation styling */
-        .chapter-navigation {
-            background-color: #fff;
-            color: #000;
-            padding: 1rem;
+        /* Chapter list container */
+        .chapter-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Pink box for chapters */
+        .chapter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ffd1dc;
+            padding: 10px;
             border-radius: 8px;
-            margin-top: 2rem;
+            width: 80%;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .chapter-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            flex-grow: 1;
             text-align: left;
         }
 
-        .chapter-navigation a {
-            display: block;
-            color: #ffd1dc;
-            text-decoration: none;
-            margin: 0.5rem 0;
-            font-weight: bold;
+        .chapter-img {
+            width: 50px;
+            height: 50px;
+            margin-left: 10px;
         }
 
-        .chapter-navigation a:hover {
-            text-decoration: underline;
+        /* Review box (hidden by default) */
+        .review-box {
+            background-color: #ffd1dc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+            width: 80%;
         }
+
     </style>
+    <script>
+        // Function to toggle review visibility
+        function toggleReview(reviewId) {
+            const allReviews = document.querySelectorAll('.review-box');
+            allReviews.forEach(function(review) {
+                if (review.id !== reviewId) {
+                    review.style.display = 'none';
+                }
+            });
+
+            const review = document.getElementById(reviewId);
+            review.style.display = (review.style.display === "block") ? "none" : "block";
+        }
+
+        // Add click events to chapter titles
+        document.addEventListener('DOMContentLoaded', function () {
+            const chapters = document.querySelectorAll('.chapter');
+            chapters.forEach(function(chapter) {
+                chapter.addEventListener('click', function() {
+                    const reviewId = chapter.getAttribute('data-review');
+                    toggleReview(reviewId);
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <header>
