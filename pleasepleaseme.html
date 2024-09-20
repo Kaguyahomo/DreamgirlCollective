@@ -77,63 +77,7 @@
             display: none;
         }
     </style>
-    <script>
-        // Function to toggle visibility of the review
-        function toggleReview(reviewId) {
-            const allReviews = document.querySelectorAll('.review-box');
-            allReviews.forEach(function(review) {
-                if (review.id !== reviewId) {
-                    review.style.display = 'none';
-                }
-            });
 
-            const review = document.getElementById(reviewId);
-            review.style.display = (review.style.display === "block") ? "none" : "block";
-        }
-
-        // Add swipe navigation
-        document.addEventListener('DOMContentLoaded', function () {
-            let startX, startY, endX, endY;
-
-            function handleSwipe() {
-                const threshold = 50; // Minimum distance to be considered a swipe
-                const swipeX = endX - startX;
-                const swipeY = endY - startY;
-
-                if (Math.abs(swipeX) > Math.abs(swipeY)) {
-                    if (Math.abs(swipeX) > threshold) {
-                        if (swipeX < 0) {
-                            // Swipe left (next album: With The Beatles)
-                            window.location.href = 'withthebeatles.html';
-                        } else {
-                            // Swipe right (previous album: Beatles Overview)
-                            window.location.href = 'beatles.html';
-                        }
-                    }
-                }
-            }
-
-            document.addEventListener('touchstart', function (e) {
-                startX = e.changedTouches[0].screenX;
-                startY = e.changedTouches[0].screenY;
-            });
-
-            document.addEventListener('touchend', function (e) {
-                endX = e.changedTouches[0].screenX;
-                endY = e.changedTouches[0].screenY;
-                handleSwipe();
-            });
-
-            // Add click listeners for review toggling
-            const songs = document.querySelectorAll('.song-content');
-            songs.forEach(function(song) {
-                song.addEventListener('click', function() {
-                    const reviewId = song.getAttribute('data-review');
-                    toggleReview(reviewId);
-                });
-            });
-        });
-    </script>
 </head>
 <body>
     <div class="main-content">
@@ -348,5 +292,41 @@
 
         </div>
     </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
+
+            function handleSwipe() {
+                const threshold = 50; // Minimum distance to be considered a swipe
+                const swipeX = endX - startX;
+                const swipeY = endY - startY;
+
+                if (Math.abs(swipeX) > Math.abs(swipeY)) {
+                    if (Math.abs(swipeX) > threshold) {
+                        if (swipeX < 0) {
+                            // Swipe left (go to next book page)
+                            window.location.href = 'withthebeatles.html';  // Adjust for next book
+                        } else {
+                            // Swipe right (go to previous book page)
+                            window.location.href = 'beatles.html';  // Adjust for previous book
+                        }
+                    }
+                }
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+        });
+    </script>
+
 </body>
 </html>
