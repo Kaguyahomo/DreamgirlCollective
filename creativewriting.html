@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creative Writing - List</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             display: flex;
@@ -17,11 +17,25 @@
             text-align: center;
         }
 
+        /* Styled header */
+        h1 {
+            background-color: #ffd1dc;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 2rem;
+            color: #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
         /* Style for the link list */
         .link-list {
             list-style-type: none;
             padding: 0;
             margin: 20px 0;
+            background-color: #ffd1dc;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .link-list li {
@@ -38,6 +52,40 @@
             text-decoration: underline;
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
+
+            function handleSwipe() {
+                const threshold = 50; // Minimum distance to be considered a swipe
+                const swipeX = endX - startX;
+                const swipeY = endY - startY;
+
+                if (Math.abs(swipeX) > Math.abs(swipeY)) {
+                    if (Math.abs(swipeX) > threshold) {
+                        if (swipeX < 0) {
+                            // Swipe left to go to #1.html (first page of writing)
+                            window.location.href = '#1.html';
+                        } else {
+                            // No previous page, so you could keep it on the same page or redirect to another
+                            window.location.href = '#';
+                        }
+                    }
+                }
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="main-content">
