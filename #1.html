@@ -4,22 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>#1 - Creative Writing</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            margin: 20px;
         }
 
         .main-content {
+            max-width: 800px;
             text-align: center;
         }
 
-        .main-content p {
-            font-size: 1.5rem;
+        .content-box {
+            background-color: #ffd1dc;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        .content-text {
+            font-size: 1.2rem;
             font-weight: bold;
+            color: #333;
+            line-height: 1.6;
         }
     </style>
     <script>
@@ -59,15 +69,17 @@
 </head>
 <body>
     <div class="main-content">
-        <p>There is hunger steadily growing within me I cannot comfortably call my own.
+        <div class="content-box">
+            <p class="content-text">There is hunger steadily growing within me I cannot comfortably call my own.
             I spend hours staring into lights envying the success of others.
-        I loft the past into the peaks of my imagination, where they can tease me for months.
-        Characters I invent revisit me in the quiet rains of this house.
-        Wrap up your arm to tap your finger on the table, or whatever else will get me through the day.
-        These superlative words of mine hopefully mask the taste of my half-baked ideas for you in a way they certainly don't coming out of mine.
-        What's an honest engagement with a text look like?
-        What does honest engagement with anyone look like?
-        Do you continue reading because you care or because there are more letters after and below these?</p>
+            I loft the past into the peaks of my imagination, where they can tease me for months.
+            Characters I invent revisit me in the quiet rains of this house.
+            Wrap up your arm to tap your finger on the table, or whatever else will get me through the day.
+            These superlative words of mine hopefully mask the taste of my half-baked ideas for you in a way they certainly don't coming out of mine.
+            What's an honest engagement with a text look like?
+            What does honest engagement with anyone look like?
+            Do you continue reading because you care or because there are more letters after and below these?</p>
+        </div>
     </div>
 </body>
 </html>
