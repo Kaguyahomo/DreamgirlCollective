@@ -3,55 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creative Writing - List</title>
+    <title>Creative Writing</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* Ensure vertical scrolling */
         body {
-            display: flex;
-            justify-content: center;
-            margin: 20px;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
         }
 
-        .main-content {
-            max-width: 800px;
+        /* Style for the header */
+        header {
             text-align: center;
+            margin-bottom: 20px;
         }
 
-        /* Styled header */
-        h1 {
-            background-color: #ffd1dc;
-            padding: 20px;
-            border-radius: 10px;
-            font-size: 2rem;
-            color: #333;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Style for the link list */
+        /* Style for the links section */
         .link-list {
             list-style-type: none;
             padding: 0;
-            margin: 20px 0;
-            background-color: #ffd1dc;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
         }
 
         .link-list li {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .link-list a {
             text-decoration: none;
-            color: #007bff;
+            color: white; /* White text color for links */
+            background-color: #007bff; /* Button-like background */
+            padding: 15px;
             font-size: 1.2rem;
+            display: block;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
         }
 
         .link-list a:hover {
-            text-decoration: underline;
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        /* General layout styling */
+        header, nav, section, footer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Footer */
+        footer p {
+            font-size: 0.9rem;
+            color: #666;
         }
     </style>
+</head>
+<body>
+    <header>
+        <h1>Creative Writing</h1>
+    </header>
+
+    <section>
+        <ul class="link-list">
+            <li><a href="#1.html">#1</a></li>
+            <li><a href="#2.html">#2</a></li>
+            <li><a href="#3.html">#3</a></li>
+            <li><a href="#4.html">#4</a></li>
+            <li><a href="#5.html">#5</a></li>
+            <li><a href="#6.html">#6</a></li>
+            <li><a href="#7.html">#7</a></li>
+            <li><a href="#8.html">#8</a></li>
+        </ul>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Your Site Name. All rights reserved.</p>
+    </footer>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             let startX, startY, endX, endY;
@@ -64,11 +95,8 @@
                 if (Math.abs(swipeX) > Math.abs(swipeY)) {
                     if (Math.abs(swipeX) > threshold) {
                         if (swipeX < 0) {
-                            // Swipe left to go to #1.html (first page of writing)
+                            // Swipe left to go to #1.html
                             window.location.href = '#1.html';
-                        } else {
-                            // No previous page, so you could keep it on the same page or redirect to another
-                            window.location.href = '#';
                         }
                     }
                 }
@@ -86,20 +114,5 @@
             });
         });
     </script>
-</head>
-<body>
-    <div class="main-content">
-        <h1>Creative Writing</h1>
-        <ul class="link-list">
-            <li><a href="#1.html">#1</a></li>
-            <li><a href="#2.html">#2</a></li>
-            <li><a href="#3.html">#3</a></li>
-            <li><a href="#4.html">#4</a></li>
-            <li><a href="#5.html">#5</a></li>
-            <li><a href="#6.html">#6</a></li>
-            <li><a href="#7.html">#7</a></li>
-            <li><a href="#8.html">#8</a></li>
-        </ul>
-    </div>
 </body>
 </html>
