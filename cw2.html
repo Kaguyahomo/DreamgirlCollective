@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CW2 - Creative Writing</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .main-content {
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .content-box {
+            background-color: #ff9aa2;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        .content-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            line-height: 1.6;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
+
+            function handleSwipe() {
+                const threshold = 50;
+                const swipeX = endX - startX;
+
+                if (Math.abs(swipeX) > threshold) {
+                    if (swipeX < 0) {
+                        window.location.href = 'cw3.html';
+                    } else {
+                        window.location.href = 'cw1.html';
+                    }
+                }
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content-box">
+            <p class="content-text">I keep hearing the lyrics 'I want wind'
+                I am sitting on the deck, smoke curling from my fingers.
+            The luscious mountaintops loom over the crashing of the waves.
+            These lyrics leave me mummified. 
+            Rigid. 
+            I don't want to hear 'I want wind'
+            I want wind. I want to feel the passage.
+            I want to become movement.
+            This feeling is locked into a cycle — a cycle of legibility, of meaning.</p>
+        </div>
+    </div>
+</body>
+</html>
