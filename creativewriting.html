@@ -23,29 +23,26 @@
             list-style-type: none;
             padding: 0;
             margin: 20px;
-            display: flex;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns */
             gap: 20px;
-            flex-wrap: wrap;
+            justify-items: center;
+            color: white;
         }
 
         .link-list li {
-            margin-bottom: 20px;
+            font-size: 1.5rem;
         }
 
         .link-list a {
             text-decoration: none;
-            color: #ff9aa2;
-            background-color: #FFF;
-            padding: 15px;
-            font-size: 1.2rem;
-            display: block;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
+            color: white; /* White text */
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
         }
 
         .link-list a:hover {
-            background-color: #ff6f82; /* Darker pink on hover */
+            color: #ff6f82; /* Pink on hover */
         }
 
         /* General layout styling */
@@ -68,14 +65,14 @@
 
     <section>
         <ul class="link-list">
-            <li><a href="cw1.html">CW1</a></li>
-            <li><a href="cw2.html">CW2</a></li>
-            <li><a href="cw3.html">CW3</a></li>
-            <li><a href="cw4.html">CW4</a></li>
-            <li><a href="cw5.html">CW5</a></li>
-            <li><a href="cw6.html">CW6</a></li>
-            <li><a href="cw7.html">CW7</a></li>
-            <li><a href="cw8.html">CW8</a></li>
+            <li><a href="cw1.html">1</a></li>
+            <li><a href="cw2.html">2</a></li>
+            <li><a href="cw3.html">3</a></li>
+            <li><a href="cw4.html">4</a></li>
+            <li><a href="cw5.html">5</a></li>
+            <li><a href="cw6.html">6</a></li>
+            <li><a href="cw7.html">7</a></li>
+            <li><a href="cw8.html">8</a></li>
         </ul>
     </section>
 
