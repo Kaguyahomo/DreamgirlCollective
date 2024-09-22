@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CW5 - Creative Writing</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .main-content {
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .content-box {
+            background-color: #ff9aa2;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        .content-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            line-height: 1.6;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
+
+            function handleSwipe() {
+                const threshold = 50;
+                const swipeX = endX - startX;
+
+                if (Math.abs(swipeX) > threshold) {
+                    if (swipeX < 0) {
+                        window.location.href = 'cw6.html';
+                    } else {
+                        window.location.href = 'cw4.html';
+                    }
+                }
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content-box">
+            <p class="content-text">Throwing my life away on these fucking screens.
+                Trying to jam my head full in fear of everything I won't know.
+                Got to assume it was just the way I was raised.
+                Because I've held secret to me this false sense of superiority my whole goddamn life
+                I can only now know it's this false sense when I finally built up the courage to talk to others.
+                Though I'm confident if you ask anyone who's even a little familiar,
+                this smugness simply oozes out of my skin.
+                Everytime I meet or read about someone actually talented,
+                actually driven, 
+                actually kind,
+                I am overcome by melancholy and impressive self-hatred.
+                When you're alone its much harder to pass it over to the girl who cares about you.
+                Crying is apart of being alone. 
+                Maybe I just shouldn't be alone but, 
+                When will that help me to see outside myself?
+                When will that help me feel self-satisfaction that I can believe I've earned?
+                Sunglasses on the porch so the housekeeper won't see me cry.
+                Taking my talents to the ruling class.
+                I miss drinking from youth.
+                At least I gained the luxury of not rmemebeing those time, at least in any tangible way.
+                I've run out of steam to be vulnerable for any second longer.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
