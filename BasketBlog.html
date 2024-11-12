@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spencer's Blog</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Body styling consistent with the lavender theme */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #E6E6FA;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        /* Bunny animation */
+        .bunny {
+            position: absolute;
+            top: 0;
+            width: 50px;
+            height: 50px;
+            background-image: url('bunny.png');
+            background-size: contain;
+            animation: float 5s infinite alternate;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(-100px) translateY(0); }
+            100% { transform: translateX(100vw) translateY(20px); }
+        }
+
+        /* Main container layout */
+        .container {
+            display: flex;
+            max-width: 1200px;
+            padding: 20px;
+            width: 100%;
+        }
+
+        /* Blog post area */
+        #posts-container {
+            flex: 5;  /* Increased from 4 to 5 to make posts section wider */
+            padding-right: 20px;
+        }
+
+        .post {
+            background-color: #ff9aa2;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .post h2 {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .post-meta {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .tags {
+            font-size: 0.9rem;
+            color: #ff9aa2;
+        }
+
+        /* Sidebar styling - made narrower */
+        .sidebar {
+            flex: 0.8;  /* Decreased from 1 to 0.8 to make sidebar narrower */
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            max-width: 200px;  /* Added max-width to ensure sidebar doesn't get too wide */
+        }
+
+        .sidebar input {
+            width: 90%;
+            padding: 8px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .sidebar h3 {
+            color: #ff9aa2;
+            font-size: 1.2rem;
+            margin-top: 0;
+        }
+
+        /* Author Mode Toggle Button */
+        #author-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px;
+            border-radius: 50%;
+            background-color: #ff9aa2;
+            color: white;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            background-image: url('basketball.png');
+            background-size: cover;
+            width: 50px;
+            height: 50px;
+        }
+
+        button {
+            margin: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: #ff9aa2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        /* New post form styling */
+        #new-post-form {
+            display: none; /* Hidden by default */
+            background-color: #ff9aa2;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Responsive styling for tablet view */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 10px;
+            }
+
+            #posts-container, .sidebar {
+                width: 100%;
+                padding: 0;
+                max-width: none;  /* Remove max-width constraint on mobile */
+            }
+
+            .sidebar {
+                margin-top: 20px;
+                align-items: center;
+            }
+
+            .sidebar input {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Moving Bunny -->
+    <div class="bunny"></div>
+
+    <div class="container">
+        <!-- Blog post container -->
+        <section id="posts-container">
+            <!-- The post content and/or new post form will be dynamically loaded here -->
+        </section>
+
+        <!-- Sidebar for search -->
+        <aside class="sidebar">
+            <h3>Search Posts</h3>
+            <input type="text" id="search-input" placeholder="Search..." onkeyup="searchPosts()">
+        </aside>
+    </div>
+
+    <!-- Author mode toggle button (Basketball Icon) -->
+    <button id="author-toggle" onclick="toggleAuthorMode()"></button>
+
+    <script>
+        let drafts = [];
+        let posts = [];
+        let isAuthorMode = false;
+        let currentEditId = null;
+
+        // Load posts into the page
+        function loadPosts() {
+            const postsContainer = document.getElementById("posts-container");
+            postsContainer.innerHTML = "<h1>Spencer's Blog</h1>";
+
+            // If in author mode, display the new post form at the top
+            if (isAuthorMode) {
+                postsContainer.innerHTML += `
+                    <div id="new-post-form" style="display: block;">
+                        <textarea id="new-post-content" placeholder="Write your post here..."></textarea>
+                        <input type="text" id="new-post-tags" placeholder="Enter tags (comma-separated)">
+                        <button onclick="saveDraft()">Save Draft</button>
+                        <button onclick="publishPost()">Publish Post</button>
+                    </div>
+                `;
+            }
+
+            // Display published posts below the new post form (or alone if not in author mode)
+            posts.filter(post => post.isPublished).forEach(post => {
+                const postElement = document.createElement("div");
+                postElement.className = "post";
+                postElement.innerHTML = `
+                    <h2>${post.title}</h2>
+                    <div class="post-meta">Posted on ${new Date(post.date).toLocaleDateString()}</div>
+                    <p>${post.content}</p>
+                    <div class="tags">Tags: ${post.tags ? post.tags.join(', ') : 'No tags'}</div>
+                    ${isAuthorMode ? `<button onclick="editPost(${post.id})">Edit</button>` : ""}
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        }
+
+        // Toggle author mode visibility
+        function toggleAuthorMode() {
+            if (isAuthorMode) {
+                const confirmExit = confirm("Are you sure you want to exit Author Mode?");
+                if (!confirmExit) return;
+            }
+            const password = isAuthorMode ? "" : prompt("Enter author password:");
+            if (!isAuthorMode && password === "MischiefSisters2") {
+                isAuthorMode = true;
+                loadPosts();
+            } else if (isAuthorMode) {
+                isAuthorMode = false;
+                loadPosts();
+            }
+        }
+
+        // Save draft
+        function saveDraft() {
+            const content = document.getElementById("new-post-content").value;
+            const title = prompt("Enter the title of your draft:");
+            const tags = document.getElementById("new-post-tags").value.split(',').map(tag => tag.trim());
+            const newDraft = { id: drafts.length + 1, title, content, tags, isPublished: false };
+            drafts.push(newDraft);
+            alert("Draft saved!");
+            clearForm();
+        }
+
+        // Publish post
+        function publishPost() {
+            const content = document.getElementById("new-post-content").value;
+            const title = currentEditId !== null ? posts.find(post => post.id === currentEditId).title : prompt("Enter the title of your post:");
+            const tags = document.getElementById("new-post-tags").value.split(',').map(tag => tag.trim());
+            
+            if (currentEditId !== null) {
+                // Edit existing post
+                const post = posts.find(p => p.id === currentEditId);
+                post.content = content;
+                post.tags = tags;
+                post.date = new Date();
+                currentEditId = null;
+                alert("Post updated!");
+            } else {
+                // Publish new post
+                const newPost = { id: posts.length + 1, title, content, date: new Date(), tags, isPublished: true };
+                posts.push(newPost);
+                alert("Post published!");
+            }
+            
+            loadPosts();
+            clearForm();
+        }
+
+        // Edit post
+        function editPost(id) {
+            const post = posts.find(p => p.id === id);
+            document.getElementById("new-post-content").value = post.content;
+            document.getElementById("new-post-tags").value = post.tags.join(', ');
+            currentEditId = id;
+        }
+
+        // Clear the post form
+        function clearForm() {
+            document.getElementById("new-post-content").value = "";
+            document.getElementById("new-post-tags").value = "";
+            currentEditId = null;
+        }
+
+        // Search posts function
+        function searchPosts() {
+            const searchTerm = document.getElementById("search-input").value.toLowerCase();
+            const filteredPosts = posts.filter(post => 
+                post.isPublished && (
+                    post.title.toLowerCase().includes(searchTerm) ||
+                    post.content.toLowerCase().includes(searchTerm) ||
+                    post.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+                )
+            );
+            
+            const postsContainer = document.getElementById("posts-container");
+            postsContainer.innerHTML = "<h1>Spencer's Blog</h1>";
+            
+            filteredPosts.forEach(post => {
+                const postElement = document.createElement("div");
+                postElement.className = "post";
+                postElement.innerHTML = `
+                    <h2>${post.title}</h2>
+                    <div class="post-meta">Posted on ${new Date(post.date).toLocaleDateString()}</div>
+                    <p>${post.content}</p>
+                    <div class="tags">Tags: ${post.tags ? post.tags.join(', ') : 'No tags'}</div>
+                    ${isAuthorMode ? `<button onclick="editPost(${post.id})">Edit</button>` : ""}
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        }
+
+        // Initialize page
+        window.onload = loadPosts;
+    </script>
+</body>
+</html>
