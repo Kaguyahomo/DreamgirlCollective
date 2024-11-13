@@ -44,11 +44,11 @@
 
         /* Blog post area */
         #posts-container {
-            flex: 5;  /* Increased from 4 to 5 to make posts section wider */
+            flex: 5;
             padding-right: 20px;
         }
 
-        .post {
+        .post, .draft {
             background-color: #ff9aa2;
             padding: 20px;
             margin-bottom: 20px;
@@ -56,7 +56,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .post h2 {
+        .post h2, .draft h2 {
             font-size: 1.5rem;
             color: #333;
         }
@@ -73,7 +73,7 @@
 
         /* Sidebar styling - made narrower */
         .sidebar {
-            flex: 0.8;  /* Decreased from 1 to 0.8 to make sidebar narrower */
+            flex: 0.8;
             padding: 10px;
             background-color: #333;
             color: white;
@@ -81,7 +81,7 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            max-width: 200px;  /* Added max-width to ensure sidebar doesn't get too wide */
+            max-width: 200px;
         }
 
         .sidebar input {
@@ -116,6 +116,21 @@
             height: 50px;
         }
 
+        /* Floating Embed Button */
+        #embed-button {
+            display: none; /* Initially hidden, only visible in author mode */
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background-color: #ff9aa2;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border: none;
+        }
+
         button {
             margin: 5px;
             padding: 5px 10px;
@@ -124,15 +139,6 @@
             color: white;
             border: none;
             border-radius: 5px;
-        }
-
-        /* New post form styling */
-        #new-post-form {
-            display: none; /* Hidden by default */
-            background-color: #ff9aa2;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
         }
 
         /* Responsive styling for tablet view */
@@ -145,7 +151,7 @@
             #posts-container, .sidebar {
                 width: 100%;
                 padding: 0;
-                max-width: none;  /* Remove max-width constraint on mobile */
+                max-width: none;
             }
 
             .sidebar {
@@ -180,11 +186,15 @@
     <!-- Author mode toggle button (Basketball Icon) -->
     <button id="author-toggle" onclick="toggleAuthorMode()"></button>
 
+    <!-- Floating Embed Button -->
+    <button id="embed-button" onclick="embedFile()">Embed GIF</button>
+
     <script>
         let drafts = [];
         let posts = [];
         let isAuthorMode = false;
         let currentEditId = null;
+        let currentCursorPosition = null;
 
         // Load posts into the page
         function loadPosts() {
@@ -194,12 +204,15 @@
             // If in author mode, display the new post form at the top
             if (isAuthorMode) {
                 postsContainer.innerHTML += `
-                    <div id="new-post-form" style="display: block;">
-                        <textarea id="new-post-content" placeholder="Write your post here..."></textarea>
+                    <div class="draft">
+                        <h2 contenteditable="true" id="new-post-title" placeholder="Title...">Title...</h2>
+                        <p contenteditable="true" id="new-post-content" placeholder="Write your post here...">Write your post here...</p>
                         <input type="text" id="new-post-tags" placeholder="Enter tags (comma-separated)">
                         <button onclick="saveDraft()">Save Draft</button>
                         <button onclick="publishPost()">Publish Post</button>
+                        <button onclick="viewDrafts()">View Drafts</button>
                     </div>
+                    <div id="draft-list" style="display: none;"></div>
                 `;
             }
 
@@ -208,14 +221,29 @@
                 const postElement = document.createElement("div");
                 postElement.className = "post";
                 postElement.innerHTML = `
-                    <h2>${post.title}</h2>
+                    <h2 contenteditable="${isAuthorMode}">${post.title}</h2>
                     <div class="post-meta">Posted on ${new Date(post.date).toLocaleDateString()}</div>
-                    <p>${post.content}</p>
-                    <div class="tags">Tags: ${post.tags ? post.tags.join(', ') : 'No tags'}</div>
-                    ${isAuthorMode ? `<button onclick="editPost(${post.id})">Edit</button>` : ""}
+                    <p contenteditable="${isAuthorMode}">${post.content}</p>
+                    <div class="tags" contenteditable="${isAuthorMode}">Tags: ${post.tags ? post.tags.join(', ') : 'No tags'}</div>
+                    ${post.files ? generateFilePreviews(post.files) : ""}
+                    ${isAuthorMode ? `
+                        <button onclick="saveEdit(${post.id})">Save</button>
+                        <button onclick="deletePost(${post.id})">Delete</button>
+                    ` : ""}
                 `;
                 postsContainer.appendChild(postElement);
             });
+        }
+
+        // Helper function to generate GIF previews
+        function generateFilePreviews(files) {
+            let previewHTML = '<div class="gif-previews">';
+            Array.from(files).forEach(file => {
+                const fileURL = URL.createObjectURL(file);
+                previewHTML += `<img src="${fileURL}" alt="GIF" style="width: 150px; height: auto; margin: 10px;">`;
+            });
+            previewHTML += '</div>';
+            return previewHTML;
         }
 
         // Toggle author mode visibility
@@ -227,18 +255,21 @@
             const password = isAuthorMode ? "" : prompt("Enter author password:");
             if (!isAuthorMode && password === "MischiefSisters2") {
                 isAuthorMode = true;
+                document.getElementById('embed-button').style.display = 'block';
                 loadPosts();
             } else if (isAuthorMode) {
                 isAuthorMode = false;
+                document.getElementById('embed-button').style.display = 'none';
                 loadPosts();
             }
         }
 
         // Save draft
         function saveDraft() {
-            const content = document.getElementById("new-post-content").value;
-            const title = prompt("Enter the title of your draft:");
+            const content = document.getElementById("new-post-content").textContent;
+            const title = document.getElementById("new-post-title").textContent;
             const tags = document.getElementById("new-post-tags").value.split(',').map(tag => tag.trim());
+            
             const newDraft = { id: drafts.length + 1, title, content, tags, isPublished: false };
             drafts.push(newDraft);
             alert("Draft saved!");
@@ -247,42 +278,102 @@
 
         // Publish post
         function publishPost() {
-            const content = document.getElementById("new-post-content").value;
-            const title = currentEditId !== null ? posts.find(post => post.id === currentEditId).title : prompt("Enter the title of your post:");
+            const content = document.getElementById("new-post-content").textContent;
+            const title = document.getElementById("new-post-title").textContent;
             const tags = document.getElementById("new-post-tags").value.split(',').map(tag => tag.trim());
-            
-            if (currentEditId !== null) {
-                // Edit existing post
-                const post = posts.find(p => p.id === currentEditId);
-                post.content = content;
-                post.tags = tags;
-                post.date = new Date();
-                currentEditId = null;
-                alert("Post updated!");
-            } else {
-                // Publish new post
-                const newPost = { id: posts.length + 1, title, content, date: new Date(), tags, isPublished: true };
-                posts.push(newPost);
-                alert("Post published!");
-            }
-            
+
+            const newPost = { id: posts.length + 1, title, content, date: new Date(), tags, isPublished: true };
+            posts.push(newPost);
+
+            // Remove from drafts if the post was initially a draft
+            drafts = drafts.filter(draft => draft.title !== title);
+
+            alert("Post published!");
             loadPosts();
             clearForm();
         }
 
-        // Edit post
-        function editPost(id) {
+        // Save edits to an existing post
+        function saveEdit(id) {
             const post = posts.find(p => p.id === id);
-            document.getElementById("new-post-content").value = post.content;
-            document.getElementById("new-post-tags").value = post.tags.join(', ');
-            currentEditId = id;
+            const updatedTitle = post.title;
+            const updatedContent = post.content;
+            const updatedTags = document.querySelector(`[contenteditable="true"]`).textContent.split(',').map(tag => tag.trim());
+            
+            post.title = updatedTitle;
+            post.content = updatedContent;
+            post.tags = updatedTags;
+            alert("Post updated!");
+            loadPosts();
+        }
+
+        // Delete post
+        function deletePost(id) {
+            posts = posts.filter(p => p.id !== id);
+            alert("Post deleted!");
+            loadPosts();
+        }
+
+        // View drafts
+        function viewDrafts() {
+            const draftList = document.getElementById("draft-list");
+            draftList.style.display = "block";
+            draftList.innerHTML = "<h3>Saved Drafts:</h3>";
+            drafts.forEach(draft => {
+                const draftElement = document.createElement("div");
+                draftElement.className = "draft";
+                draftElement.innerHTML = `
+                    <h2>${draft.title}</h2>
+                    <p>${draft.content}</p>
+                    <div>Tags: ${draft.tags ? draft.tags.join(', ') : 'No tags'}</div>
+                    <button onclick="editDraft(${draft.id})">Edit Draft</button>
+                    <button onclick="publishDraft(${draft.id})">Publish Draft</button>
+                `;
+                draftList.appendChild(draftElement);
+            });
+        }
+
+        // Edit an existing draft
+        function editDraft(id) {
+            const draft = drafts.find(d => d.id === id);
+            document.getElementById("new-post-title").textContent = draft.title;
+            document.getElementById("new-post-content").textContent = draft.content;
+            document.getElementById("new-post-tags").value = draft.tags.join(', ');
+        }
+
+        // Publish a draft
+        function publishDraft(id) {
+            const draft = drafts.find(d => d.id === id);
+            drafts = drafts.filter(d => d.id !== id); // Remove from drafts after publishing
+            const newPost = { ...draft, date: new Date(), isPublished: true };
+            posts.push(newPost);
+            alert("Draft published!");
+            loadPosts();
         }
 
         // Clear the post form
         function clearForm() {
-            document.getElementById("new-post-content").value = "";
+            document.getElementById("new-post-title").textContent = "Title...";
+            document.getElementById("new-post-content").textContent = "Write your post here...";
             document.getElementById("new-post-tags").value = "";
-            currentEditId = null;
+        }
+
+        // Embed GIF in post content
+        function embedFile() {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/gif';
+            fileInput.onchange = function () {
+                const file = fileInput.files[0];
+                if (file) {
+                    const fileURL = URL.createObjectURL(file);
+                    const gifElement = `<img src="${fileURL}" alt="GIF" style="width: 150px; height: auto; margin: 10px;">`;
+                    
+                    // Embed GIF where cursor is located
+                    document.execCommand('insertHTML', false, gifElement);
+                }
+            };
+            fileInput.click();
         }
 
         // Search posts function
