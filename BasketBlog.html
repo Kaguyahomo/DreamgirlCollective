@@ -190,11 +190,16 @@
     <button id="embed-button" onclick="embedFile()">Embed GIF</button>
 
     <script>
-        let drafts = [];
-        let posts = [];
+        let drafts = JSON.parse(localStorage.getItem('drafts')) || [];
+        let posts = JSON.parse(localStorage.getItem('posts')) || [];
         let isAuthorMode = false;
         let currentEditId = null;
-        let currentCursorPosition = null;
+
+        // Save posts and drafts to localStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('posts', JSON.stringify(posts));
+            localStorage.setItem('drafts', JSON.stringify(drafts));
+        }
 
         // Load posts into the page
         function loadPosts() {
@@ -272,6 +277,7 @@
             
             const newDraft = { id: drafts.length + 1, title, content, tags, isPublished: false };
             drafts.push(newDraft);
+            saveToLocalStorage();
             alert("Draft saved!");
             clearForm();
         }
@@ -288,6 +294,7 @@
             // Remove from drafts if the post was initially a draft
             drafts = drafts.filter(draft => draft.title !== title);
 
+            saveToLocalStorage();
             alert("Post published!");
             loadPosts();
             clearForm();
@@ -303,6 +310,8 @@
             post.title = updatedTitle;
             post.content = updatedContent;
             post.tags = updatedTags;
+
+            saveToLocalStorage();
             alert("Post updated!");
             loadPosts();
         }
@@ -310,6 +319,7 @@
         // Delete post
         function deletePost(id) {
             posts = posts.filter(p => p.id !== id);
+            saveToLocalStorage();
             alert("Post deleted!");
             loadPosts();
         }
@@ -347,6 +357,7 @@
             drafts = drafts.filter(d => d.id !== id); // Remove from drafts after publishing
             const newPost = { ...draft, date: new Date(), isPublished: true };
             posts.push(newPost);
+            saveToLocalStorage();
             alert("Draft published!");
             loadPosts();
         }
