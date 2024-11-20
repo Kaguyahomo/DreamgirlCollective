@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Completed</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Style to match the pink theme */
+        .request-id-container {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #ffe6f0; /* Light pink */
+            border: 2px solid #ff66b2; /* Pink border */
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .request-id {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ff3385; /* Darker pink for ID display */
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -22,6 +40,12 @@
         <h2>Thank you for your submission!</h2>
         <p>Your request has been successfully submitted. It will be uploaded to LibGen ASAP💕</p>
         
+        <!-- Display the generated Request ID -->
+        <div class="request-id-container">
+            <p>Your Request ID:</p>
+            <p class="request-id" id="generatedRequestId">Loading...</p>
+        </div>
+        
         <!-- Insert your GIF here -->
         <img src="celebration.gif" alt="Celebration GIF" style="display: block; margin: 2rem auto; max-width: 100%; height: auto;">
     </section>
@@ -29,5 +53,20 @@
     <footer>
         <p>Dreamgirl Collective </p>
     </footer>
+
+    <!-- JavaScript to handle the unique ID display -->
+    <script>
+        // Function to retrieve query parameters from the URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Get the generated request ID from the URL
+        const requestId = getQueryParam('requestId');
+
+        // Display the request ID on the page
+        document.getElementById('generatedRequestId').textContent = requestId || 'N/A';
+    </script>
 </body>
 </html>
