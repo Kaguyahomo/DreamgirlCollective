@@ -5,6 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Request a Document</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Inline styles to match the pink theme and aesthetics */
+        .status-check-window {
+            position: absolute;
+            top: 150px;
+            left: 20px;
+            width: 200px;
+            padding: 15px;
+            background-color: #ffe6f0; /* Light pink background */
+            border: 2px solid #ff66b2; /* Pink border */
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-check-window h3 {
+            color: #ff66b2; /* Pink color for headings */
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .status-check-window input,
+        .status-check-window button {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ff66b2;
+            border-radius: 5px;
+        }
+
+        .status-check-window button {
+            background-color: #ff66b2;
+            color: white;
+            cursor: pointer;
+        }
+
+        .status-result {
+            margin-top: 10px;
+            color: #ff3385; /* Darker pink for status messages */
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -18,9 +58,17 @@
     </nav>
     
     <section>
-        <!-- Added text -->
         <p class="info-text">If it’s behind a paywall or not on Anna’s Archive, try here!</p>
+
+        <!-- Status Check Window on the left side -->
+        <div class="status-check-window">
+            <h3>Check Request Status</h3>
+            <input type="text" id="requestIdInput" placeholder="Enter Request ID">
+            <button id="checkStatusButton">Check Status</button>
+            <div class="status-result" id="statusResult"></div>
+        </div>
         
+        <!-- Main Form for requesting a document -->
         <form id="documentRequestForm" action="https://formspree.io/f/myzgpkqg" method="POST">
             <label for="library">Document Type:</label>
             <input type="text" id="library" name="library" required>
@@ -48,11 +96,43 @@
         <p>Dreamgirl Collective</p>
     </footer>
 
-    <!-- JavaScript to sanitize user input and redirect to custom completed page -->
+    <!-- JavaScript for form submission, status checking, and unique ID generation -->
     <script>
+        // Simulated data storage (in a real scenario, use a backend)
+        const requestDatabase = {
+            'ABC123': { title: 'Sample Book 1', status: 'in progress' },
+            'DEF456': { title: 'Sample Book 2', status: 'uploaded' },
+            'GHI789': { title: 'Sample Book 3', status: 'in progress' }
+        };
+
+        // Status check functionality
+        document.getElementById('checkStatusButton').addEventListener('click', function () {
+            const requestId = document.getElementById('requestIdInput').value.trim().toUpperCase();
+            const statusResult = document.getElementById('statusResult');
+
+            // Check if the ID exists in the simulated database
+            if (requestDatabase[requestId]) {
+                const { title, status } = requestDatabase[requestId];
+                statusResult.textContent = `${title} — ${status}`;
+            } else {
+                statusResult.textContent = 'Invalid Request ID. Please try again.';
+            }
+        });
+
+        // Form submission with user input sanitation and ID generation
         document.getElementById('documentRequestForm').addEventListener('submit', function(event) {
             event.preventDefault();
-            
+
+            // Generate a unique 6-character alphanumeric ID
+            function generateRequestId() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let result = '';
+                for (let i = 0; i < 6; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
+
             // Sanitize user input
             function sanitizeInput(value) {
                 const element = document.createElement('div');
@@ -65,6 +145,9 @@
                 formData.set(key, sanitizeInput(value));
             }
 
+            // Generate and store a unique request ID
+            const requestId = generateRequestId();
+
             // Submit sanitized form data
             fetch(this.action, {
                 method: this.method,
@@ -74,7 +157,8 @@
                 }
             }).then(response => {
                 if (response.ok) {
-                    window.location.href = 'completed.html'; // Redirect to custom completed page
+                    // Redirect to completed.html with the generated request ID in the URL
+                    window.location.href = `completed.html?requestId=${requestId}`;
                 } else {
                     alert('Something went wrong. Please try again.');
                 }
