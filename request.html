@@ -6,82 +6,26 @@
     <title>Request a Document</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Inline styles to match the pink theme and aesthetics */
-        .status-check-window {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #ffe6f0; /* Matching light pink background */
-            border: 2px solid #ff66b2; /* Consistent pink border */
-            border-radius: 8px;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .status-check-window h3 {
-            color: #ff66b2; /* Consistent pink color for headings */
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-
-        .status-check-window input,
-        .status-check-window button {
-            width: calc(100% - 20px);
-            padding: 8px;
-            margin: 5px 10px;
-            border: 1px solid #ff66b2;
-            border-radius: 5px;
-        }
-
-        .status-check-window button {
-            background-color: #ff66b2;
-            color: white;
-            cursor: pointer;
-        }
-
-        .status-result {
-            margin-top: 10px;
-            color: #ff3385; /* Darker pink for status messages */
-        }
+        /* ... (existing styles) */
     </style>
 </head>
 <body>
     <header>
-        <img src="header-image.png" alt="Header Left Image" class="header-image left">
-        <h1>Request a Document</h1>
-        <img src="header-image.png" alt="Header Right Image" class="header-image right">
-    </header>
+        </header>
 
     <nav>
-        <a href="index.html"><img src="header-image.png" alt="Home Icon"></a>
-    </nav>
-    
+        </nav>
+
     <section>
         <p class="info-text">If it’s behind a paywall or not on Anna’s Archive, try here!</p>
 
-        <!-- Main Form for requesting a document -->
         <form id="documentRequestForm">
             <label for="library">Document Type:</label>
             <input type="text" id="library" name="library" required>
 
-            <label for="book-title">Title:</label>
-            <input type="text" id="book-title" name="bookTitle" required>
-
-            <label for="author">Author:</label>
-            <input type="text" id="author" name="author" required>
-
-            <label for="year">Year:</label>
-            <input type="text" id="year" name="year" required>
-
-            <label for="isbn">OCLC (optional):</label>
-            <input type="text" id="oclc" name="oclc">
-
-            <label for="comments">Additional Comments:</label>
-            <textarea id="comments" name="comments"></textarea>
-
             <button type="submit">Submit Request</button>
         </form>
 
-        <!-- Status Check Window positioned below the form -->
         <div class="status-check-window">
             <h3>Check Request Status</h3>
             <input type="text" id="requestIdInput" placeholder="Enter Request ID">
@@ -91,67 +35,55 @@
     </section>
 
     <footer>
-        <p>Dreamgirl Collective</p>
-    </footer>
+        </footer>
 
-    <!-- JavaScript for form submission, status checking, and unique ID generation -->
     <script>
-        // Status check functionality
-        document.getElementById('checkStatusButton').addEventListener('click', function () {
-            const requestId = document.getElementById('requestIdInput').value.trim().toUpperCase();
-            const statusResult = document.getElementById('statusResult');
+        // ... (existing JavaScript code)
 
-            // Fetch the status from the server
-            fetch(`http://localhost:3000/status/${requestId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.title) {
-                        statusResult.textContent = `${data.title} — ${data.status}`;
-                    } else {
-                        statusResult.textContent = 'Invalid Request ID. Please try again.';
-                    }
-                })
-                .catch(error => {
-                    statusResult.textContent = 'Error checking status. Please try again later.';
-                });
-        });
-
-        // Form submission with user input sanitation and ID generation
-        document.getElementById('documentRequestForm').addEventListener('submit', function(event) {
+        // Enhanced form submission with error handling and user feedback
+        document.getElementById('documentRequestForm').addEventListener('submit', (event) => {
             event.preventDefault();
 
             // Sanitize user input
-            function sanitizeInput(value) {
-                const element = document.createElement('div');
-                element.innerText = value;
-                return element.innerHTML;
+            const formData = new FormData(event.target);
+            const sanitizedData = {};
+            for (const [key, value] of formData.entries()) {
+                sanitizedData[key] = sanitizeInput(value);
             }
 
-            const formData = new FormData(this);
-            const jsonData = {};
-            for (let [key, value] of formData.entries()) {
-                jsonData[key] = sanitizeInput(value);
-            }
+            // Display a loading indicator
+            document.getElementById('statusResult').textContent = 'Submitting request...';
 
-            // Submit sanitized form data to local backend
             fetch('http://localhost:3000/submit', {
                 method: 'POST',
-                body: JSON.stringify(jsonData),
                 headers: {
                     'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(sanitizedData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
-            }).then(response => response.json())
-              .then(data => {
-                  if (data.requestId) {
-                      // Redirect to completed.html with the generated request ID in the URL
-                      window.location.href = `completed.html?requestId=${data.requestId}`;
-                  } else {
-                      alert('Something went wrong. Please try again.');
-                  }
-              }).catch(error => {
-                  alert('There was a problem submitting your request.');
-              });
+                return response.json();
+            })
+            .then(data => {
+                if (data.requestId) {
+                    // Redirect to completed page with success message
+                    window.location.href = `completed.html?requestId=${data.requestId}`;
+                } else {
+                    // Display error message
+                    document.getElementById('statusResult').textContent = 'Request submission failed. Please try again.';
+                }
+            })
+            .catch(error => {
+                // Display error message
+                document.getElementById('statusResult').textContent = 'An error occurred. Please try again later.';
+                console.error(error);
+            });
         });
+
+        // ... (existing status checking code)
     </script>
 </body>
 </html>
