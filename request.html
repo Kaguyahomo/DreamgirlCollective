@@ -7,18 +7,22 @@
     <link rel="stylesheet" href="styles.css">
     <style>
         /* Consistent pink theme styling */
+        body {
+            background-color: #ffe6f0; /* Light pink consistent background */
+        }
+
         .status-check-window {
             margin-top: 20px;
             padding: 15px;
-            background-color: #ffe6f0; /* Matching light pink background */
-            border: 2px solid #ff66b2; /* Consistent pink border with rest of the page */
+            background-color: #ffe6f0; /* Light pink background */
+            border: 2px solid #ff66b2; /* Consistent border pink */
             border-radius: 8px;
             box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
         .status-check-window h3 {
-            color: #ff66b2; /* Consistent pink color for headings */
+            color: #ff66b2; /* Matching pink for headings */
             font-size: 1.2rem;
             margin-bottom: 10px;
         }
@@ -29,9 +33,9 @@
             width: calc(100% - 20px);
             padding: 8px;
             margin: 5px 10px;
-            border: 1px solid #ff66b2; /* Use same pink border as the rest */
+            border: 1px solid #ff66b2;
             border-radius: 5px;
-            background-color: #ffe6f0; /* Matching background to align with theme */
+            background-color: #ffe6f0; /* Same light pink background */
         }
 
         .status-check-window button {
@@ -71,7 +75,7 @@
         <p class="info-text">If it’s behind a paywall or not on Anna’s Archive, try here!</p>
 
         <!-- Main Form for requesting a document -->
-        <form id="documentRequestForm" action="https://formspree.io/f/myzgpkqg" method="POST">
+        <form id="documentRequestForm">
             <label for="library">Document Type:</label>
             <input type="text" id="library" name="library" required>
 
@@ -123,7 +127,7 @@
         <p>Dreamgirl Collective</p>
     </footer>
 
-    <!-- JavaScript for form submission, status checking, admin password, and manual status update -->
+    <!-- JavaScript for form submission, status checking, and unique ID generation -->
     <script>
         // Password for admin access
         const ADMIN_PASSWORD = 'MischiefSisters2';
@@ -139,45 +143,49 @@
         }
 
         // Handle form submission
-        document.getElementById('documentRequestForm').addEventListener('submit', async function(event) {
+        document.getElementById('documentRequestForm').addEventListener('submit', function(event) {
             event.preventDefault();
+
+            // Validate form input
+            const library = document.getElementById('library').value.trim();
+            const bookTitle = document.getElementById('book-title').value.trim();
+            const author = document.getElementById('author').value.trim();
+            const year = document.getElementById('year').value.trim();
+
+            if (!library || !bookTitle || !author || !year) {
+                alert('Please fill in all required fields.');
+                return;
+            }
 
             // Generate a unique ID
             const requestId = generateRequestId();
 
             // Collect form data
             const formData = {
-                library: document.getElementById('library').value,
-                bookTitle: document.getElementById('book-title').value,
-                author: document.getElementById('author').value,
-                year: document.getElementById('year').value,
-                oclc: document.getElementById('oclc').value,
-                comments: document.getElementById('comments').value,
+                library,
+                bookTitle,
+                author,
+                year,
+                oclc: document.getElementById('oclc').value.trim(),
+                comments: document.getElementById('comments').value.trim(),
                 status: 'received' // Default initial status
             };
 
             // Store the request data in localStorage using the unique ID
             localStorage.setItem(requestId, JSON.stringify(formData));
 
-            // Send form data to Formspree
-            try {
-                const response = await fetch(this.action, {
-                    method: this.method,
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams(formData).toString()
-                });
+            // Submit form data to Formspree
+            fetch('https://formspree.io/f/myzgpkqg', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(formData).toString()
+            }).catch(error => {
+                // Log Formspree errors, but proceed with redirection
+                console.error('Formspree submission error:', error);
+            });
 
-                if (response.ok) {
-                    // Redirect to completed.html with the generated request ID
-                    window.location.href = `completed.html?requestId=${requestId}`;
-                } else {
-                    console.error('Formspree response details:', await response.text());
-                    alert('There was a problem submitting your request. Please try again.');
-                }
-            } catch (error) {
-                console.error('Network error during form submission:', error);
-                alert('There was a problem submitting your request. Please check your internet connection and try again.');
-            }
+            // Redirect to completed.html with the generated request ID
+            window.location.href = `completed.html?requestId=${requestId}`;
         });
 
         // Status check functionality
@@ -204,7 +212,7 @@
                 alert('Incorrect password!');
             }
         });
-        
+
         // Manual status update functionality
         document.getElementById('updateStatusButton').addEventListener('click', function () {
             const requestId = document.getElementById('updateRequestIdInput').value.trim().toUpperCase();
