@@ -96,61 +96,54 @@
 
     <!-- JavaScript for form submission, status checking, and unique ID generation -->
     <script>
+        // Function to generate a unique 6-character alphanumeric ID
+        function generateRequestId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // Handle form submission
+        document.getElementById('documentRequestForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Generate a unique ID
+            const requestId = generateRequestId();
+
+            // Collect form data
+            const formData = {
+                library: document.getElementById('library').value,
+                bookTitle: document.getElementById('book-title').value,
+                author: document.getElementById('author').value,
+                year: document.getElementById('year').value,
+                oclc: document.getElementById('oclc').value,
+                comments: document.getElementById('comments').value,
+                status: 'in progress' // Default status
+            };
+
+            // Store the request data in localStorage using the unique ID
+            localStorage.setItem(requestId, JSON.stringify(formData));
+
+            // Redirect to completed.html with the generated request ID
+            window.location.href = `completed.html?requestId=${requestId}`;
+        });
+
         // Status check functionality
         document.getElementById('checkStatusButton').addEventListener('click', function () {
             const requestId = document.getElementById('requestIdInput').value.trim().toUpperCase();
             const statusResult = document.getElementById('statusResult');
 
-            // Fetch the status from the server
-            fetch(`http://localhost:3000/status/${requestId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.title) {
-                        statusResult.textContent = `${data.title} — ${data.status}`;
-                    } else {
-                        statusResult.textContent = 'Invalid Request ID. Please try again.';
-                    }
-                })
-                .catch(error => {
-                    statusResult.textContent = 'Error checking status. Please try again later.';
-                });
-        });
-
-        // Form submission with user input sanitation and ID generation
-        document.getElementById('documentRequestForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            // Sanitize user input
-            function sanitizeInput(value) {
-                const element = document.createElement('div');
-                element.innerText = value;
-                return element.innerHTML;
+            // Retrieve the data from localStorage
+            const requestData = localStorage.getItem(requestId);
+            if (requestData) {
+                const { bookTitle, status } = JSON.parse(requestData);
+                statusResult.textContent = `${bookTitle} — ${status}`;
+            } else {
+                statusResult.textContent = 'Invalid Request ID. Please try again.';
             }
-
-            const formData = new FormData(this);
-            const jsonData = {};
-            for (let [key, value] of formData.entries()) {
-                jsonData[key] = sanitizeInput(value);
-            }
-
-            // Submit sanitized form data to local backend
-            fetch('http://localhost:3000/submit', {
-                method: 'POST',
-                body: JSON.stringify(jsonData),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => response.json())
-              .then(data => {
-                  if (data.requestId) {
-                      // Redirect to completed.html with the generated request ID in the URL
-                      window.location.href = `completed.html?requestId=${data.requestId}`;
-                  } else {
-                      alert('Something went wrong. Please try again.');
-                  }
-              }).catch(error => {
-                  alert('There was a problem submitting your request.');
-              });
         });
     </script>
 </body>
