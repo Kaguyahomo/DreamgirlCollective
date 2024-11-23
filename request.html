@@ -138,7 +138,7 @@
         }
 
         // Handle form submission
-        document.getElementById('documentRequestForm').addEventListener('submit', function(event) {
+        document.getElementById('documentRequestForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
             // Generate a unique ID
@@ -159,24 +159,30 @@
             localStorage.setItem(requestId, JSON.stringify(formData));
 
             // Send form data to Formspree
-            fetch(this.action, {
-                method: this.method,
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(formData).toString()
-            }).then(response => {
+            try {
+                const response = await fetch(this.action, {
+                    method: this.method,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(formData).toString()
+                });
+
+                // Debug log of the response for troubleshooting
+                console.log('Formspree response:', response);
+
                 if (response.ok) {
                     // Redirect to completed.html with the generated request ID
                     window.location.href = `completed.html?requestId=${requestId}`;
                 } else {
-                    // Log error details for debugging
-                    console.error('Form submission error:', response);
+                    // Log response details for debugging
+                    const responseData = await response.text();
+                    console.error('Formspree response details:', responseData);
                     alert('There was a problem submitting your request. Please try again.');
                 }
-            }).catch(error => {
-                // Log network errors for debugging
+            } catch (error) {
+                // Log network errors for troubleshooting
                 console.error('Network error during form submission:', error);
                 alert('There was a problem submitting your request. Please check your internet connection and try again.');
-            });
+            }
         });
 
         // Status check functionality
