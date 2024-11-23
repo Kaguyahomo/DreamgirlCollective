@@ -6,12 +6,12 @@
     <title>Request a Document</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Inline styles to match the pink theme and aesthetics */
+        /* Consistent pink theme styling */
         .status-check-window {
             margin-top: 20px;
             padding: 15px;
             background-color: #ffe6f0; /* Matching light pink background */
-            border: 2px solid #ff66b2; /* Consistent pink border */
+            border: 2px solid #ff66b2; /* Consistent pink border with rest of the page */
             border-radius: 8px;
             box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
             text-align: center;
@@ -29,12 +29,13 @@
             width: calc(100% - 20px);
             padding: 8px;
             margin: 5px 10px;
-            border: 1px solid #ff66b2;
+            border: 1px solid #ff66b2; /* Use same pink border as the rest */
             border-radius: 5px;
+            background-color: #ffe6f0; /* Matching background to align with theme */
         }
 
         .status-check-window button {
-            background-color: #ff66b2;
+            background-color: #ff66b2; /* Consistent button background color */
             color: white;
             cursor: pointer;
         }
@@ -166,20 +167,14 @@
                     body: new URLSearchParams(formData).toString()
                 });
 
-                // Debug log of the response for troubleshooting
-                console.log('Formspree response:', response);
-
                 if (response.ok) {
                     // Redirect to completed.html with the generated request ID
                     window.location.href = `completed.html?requestId=${requestId}`;
                 } else {
-                    // Log response details for debugging
-                    const responseData = await response.text();
-                    console.error('Formspree response details:', responseData);
+                    console.error('Formspree response details:', await response.text());
                     alert('There was a problem submitting your request. Please try again.');
                 }
             } catch (error) {
-                // Log network errors for troubleshooting
                 console.error('Network error during form submission:', error);
                 alert('There was a problem submitting your request. Please check your internet connection and try again.');
             }
