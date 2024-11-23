@@ -54,7 +54,7 @@
         <p>Dreamgirl Collective </p>
     </footer>
 
-    <!-- JavaScript to handle the unique ID display -->
+    <!-- JavaScript to handle the unique ID display and status update -->
     <script>
         // Function to retrieve query parameters from the URL
         function getQueryParam(param) {
@@ -67,6 +67,17 @@
 
         // Display the request ID on the page
         document.getElementById('generatedRequestId').textContent = requestId || 'N/A';
+
+        // Update the status of the request to 'uploaded' in localStorage
+        if (requestId) {
+            const requestData = localStorage.getItem(requestId);
+            if (requestData) {
+                // Parse the request data, update status, and save it back to localStorage
+                const parsedData = JSON.parse(requestData);
+                parsedData.status = 'uploaded';
+                localStorage.setItem(requestId, JSON.stringify(parsedData));
+            }
+        }
     </script>
 </body>
 </html>
