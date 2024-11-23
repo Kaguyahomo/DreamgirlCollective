@@ -163,13 +163,17 @@
                 method: this.method,
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams(formData).toString()
-            }).then(response => response.json())
-              .then(() => {
-                  // Redirect to completed.html with the generated request ID
-                  window.location.href = `completed.html?requestId=${requestId}`;
-              }).catch(() => {
-                  alert('There was a problem submitting your request.');
-              });
+            }).then(response => {
+                if (response.ok) {
+                    // If successful, redirect to completed.html with the generated request ID
+                    window.location.href = `completed.html?requestId=${requestId}`;
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            }).catch(error => {
+                // If there was an issue with the submission, alert the user
+                alert('There was a problem submitting your request. Please try again.');
+            });
         });
 
         // Status check functionality
