@@ -43,6 +43,16 @@
             margin-top: 10px;
             color: #ff3385; /* Darker pink for status messages */
         }
+
+        /* Hidden admin section */
+        .admin-section {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ffe6f0;
+            border: 2px solid #ff66b2;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -60,7 +70,7 @@
         <p class="info-text">If it’s behind a paywall or not on Anna’s Archive, try here!</p>
 
         <!-- Main Form for requesting a document -->
-        <form id="documentRequestForm">
+        <form id="documentRequestForm" action="https://formspree.io/f/myzgpkqg" method="POST">
             <label for="library">Document Type:</label>
             <input type="text" id="library" name="library" required>
 
@@ -89,17 +99,22 @@
             <button id="checkStatusButton">Check Status</button>
             <div class="status-result" id="statusResult"></div>
 
-            <!-- Manual Status Update Section -->
-            <h3>Update Request Status</h3>
-            <input type="text" id="updateRequestIdInput" placeholder="Enter Request ID">
-            <select id="updateStatusSelect">
-                <option value="received">Received</option>
-                <option value="in progress">In Progress</option>
-                <option value="uploaded">Uploaded</option>
-                <option value="completed">Completed</option>
-            </select>
-            <button id="updateStatusButton">Update Status</button>
-            <div class="status-result" id="updateStatusResult"></div>
+            <!-- Admin Access Button -->
+            <button id="adminAccessButton">Admin Access</button>
+
+            <!-- Hidden Admin Section for Manual Status Update -->
+            <div class="admin-section" id="adminSection">
+                <h3>Update Request Status</h3>
+                <input type="text" id="updateRequestIdInput" placeholder="Enter Request ID">
+                <select id="updateStatusSelect">
+                    <option value="received">Received</option>
+                    <option value="in progress">In Progress</option>
+                    <option value="uploaded">Uploaded</option>
+                    <option value="completed">Completed</option>
+                </select>
+                <button id="updateStatusButton">Update Status</button>
+                <div class="status-result" id="updateStatusResult"></div>
+            </div>
         </div>
     </section>
 
@@ -107,8 +122,11 @@
         <p>Dreamgirl Collective</p>
     </footer>
 
-    <!-- JavaScript for form submission, status checking, and manual status update -->
+    <!-- JavaScript for form submission, status checking, admin password, and manual status update -->
     <script>
+        // Password for admin access
+        const ADMIN_PASSWORD = 'MischiefSisters2';
+
         // Function to generate a unique 6-character alphanumeric ID
         function generateRequestId() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -140,8 +158,18 @@
             // Store the request data in localStorage using the unique ID
             localStorage.setItem(requestId, JSON.stringify(formData));
 
-            // Redirect to completed.html with the generated request ID
-            window.location.href = `completed.html?requestId=${requestId}`;
+            // Send form data to Formspree
+            fetch(this.action, {
+                method: this.method,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(formData).toString()
+            }).then(response => response.json())
+              .then(() => {
+                  // Redirect to completed.html with the generated request ID
+                  window.location.href = `completed.html?requestId=${requestId}`;
+              }).catch(() => {
+                  alert('There was a problem submitting your request.');
+              });
         });
 
         // Status check functionality
@@ -156,6 +184,16 @@
                 statusResult.textContent = `${bookTitle} — ${status}`;
             } else {
                 statusResult.textContent = 'Invalid Request ID. Please try again.';
+            }
+        });
+
+        // Admin access functionality
+        document.getElementById('adminAccessButton').addEventListener('click', function () {
+            const password = prompt('Enter admin password:');
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('adminSection').style.display = 'block';
+            } else {
+                alert('Incorrect password!');
             }
         });
 
