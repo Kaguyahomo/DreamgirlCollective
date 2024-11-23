@@ -24,7 +24,8 @@
         }
 
         .status-check-window input,
-        .status-check-window button {
+        .status-check-window button,
+        .status-check-window select {
             width: calc(100% - 20px);
             padding: 8px;
             margin: 5px 10px;
@@ -87,6 +88,18 @@
             <input type="text" id="requestIdInput" placeholder="Enter Request ID">
             <button id="checkStatusButton">Check Status</button>
             <div class="status-result" id="statusResult"></div>
+
+            <!-- Manual Status Update Section -->
+            <h3>Update Request Status</h3>
+            <input type="text" id="updateRequestIdInput" placeholder="Enter Request ID">
+            <select id="updateStatusSelect">
+                <option value="received">Received</option>
+                <option value="in progress">In Progress</option>
+                <option value="uploaded">Uploaded</option>
+                <option value="completed">Completed</option>
+            </select>
+            <button id="updateStatusButton">Update Status</button>
+            <div class="status-result" id="updateStatusResult"></div>
         </div>
     </section>
 
@@ -94,7 +107,7 @@
         <p>Dreamgirl Collective</p>
     </footer>
 
-    <!-- JavaScript for form submission, status checking, and unique ID generation -->
+    <!-- JavaScript for form submission, status checking, and manual status update -->
     <script>
         // Function to generate a unique 6-character alphanumeric ID
         function generateRequestId() {
@@ -121,7 +134,7 @@
                 year: document.getElementById('year').value,
                 oclc: document.getElementById('oclc').value,
                 comments: document.getElementById('comments').value,
-                status: 'in progress' // Default status
+                status: 'received' // Default initial status
             };
 
             // Store the request data in localStorage using the unique ID
@@ -143,6 +156,24 @@
                 statusResult.textContent = `${bookTitle} — ${status}`;
             } else {
                 statusResult.textContent = 'Invalid Request ID. Please try again.';
+            }
+        });
+
+        // Manual status update functionality
+        document.getElementById('updateStatusButton').addEventListener('click', function () {
+            const requestId = document.getElementById('updateRequestIdInput').value.trim().toUpperCase();
+            const newStatus = document.getElementById('updateStatusSelect').value;
+            const updateStatusResult = document.getElementById('updateStatusResult');
+
+            // Retrieve the data from localStorage
+            const requestData = localStorage.getItem(requestId);
+            if (requestData) {
+                const parsedData = JSON.parse(requestData);
+                parsedData.status = newStatus; // Update status
+                localStorage.setItem(requestId, JSON.stringify(parsedData)); // Save back to localStorage
+                updateStatusResult.textContent = `Status updated to "${newStatus}" for ID: ${requestId}.`;
+            } else {
+                updateStatusResult.textContent = 'Invalid Request ID. Please try again.';
             }
         });
     </script>
