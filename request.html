@@ -165,14 +165,17 @@
                 body: new URLSearchParams(formData).toString()
             }).then(response => {
                 if (response.ok) {
-                    // If successful, redirect to completed.html with the generated request ID
+                    // Redirect to completed.html with the generated request ID
                     window.location.href = `completed.html?requestId=${requestId}`;
                 } else {
-                    throw new Error('Form submission failed');
+                    // Log error details for debugging
+                    console.error('Form submission error:', response);
+                    alert('There was a problem submitting your request. Please try again.');
                 }
             }).catch(error => {
-                // If there was an issue with the submission, alert the user
-                alert('There was a problem submitting your request. Please try again.');
+                // Log network errors for debugging
+                console.error('Network error during form submission:', error);
+                alert('There was a problem submitting your request. Please check your internet connection and try again.');
             });
         });
 
