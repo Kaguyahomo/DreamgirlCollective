@@ -28,8 +28,7 @@
         }
 
         .status-check-window input,
-        .status-check-window button,
-        .status-check-window select {
+        .status-check-window button {
             width: calc(100% - 20px);
             padding: 8px;
             margin: 5px 10px;
@@ -171,6 +170,7 @@
             };
 
             // Store the request data in localStorage using the unique ID
+            console.log('Saving to localStorage:', formData); // DEBUG
             localStorage.setItem(requestId, JSON.stringify(formData));
 
             // Submit form data to Formspree
@@ -198,6 +198,7 @@
             const statusResult = document.getElementById('statusResult');
 
             // Retrieve the data from localStorage
+            console.log('Checking status for ID:', requestId); // DEBUG
             const requestData = localStorage.getItem(requestId);
             if (requestData) {
                 const { bookTitle, status } = JSON.parse(requestData);
@@ -224,6 +225,7 @@
             const updateStatusResult = document.getElementById('updateStatusResult');
 
             // Retrieve the data from localStorage
+            console.log('Updating status for ID:', requestId, 'to:', newStatus); // DEBUG
             const requestData = localStorage.getItem(requestId);
             if (requestData) {
                 const parsedData = JSON.parse(requestData);
