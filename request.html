@@ -168,7 +168,7 @@
                 oclc: document.getElementById('oclc').value.trim(),
                 comments: document.getElementById('comments').value.trim(),
                 requestId, // Include the unique requestId
-                status: 'received' // Set status to 'received' by default
+                status: 'received' // Explicitly set status to 'received'
             };
 
             // Store the request data in localStorage using the unique ID
@@ -217,7 +217,7 @@
                 alert('Incorrect password!');
             }
         });
-        
+
         // Manual status update functionality
         document.getElementById('updateStatusButton').addEventListener('click', function () {
             const requestId = document.getElementById('updateRequestIdInput').value.trim().toUpperCase();
