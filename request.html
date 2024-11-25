@@ -14,7 +14,7 @@
         .status-check-window {
             margin-top: 20px;
             padding: 15px;
-            background-color: #ffe6f0; /* Light pink background */
+            background-color: #ffe6f0; /* Light pink background, matching the form */
             border: 2px solid #ff66b2; /* Consistent border pink */
             border-radius: 8px;
             box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
@@ -115,7 +115,6 @@
                     <option value="received">Received</option>
                     <option value="in progress">In Progress</option>
                     <option value="uploaded">Uploaded</option>
-                    <option value="completed">Completed</option>
                 </select>
                 <button id="updateStatusButton">Update Status</button>
                 <div class="status-result" id="updateStatusResult"></div>
@@ -160,7 +159,7 @@
             // Generate a unique ID
             const requestId = generateRequestId();
 
-            // Collect form data
+            // Collect form data, including the unique requestId
             const formData = {
                 library,
                 bookTitle,
@@ -168,6 +167,7 @@
                 year,
                 oclc: document.getElementById('oclc').value.trim(),
                 comments: document.getElementById('comments').value.trim(),
+                requestId, // Include the unique requestId
                 status: 'received' // Default initial status
             };
 
