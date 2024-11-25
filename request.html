@@ -143,7 +143,7 @@
         }
 
         // Handle form submission
-        document.getElementById('documentRequestForm').addEventListener('submit', function(event) {
+        document.getElementById('documentRequestForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
             // Validate form input
@@ -175,14 +175,19 @@
             localStorage.setItem(requestId, JSON.stringify(formData));
 
             // Submit form data to Formspree
-            fetch('https://formspree.io/f/myzgpkqg', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(formData).toString()
-            }).catch(error => {
-                // Log Formspree errors, but proceed with redirection
+            try {
+                const response = await fetch('https://formspree.io/f/myzgpkqg', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    console.error('Formspree submission failed:', await response.text());
+                }
+            } catch (error) {
                 console.error('Formspree submission error:', error);
-            });
+            }
 
             // Redirect to completed.html with the generated request ID
             window.location.href = `completed.html?requestId=${requestId}`;
