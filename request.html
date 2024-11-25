@@ -223,7 +223,7 @@
             const requestId = document.getElementById('updateRequestIdInput').value.trim().toUpperCase();
             const newStatus = document.getElementById('updateStatusSelect').value;
             const updateStatusResult = document.getElementById('updateStatusResult');
-
+            
             // Retrieve the data from localStorage
             console.log('Updating status for ID:', requestId, 'to:', newStatus); // DEBUG
             const requestData = localStorage.getItem(requestId);
