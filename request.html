@@ -6,7 +6,7 @@
     <title>Request a Document</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Consistent pink theme styling */
+        /* Consistent soft pink theme styling */
         body {
             background-color: #ffe6f0; /* Light pink consistent background */
         }
@@ -14,15 +14,15 @@
         .status-check-window {
             margin-top: 20px;
             padding: 15px;
-            background-color: #ffe6f0; /* Light pink background, matching the form */
-            border: 2px solid #ff66b2; /* Consistent border pink */
+            background-color: #ffe6f0; /* Light pink background, matching the rest of the page */
+            border: 2px solid #ff99cc; /* Softer pink border consistent with the theme */
             border-radius: 8px;
             box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
         .status-check-window h3 {
-            color: #ff66b2; /* Matching pink for headings */
+            color: #ff99cc; /* Softer pink for headings */
             font-size: 1.2rem;
             margin-bottom: 10px;
         }
@@ -33,13 +33,13 @@
             width: calc(100% - 20px);
             padding: 8px;
             margin: 5px 10px;
-            border: 1px solid #ff66b2;
+            border: 1px solid #ff99cc; /* Use softer pink for input borders */
             border-radius: 5px;
-            background-color: #ffe6f0; /* Same light pink background */
+            background-color: #ffe6f0; /* Same light pink background as the rest */
         }
 
         .status-check-window button {
-            background-color: #ff66b2; /* Consistent button background color */
+            background-color: #ff99cc; /* Softer pink button background color */
             color: white;
             cursor: pointer;
         }
@@ -55,7 +55,7 @@
             margin-top: 20px;
             padding: 15px;
             background-color: #ffe6f0;
-            border: 2px solid #ff66b2;
+            border: 2px solid #ff99cc;
             border-radius: 8px;
         }
     </style>
@@ -168,7 +168,7 @@
                 oclc: document.getElementById('oclc').value.trim(),
                 comments: document.getElementById('comments').value.trim(),
                 requestId, // Include the unique requestId
-                status: 'received' // Default initial status
+                status: 'received' // Set status to 'received' by default
             };
 
             // Store the request data in localStorage using the unique ID
