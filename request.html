@@ -112,7 +112,6 @@
                 <h3>Update Request Status</h3>
                 <input type="text" id="updateRequestIdInput" placeholder="Enter Request ID">
                 <select id="updateStatusSelect">
-                    <option value="received">Received</option>
                     <option value="in progress">In Progress</option>
                     <option value="uploaded">Uploaded</option>
                 </select>
@@ -168,7 +167,7 @@
                 oclc: document.getElementById('oclc').value.trim(),
                 comments: document.getElementById('comments').value.trim(),
                 requestId, // Include the unique requestId
-                status: 'received' // Explicitly set status to 'received'
+                status: 'in progress' // Set status to 'in progress' by default
             };
 
             // Store the request data in localStorage using the unique ID
@@ -217,7 +216,7 @@
                 alert('Incorrect password!');
             }
         });
-        
+
         // Manual status update functionality
         document.getElementById('updateStatusButton').addEventListener('click', function () {
             const requestId = document.getElementById('updateRequestIdInput').value.trim().toUpperCase();
