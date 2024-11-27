@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CW8 - Creative Writing</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .main-content {
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .content-box {
+            background-color: #ffd1dc;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        .content-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            line-height: 1.6;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
+
+            function handleSwipe() {
+                const threshold = 50;
+                const swipeX = endX - startX;
+
+                if (Math.abs(swipeX) > threshold) {
+                    if (swipeX < 0) {
+                        // No next file beyond cw8.html
+                        window.location.href = '#';
+                    } else {
+                        window.location.href = 'cw7.html';
+                    }
+                }
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content-box">
+            <p class="content-text">Doesn't it smell like shit?
+That smell of organic death.
+A smell drunk with reckless abandon,
+smothering behind the eyes twisting the stomach
+Doesn't this smell like shit?
+This stale office rim coffee.
+drowned by the dim illumination of the dusty word processor
+—built before our modernity locked in.
+Don't you smell like shit?
+holding the alms of those who lived to see the great war.
+reeking of weeks-old cigarettes and cheap weed smoke clinging to dingy cloth.
+Marking my adolescence by a punctuation of the night with the drinking of the rising; using their living labour to care for those dying. Amongst all we shared the fate of chickens on cruel and cold assembly lines.
+Was I smelling death? or living?
+is it death to stare at a spoonful or two of oatmeal contained in a poor plastic bowl, degrade through time by cyclical passage through an industrial dishwasher. Or is it the living that struggle against plastic plate wear to pierce their pulsing hearts. End the agony that is the painkiller induced eternity of jeopardy re-runs. </p>
+        </div>
+    </div>
+</body>
+</html>
