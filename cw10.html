@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CW8 - Creative Writing</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .main-content {
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .content-box {
+            background-color: #ffd1dc;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        .content-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            line-height: 1.6;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
+
+            function handleSwipe() {
+                const threshold = 50;
+                const swipeX = endX - startX;
+
+                if (Math.abs(swipeX) > threshold) {
+                    if (swipeX < 0) {
+                        // No next file beyond cw8.html
+                        window.location.href = '#';
+                    } else {
+                        window.location.href = 'cw7.html';
+                    }
+                }
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content-box">
+            <p class="content-text">I am grabbing the bones under my eyes
+Thinking about girls that will leave me
+I will exist in a time and place
+And there is no album to listen to that will inhibit this
+What would it mean to break it between my fingers
+To accept responsibility
+I will run the wheels bald
+I will change very little in my life to address my concerns 
+There is a moment
+In which the other shoe will drop
+How long can I escape
+How long can I exist on borrowed time
+Is what I have to do violent
+Must I find resolution in catharsis 
+No one will be listening and I will exist 
+No one will be reading and these words will be here
+Women are obsessed with using mediums to transcend
+And it will never happen
+Do you feel your mystery fade?
+Do you feel yourself become a commodity?
+Do you feel like a lover of mine?
+Is your art sold?
+Are your heads filled with flames? 
+I will drive to produce a piece of consistent art
+I will attempt a narrative
+Aren't we all going for meaning?
+Tomatoes and radiowire
+Flavor and apartment fires
+Feel your life determined
+Sucked into process that exist above you
+Fight against it with liberal fervor
+Praise the world as it exists in your fetishized mind
+Exist as a subject 
+Grafittit hate speech in your grad student lounge
+Won't you rock out with your cock out
+Does injecting estrogen make you a woman
+Are you annoyed at with the sheer volume of questiome
+I suppose it's all semantics sweetheart </p>
+        </div>
+    </div>
+</body>
+</html>
