@@ -71,7 +71,7 @@
         const REPO_NAME = "DreamgirlCollective";
         const FILE_PATH = "posts.json";
         const GITHUB_API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
-        const TOKEN = "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"; // Will be replaced by GitHub Actions during deployment
+        const TOKEN = "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"; // Will be replaced by GitHub Actions during deployment
 
         let posts = [];
         let isAuthorMode = false;
@@ -212,7 +212,7 @@
             const data = await response.json();
             return data.sha;
         }
-
+        
         // Initialize the page
         loadPosts();
     </script>
