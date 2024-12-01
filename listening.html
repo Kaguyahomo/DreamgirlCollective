@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listening</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Light background for better contrast */
+            color: #333; /* Darker text color */
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #ffd1dc; /* Pastel pink */
+            padding: 20px;
+            text-align: center;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #ffd1dc; /* Pastel pink */
+        }
+        nav ul li {
+            margin: 0 10px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #333; /* Dark text color */
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+        .playlist iframe {
+            width: 100%;
+            height: 380px;
+            border: none;
+        }
+        footer {
+            background-color: #ffd1dc; /* Pastel pink */
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Tunes</h1>
+    </header>
+
+    <nav>
+        <a href="reading.html"><img src="reading.gif" alt="Reading"></a>
+        <a href="watching.html"><img src="watching.gif" alt="Watching"></a>
+        <a href="playing.html"><img src="playing.gif" alt="Playing"></a>
+        <a href="photos.html"><img src="photos.gif" alt="Photos"></a>
+		  <a href="index.html""><img src="header-image.png" alt="home"></a>
+    </nav>
+
+    <section class="grid-container">
+        <div class="playlist">
+            <iframe src="https://open.spotify.com/embed/playlist/2iUfCZIiWu7nEtpPKzLPUE" allowtransparency="true" allow="encrypted-media"></iframe>
+        </div>
+        <div class="playlist">
+            <iframe src="https://open.spotify.com/embed/playlist/5utu4rUY4hnikjKYASUxvL" allowtransparency="true" allow="encrypted-media"></iframe>
+        </div>
+        <div class="playlist">
+            <iframe src="https://open.spotify.com/embed/playlist/54Pk9Mgyn1Y0eQwKCH3CH0" allowtransparency="true" allow="encrypted-media"></iframe>
+        </div>
+        <div class="playlist">
+            <iframe src="https://open.spotify.com/embed/playlist/4f1UUBRNH0mjTLGzWrcKI6" allowtransparency="true" allow="encrypted-media"></iframe>
+        </div>
+</body>
+</html>

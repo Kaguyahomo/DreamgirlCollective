@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playing</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .embed-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            background-color: #ffd1dc; /* Pastel pink background */
+            width: 100%; /* Full width */
+            margin: 0 auto;
+        }
+        .video-embed, .chat-embed {
+            background-color: #fff; /* White background for better visibility */
+        }
+        .video-embed {
+            width: 70%;
+            height: 500px; /* Adjusted height */
+        }
+        .chat-embed {
+            width: 30%;
+            height: 500px; /* Adjusted height */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="header-image.png" alt="Header Left Image" class="header-image left">
+        <h1>Gaming</h1>
+        <img src="header-image.png" alt="Header Right Image" class="header-image right">
+    </header>
+
+    <nav>
+        <a href="reading.html"><img src="reading.gif" alt="Reading"></a>
+        <a href="watching.html"><img src="watching.gif" alt="Watching"></a>
+        <a href="listening.html"><img src="listening.gif" alt="Listening"></a>
+        <a href="photos.html"><img src="photos.gif" alt="Photos"></a>
+        <a href="index.html"><img src="header-image.png" alt="Home"></a>
+    </nav>
+
+    <section>
+        <div class="embed-container">
+            <!-- Twitch Video Embed -->
+            <div id="twitch-video" class="video-embed"></div>
+            <!-- Twitch Chat Embed -->
+            <iframe
+                id="twitch-chat"
+                src="https://www.twitch.tv/embed/nancyb0yy/chat?parent=kaguyahomo.github.io"
+                frameborder="0"
+                scrolling="no"
+                class="chat-embed">
+            </iframe>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Shorty's Collection. All rights reserved.</p>
+    </footer>
+
+    <!-- Twitch Video Embed Script -->
+    <script src="https://player.twitch.tv/js/embed/v1.js"></script>
+    <script type="text/javascript">
+        var options = {
+            width: '100%',
+            height: '100%',
+            channel: 'nancyb0yy',
+            parent: ['kaguyahomo.github.io']
+        };
+        var player = new Twitch.Player('twitch-video', options);
+        player.setVolume(0.5);
+    </script>
+</body>
+</html>

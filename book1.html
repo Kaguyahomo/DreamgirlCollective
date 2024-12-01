@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book 1</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Custom styling for book page */
+        .book-container {
+            max-width: 70%;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffd1dc; /* Pastel pink background */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* Standardized book image size */
+        .book-image {
+            width: 250px; /* Standardized width */
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        /* Chapter list container */
+        .chapter-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Pink box for chapters */
+        .chapter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ffd1dc;
+            padding: 10px;
+            border-radius: 8px;
+            width: 80%;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .chapter-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .chapter-img {
+            width: 50px;
+            height: 50px;
+            margin-left: 10px;
+        }
+
+        /* Review box (hidden by default) */
+        .review-box {
+            background-color: #ffd1dc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+            width: 80%;
+        }
+
+    </style>
+    <script>
+        // Function to toggle review visibility
+        function toggleReview(reviewId) {
+            const allReviews = document.querySelectorAll('.review-box');
+            allReviews.forEach(function(review) {
+                if (review.id !== reviewId) {
+                    review.style.display = 'none';
+                }
+            });
+
+            const review = document.getElementById(reviewId);
+            review.style.display = (review.style.display === "block") ? "none" : "block";
+        }
+
+        // Add click events to chapter titles
+        document.addEventListener('DOMContentLoaded', function () {
+            const chapters = document.querySelectorAll('.chapter');
+            chapters.forEach(function(chapter) {
+                chapter.addEventListener('click', function() {
+                    const reviewId = chapter.getAttribute('data-review');
+                    toggleReview(reviewId);
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <h1>The German Ideology</h1>
+    </header>
+
+    <nav>
+        <a href="index.html"><img src="header-image.png" alt="Home"></a>
+        <a href="kaguya.html"><img src="Kaguya.png" alt="Kaguya"></a>
+        <a href="studies.html"><img src="studies.gif" alt="Studies"></a>
+    </nav>
+
+    <div class="book-container">
+        <!-- Standardized book image -->
+        <img src="book11.png" alt="Book 1 Cover" class="book-image">
+
+        <div class="chapter-list">
+            <!-- Chapter 1 -->
+            <div class="chapter" data-review="review1">
+                <div class="chapter-title">Prologue:</div>
+                <img src="chapter.gif" alt="Chapter 1 Image" class="chapter-img">
+            </div>
+            <div class="review-box" id="review1">
+                <p>Review text for Chapter 1...</p>
+            </div>
+
+            <!-- Chapter 2 -->
+            <div class="chapter" data-review="review2">
+                <div class="chapter-title">Introduction:</div>
+                <img src="chapter.gif" alt="Chapter 2 Image" class="chapter-img">
+            </div>
+            <div class="review-box" id="review2">
+                <p>Review text for Chapter 2...</p>
+            </div>
+
+            <!-- Chapter 3 -->
+            <div class="chapter" data-review="review3">
+                <div class="chapter-title">Epilogue:</div>
+                <img src="chapter.gif" alt="Chapter 3 Image" class="chapter-img">
+            </div>
+            <div class="review-box" id="review3">
+                <p>Review text for Chapter 3...</p>
+            </div>
+
+            <!-- Add more chapters as needed -->
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Library DreamGirl. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
+
+            function handleSwipe() {
+                const threshold = 50; // Minimum distance to be considered a swipe
+                const swipeX = endX - startX;
+                const swipeY = endY - startY;
+
+                if (Math.abs(swipeX) > Math.abs(swipeY)) {
+                    if (Math.abs(swipeX) > threshold) {
+                        if (swipeX < 0) {
+                            // Swipe left (go to next book page)
+                            window.location.href = 'book2.html';  // Adjust for next book
+                        } else {
+                            // Swipe right (go to previous book page)
+                            window.location.href = 'studies.html';  // Adjust for previous book
+                        }
+                    }
+                }
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Political Writing</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Ensure vertical scrolling */
+        body {
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Style for the header */
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Style for the links section */
+        .link-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            justify-items: center;
+            color: white;
+        }
+
+        .link-list li {
+            font-size: 1.5rem;
+        }
+
+        .link-list a {
+            text-decoration: none;
+            color: white; /* White text */
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .link-list a:hover {
+            color: #ff6f82; /* Pink on hover */
+        }
+
+        /* General layout styling */
+        header, nav, section, footer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Footer */
+        footer p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
+
+            function handleSwipe() {
+                const threshold = 50; // Minimum distance to be considered a swipe
+                const swipeX = endX - startX;
+
+                if (Math.abs(swipeX) > threshold) {
+                    if (swipeX < 0) {
+                        // Swipe left to go to digitallibrary.html
+                        window.location.href = 'digitallibrary.html';
+                    }
+                }
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Political Writing</h1>
+    </header>
+
+    <section>
+        <ul class="link-list">
+            <li><a href="digitallibrary.html">Digital Library</a></li>
+        </ul>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Your Site Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

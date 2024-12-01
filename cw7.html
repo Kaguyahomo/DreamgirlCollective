@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CW7 - Creative Writing</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .main-content {
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .content-box {
+            background-color: #ffd1dc;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        .content-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            line-height: 1.6;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
+
+            function handleSwipe() {
+                const threshold = 50;
+                const swipeX = endX - startX;
+
+                if (Math.abs(swipeX) > threshold) {
+                    if (swipeX < 0) {
+                        window.location.href = 'cw8.html';
+                    } else {
+                        window.location.href = 'cw6.html';
+                    }
+                }
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content-box">
+            <p class="content-text">Stacking burnt matches. Fiddling with their carcasses. I'm trying to remember her advice. 
+                Trying to trace all the coercion of others for profit. But all there is to see is matches.
+                Feel the wheat in my blood. Trying to remember the advice I've been given.
+                How all sharpness fades. But I can revisit, though the pain doesn't seem to persist.
+                Maybe if this was it, rolling through my fingers, I could live with that decision.
+                When do I internalize this utter lack of talent?
+                What does it look like?
+                There are gears pushing me along.
+                Return to the sleeper car, rushing across the plains.
+                Take responsibility for a decision.
+                Accomplish something where I can feel shreds of pride.
+                Remember the double room? Outside the courtyard?
+                Inching along to regulation.
+                I guess I can feel that happening now.
+                There is little inside me, it is with others I feel whole.
+                Tragic you'll never be someone else.
+                Stuck in one body, stuck in one mind. For the rest of your life.
+                Chase something greater. Feel connected to my age. Dig my feet into the sand. </p>
+        </div>
+    </div>
+</body>
+</html>

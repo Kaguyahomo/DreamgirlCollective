@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Beatles Discography</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Ensure vertical scrolling */
+        body {
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Add styles for the album grid */
+        .album-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            justify-items: center;
+            margin: 20px;
+        }
+
+        .album-list img {
+            width: 200px;
+            height: auto;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .album-list img:hover {
+            transform: scale(1.05);
+        }
+
+        .album p {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>The Beatles Discography Overview</h1>
+    </header>
+
+    <section>
+        <div class="album-list">
+            <!-- 1. Please Please Me (1963) -->
+            <div class="album">
+                <a href="pleasepleaseme.html">
+                    <img src="please-please-me.png" alt="Please Please Me">
+                </a>
+                <p>Please Please Me (1963)</p>
+            </div>
+            <!-- 2. With The Beatles (1963) -->
+            <div class="album">
+                <a href="withthebeatles.html">
+                    <img src="with-the-beatles.png" alt="With The Beatles">
+                </a>
+                <p>With The Beatles (1963)</p>
+            </div>
+            <!-- 3. A Hard Day’s Night (1964) -->
+            <div class="album">
+                <a href="aharddaysnight.html">
+                    <img src="a-hard-days-night.png" alt="A Hard Day’s Night">
+                </a>
+                <p>A Hard Day’s Night (1964)</p>
+            </div>
+            <!-- 4. Beatles For Sale (1964) -->
+            <div class="album">
+                <a href="beatlesforsale.html">
+                    <img src="beatles-for-sale.png" alt="Beatles For Sale">
+                </a>
+                <p>Beatles For Sale (1964)</p>
+            </div>
+            <!-- 5. Help! (1965) -->
+            <div class="album">
+                <a href="help.html">
+                    <img src="help.png" alt="Help!">
+                </a>
+                <p>Help! (1965)</p>
+            </div>
+            <!-- 6. Rubber Soul (1965) -->
+            <div class="album">
+                <a href="rubbersoul.html">
+                    <img src="rubber-soul.png" alt="Rubber Soul">
+                </a>
+                <p>Rubber Soul (1965)</p>
+            </div>
+            <!-- 7. Revolver (1966) -->
+            <div class="album">
+                <a href="revolver.html">
+                    <img src="revolver.png" alt="Revolver">
+                </a>
+                <p>Revolver (1966)</p>
+            </div>
+            <!-- 8. Sgt Pepper’s Lonely Hearts Club Band (1967) -->
+            <div class="album">
+                <a href="sgtpeppers.html">
+                    <img src="sgt-peppers.png" alt="Sgt Pepper’s Lonely Hearts Club Band">
+                </a>
+                <p>Sgt Pepper’s Lonely Hearts Club Band (1967)</p>
+            </div>
+            <!-- 9. Magical Mystery Tour (1967) -->
+            <div class="album">
+                <a href="magicalmysterytour.html">
+                    <img src="magicalmysterytour.png" alt="Magical Mystery Tour">
+                </a>
+                <p>Magical Mystery Tour (1967)</p>
+            </div>
+            <!-- 10. The Beatles (White Album) (1968) -->
+            <div class="album">
+                <a href="whitealbum.html">
+                    <img src="white-album.png" alt="The Beatles (White Album)">
+                </a>
+                <p>The Beatles (White Album) (1968)</p>
+            </div>
+            <!-- 11. Yellow Submarine (1969) -->
+            <div class="album">
+                <a href="yellowsubmarine.html">
+                    <img src="yellow-submarine.png" alt="Yellow Submarine">
+                </a>
+                <p>Yellow Submarine (1969)</p>
+            </div>
+            <!-- 12. Abbey Road (1969) -->
+            <div class="album">
+                <a href="abbeyroad.html">
+                    <img src="abbey-road.png" alt="Abbey Road">
+                </a>
+                <p>Abbey Road (1969)</p>
+            </div>
+            <!-- 13. Let It Be (1970) -->
+            <div class="album">
+                <a href="letitbe.html">
+                    <img src="let-it-be.png" alt="Let It Be">
+                </a>
+                <p>Let It Be (1970)</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 KMusic Reviews. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
+
+            function handleSwipe() {
+                const threshold = 50; // Minimum distance to be considered a swipe
+                const swipeX = endX - startX;
+                const swipeY = endY - startY;
+
+                if (Math.abs(swipeX) > Math.abs(swipeY)) {
+                    if (Math.abs(swipeX) > threshold) {
+                        if (swipeX < 0) {
+                            // Swipe left (go to next album)
+                            window.location.href = 'pleasepleaseme.html'; // Adjust this for each album swipe
+                        }
+                    }
+                }
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+        });
+    </script>
+</body>
+</html>

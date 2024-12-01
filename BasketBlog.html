@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spencer's Blog</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #E6E6FA;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .post {
+            background-color: #ff9aa2;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .post h2 {
+            margin: 0 0 10px;
+        }
+
+        .post .meta {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .post .tags {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #fff;
+        }
+
+        #author-toggle {
+            margin: 20px auto;
+            display: block;
+            padding: 10px 20px;
+            background-color: #ff9aa2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Spencer's Blog</h1>
+        <section id="posts-container">
+            <!-- Blog posts will be dynamically loaded here -->
+        </section>
+        <button id="author-toggle" onclick="toggleAuthorMode()">Author Mode</button>
+    </div>
+
+    <script>
+        const REPO_OWNER = "Kaguyahomo";
+        const REPO_NAME = "DreamgirlCollective";
+        const FILE_PATH = "posts.json";
+        const GITHUB_API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+        const TOKEN = "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"; // Will be replaced by GitHub Actions during deployment
+
+        let posts = [];
+        let isAuthorMode = false;
+
+        // Fetch posts from GitHub API
+        async function loadPosts() {
+            try {
+                const response = await fetch(GITHUB_API_URL, {
+                    headers: {
+                        Authorization: `token ${TOKEN}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch posts: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                const fileContent = atob(data.content); // Decode Base64 content
+                posts = JSON.parse(fileContent);
+                displayPosts();
+            } catch (error) {
+                console.error("Error loading posts:", error);
+                document.getElementById("posts-container").innerHTML = "<p>Error loading posts.</p>";
+            }
+        }
+
+        // Display posts
+        function displayPosts() {
+            const postsContainer = document.getElementById("posts-container");
+            postsContainer.innerHTML = ""; // Clear existing posts
+
+            posts.forEach((post) => {
+                const postElement = document.createElement("div");
+                postElement.className = "post";
+                postElement.innerHTML = `
+                    <h2>${post.title}</h2>
+                    <p class="meta">Posted on ${new Date(post.date).toLocaleDateString()}</p>
+                    <p>${post.content}</p>
+                    <p class="tags">Tags: ${post.tags.join(", ")}</p>
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        }
+
+        // Toggle author mode
+        function toggleAuthorMode() {
+            const password = prompt("Enter author password:");
+            if (password === "MischiefSisters2") {
+                isAuthorMode = !isAuthorMode;
+                if (isAuthorMode) {
+                    displayAuthorForm();
+                } else {
+                    loadPosts();
+                }
+            } else {
+                alert("Incorrect password!");
+            }
+        }
+
+        // Display author form
+        function displayAuthorForm() {
+            const postsContainer = document.getElementById("posts-container");
+            postsContainer.innerHTML = `
+                <div class="draft">
+                    <input type="text" id="new-post-title" placeholder="Title">
+                    <textarea id="new-post-content" placeholder="Write your post here..." rows="10"></textarea>
+                    <input type="text" id="new-post-tags" placeholder="Enter tags (comma-separated)">
+                    <button onclick="publishPost()">Publish Post</button>
+                </div>
+            `;
+        }
+
+        // Publish a new post
+        async function publishPost() {
+            const title = document.getElementById("new-post-title").value.trim();
+            const content = document.getElementById("new-post-content").value.trim();
+            const tags = document
+                .getElementById("new-post-tags")
+                .value.split(",")
+                .map((tag) => tag.trim());
+
+            if (!title || !content) {
+                alert("Please provide a title and content for the post.");
+                return;
+            }
+
+            const newPost = {
+                id: Date.now(),
+                title,
+                content,
+                date: new Date().toISOString(),
+                tags,
+            };
+
+            posts.push(newPost);
+            await savePosts();
+            alert("Post published!");
+            isAuthorMode = false;
+            loadPosts();
+        }
+
+        // Save posts to GitHub
+        async function savePosts() {
+            try {
+                const content = btoa(JSON.stringify(posts, null, 2)); // Encode content as Base64
+                const response = await fetch(GITHUB_API_URL, {
+                    method: "PUT",
+                    headers: {
+                        Authorization: `token ${TOKEN}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        message: "Update posts.json via blog",
+                        content,
+                        sha: await getFileSha(),
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to save posts: ${response.statusText}`);
+                }
+
+                console.log("Posts saved successfully!");
+            } catch (error) {
+                console.error("Error saving posts:", error);
+                alert("Failed to save posts. Check console for details.");
+            }
+        }
+
+        // Get the SHA of the current file (required for updating via GitHub API)
+        async function getFileSha() {
+            const response = await fetch(GITHUB_API_URL, {
+                headers: {
+                    Authorization: `token ${TOKEN}`,
+                },
+            });
+            const data = await response.json();
+            return data.sha;
+        }
+
+        // Initialize the page
+        loadPosts();
+    </script>
+</body>
+</html>

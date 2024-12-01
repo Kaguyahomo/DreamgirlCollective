@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book 10</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Custom styling for book page */
+        .book-container {
+            max-width: 70%;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffd1dc; /* Pastel pink background */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .book-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        .chapter-navigation {
+            background-color: #fff;
+            color: #000;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .chapter-navigation a {
+            display: block;
+            color: #ffd1dc;
+            text-decoration: none;
+            margin: 0.5rem 0;
+            font-weight: bold;
+        }
+
+        .chapter-navigation a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1> Miasma ('Haecceitas' in Scotus, the Esoteric in Plato, and 'Other Related Matters') /</h1>
+    </header>
+
+    <nav>
+        <a href="index.html"><img src="header-image.png" alt="Home"></a>
+        <a href="kaguya.html"><img src="Kaguya.png" alt="Kaguya"></a>
+        <a href="studies.html"><img src="studies.gif" alt="Studies"></a>
+        <!-- Add links to other book HTML files here -->
+    </nav>
+
+    <div class="book-container">
+        <img src="book10.png" alt="Book 10 Cover" class="book-image">
+
+        <div class="chapter-navigation">
+            <h2>Chapters</h2>
+            <a href="#chapter1">Chapter 1: Title</a>
+            <a href="#chapter2">Chapter 2: Title</a>
+            <a href="#chapter3">Chapter 3: Title</a>
+            <!-- Add more chapter links here -->
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Library DreamGirl. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
+
+            function handleSwipe() {
+                const threshold = 50; // Minimum distance to be considered a swipe
+                const swipeX = endX - startX;
+                const swipeY = endY - startY;
+
+                if (Math.abs(swipeX) > Math.abs(swipeY)) {
+                    if (Math.abs(swipeX) > threshold) {
+                        if (swipeX < 0) {
+                            // Swipe left (go to next book page)
+                            window.location.href = 'book11.html';  // Adjust for next book
+                        } else {
+                            // Swipe right (go to previous book page)
+                            window.location.href = 'book9.html';  // Adjust for previous book
+                        }
+                    }
+                }
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+        });
+    </script>
+</body>
+</html>

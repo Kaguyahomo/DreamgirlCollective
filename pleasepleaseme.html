@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Please Please Me - The Beatles</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .main-content {
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .album-cover {
+            width: 250px;
+            margin: 0 auto 30px auto;
+        }
+
+        .album-cover img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .song-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .song {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: transparent;
+            border: none;
+            width: 100%;
+        }
+
+        .song-content {
+            display: flex;
+            align-items: center;
+            background-color: #ffd1dc;
+            padding: 5px 10px;
+            border-radius: 8px;
+            width: 80%;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .song-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .review-gif {
+            width: 50px;
+            height: 50px;
+        }
+
+        .review-box {
+            background-color: #ffd1dc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="main-content">
+        <!-- Centered Album Cover -->
+        <div class="album-cover">
+            <img src="please-please-me.png" alt="Please Please Me">
+        </div>
+
+        <!-- Song List -->
+        <div class="song-list">
+            <!-- Song 1: I Saw Her Standing There -->
+            <div class="song">
+                <div class="song-content" data-review="review1">
+                    <div class="song-title">I Saw Her Standing There</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
+                </div>
+            </div>
+            <div class="review-box" id="review1">
+                <p>Catchy! To call this song youthful would be an understatement.
+                The hand claps as percussion go a long way in creating the atmosphere of this being performed at a live event, where the scene of the song would occur. 
+                Likewise, since this first album of theirs is all the catalog they had from doing live shows, it was probably a scene the band had seen many times. 
+                The song certainly isn’t sonically complex, but leading off their debut with an original instead of the covers is pretty savvy!</p>
+            </div>
+
+            <!-- Song 2: Misery -->
+            <div class="song">
+                <div class="song-content" data-review="review2">
+                    <div class="song-title">Misery</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
+                </div>
+            </div>
+            <div class="review-box" id="review2">
+                <p>The piano section in this is beautiful, if not remarkable.
+                Sticks to its youthful guns, saying nothing particular but universally applicable.
+                The juxtaposition of the content and the chords doesn't work as well after a couple of listens.
+                Lennon and McCartney are credited as the songwriters, though I'm inferring the tone of the lyrics is leaning towards Lennon.
+                He was always supposed to be the more 'ironic' writer.</p>
+            </div>
+
+            <!-- Song 3: Anna (Go to Him) -->
+            <div class="song">
+                <div class="song-content" data-review="review3">
+                    <div class="song-title">Anna (Go to Him)</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
+                </div>
+            </div>
+            <div class="review-box" id="review3">
+                <p>The first cover!
+                Consistent with the album's theme!
+                It's in line with my preferences, but Lennon's scratchy vocals are gorgeous. 
+                You can hear the strain and exhaustion in such an endearing fashion.</p>
+            </div>
+
+            <!-- Song 4: Chains -->
+            <div class="song">
+                <div class="song-content" data-review="review4">
+                    <div class="song-title">Chains</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
+                </div>
+            </div>
+            <div class="review-box" id="review4">
+                <p>Love Carole King as a songwriter.
+                Not the biggest fan of Harrison's vocals on this track.
+                Who doesn't love a fade-out?</p>
+            </div>
+
+            <!-- Song 5: Boys -->
+            <div class="song">
+                <div class="song-content" data-review="review5">
+                    <div class="song-title">Boys</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
+                </div>
+            </div>
+            <div class="review-box" id="review5">
+                <p>Okay but who knew Ringo could do such a good blues impression?
+                The yowl on this track is charming. No wonder they were such heartthrobs.</p>
+            </div>
+
+            <!-- Song 6: Ask Me Why -->
+            <div class="song">
+                <div class="song-content" data-review="review6">
+                    <div class="song-title">Ask Me Why</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
+                </div>
+            </div>
+            <div class="review-box" id="review6">
+                <p>After a run of covers, we're back to the dynamic duo of McCartney and Lennon.
+                Though this song doesn't have quite the punch, it certainly has some highlights.
+                This song has the BEST fadeout on the album.
+                I'm definitely displaying a bias towards Lennon's vocals. They're just so heavenly.
+                Can't get as much play as a single because of its mellower demeanor but I prefer it to 'Misery'.
+                To which this song is definitely sisters, as its delivery of the line "I can't conceive of any more misery".
+                Given this album's role is to introduce the raw potential of the quintet, this is a high-point of the group's budding lyrical prowess.</p>
+            </div>
+
+            <!-- Song 7: Please Please Me -->
+            <div class="song">
+                <div class="song-content" data-review="review7">
+                    <div class="song-title">Please Please Me</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
+                </div>
+            </div>
+            <div class="review-box" id="review7">
+                <p>Titular!
+                Lennon and his harmonica—I know Bushwick would spit you out with some excellent scratchy tattoos.
+                The picking on the electric guitar is pretty impressive, really balances out the surf rock aesthetic.
+                McCartney and Lennon are out in full force with their duets here, especially the raspy "Come on's" of Lennon.
+                Ringo showing out on the drums here as well.
+                The only thing this song is lacking is complexity! Sonically and lyrically, this leaves no imprint.</p>
+            </div>
+
+            <!-- Song 8: Love Me Do -->
+            <div class="song">
+                <div class="song-content" data-review="review8">
+                    <div class="song-title">Love Me Do</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
+                </div>
+            </div>
+            <div class="review-box" id="review8">
+                <p>Poor Ringo on the tambourine. The Front Bottoms did your contribution to this song justice and I hope you got to hear it.
+                We get it, John, you own a harmonica.
+                McCartney can hold his own vocally.</p>
+            </div>
+
+            <!-- Song 9: P.S. I Love You -->
+            <div class="song">
+                <div class="song-content" data-review="review9">
+                    <div class="song-title">P.S. I Love You</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
+                </div>
+            </div>
+            <div class="review-box" id="review9">
+                <p>I hope one day it becomes common that Ringo was the most important Beatle.
+                I'd like to see John's egotistical ass pick up a maraca.
+                The highest gear the band has vocally at this stage in their discography is when McCartney is singing somber and sultry.
+                Lennon's backup vocals on this song are mixed terribly! So jarring to just have him come in so strong on single words.
+                This song owes a lot to the Blues. McCartney in particular, I imagine doing the Elvis pose when he sings "You know I want you to".
+                At this point in the album, I am sick of hearing the word love.
+                I don't think they knew how to end this song.</p>
+            </div>
+
+            <!-- Song 10: Baby It's You -->
+            <div class="song">
+                <div class="song-content" data-review="review10">
+                    <div class="song-title">Baby It's You</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
+                </div>
+            </div>
+            <div class="review-box" id="review10">
+                <p>Was a good time to do a cover, the band's inexperience as songwriters was starting to become apparent.
+                Harrison and McCartney's background harmonies on this joint are divine.
+                It's of legend at this point that this album was recorded in a day, but it really comes through that Lennon is pulling his voice for the finale.</p>
+            </div>
+
+            <!-- Song 11: Do You Want to Know a Secret -->
+            <div class="song">
+                <div class="song-content" data-review="review11">
+                    <div class="song-title">Do You Want to Know a Secret</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
+                </div>
+            </div>
+            <div class="review-box" id="review11">
+                <p>Harrison isn't bad on this track but he really struggles to hold a note.
+                There are some times he definitely comes up flat as well.
+                The mixing on McCartney and Lennon's backup harmonies makes them sound so ghostly.
+                The strumming intro to this song is absolutely a high point of the album sonically.
+                For an album that at times is really cookie cutter, and this song especially, those sonic moments were true flashes of brilliance.
+                For being an original, this is probably their most daring attempt at lyrics for a love song on the album.</p>
+            </div>
+
+            <!-- Song 12: A Taste of Honey -->
+            <div class="song">
+                <div class="song-content" data-review="review12">
+                    <div class="song-title">A Taste of Honey</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
+                </div>
+            </div>
+            <div class="review-box" id="review12">
+                <p>While I generally prefer the Beatles' slower moments, this song doesn't do it for me.
+                It almost sounds like a folky Zeppelin song in a way. 
+                Harrison and a patchy Lennon really struggle to keep up with McCartney on this track.</p>
+            </div>
+
+            <!-- Song 13: There's a Place -->
+            <div class="song">
+                <div class="song-content" data-review="review13">
+                    <div class="song-title">There's a Place</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
+                </div>
+            </div>
+            <div class="review-box" id="review13">
+                <p>Lennon harmonica drinking game? 
+                Lennon can really go high on those duets with McCartney! Pretty impressive.
+                More sappy and uninspired original lyrics.</p>
+            </div>
+
+            <!-- Song 14: Twist and Shout -->
+            <div class="song">
+                <div class="song-content" data-review="review14">
+                    <div class="song-title">Twist and Shout</div>
+                    <img src="review.gif" alt="Review" class="review-gif">
+                </div>
+            </div>
+            <div class="review-box" id="review14">
+                <p>This song is immortalized as a cover so excellent it becomes the reference for the song, surpassing the original.
+                Lennon sounds like his larynx is against the edge of wire and it's so sexy.
+                High point of this song is absolutely the four-part harmony they pull off twice!
+                That's how you end an album! The instrumentation is so celebratory and final.
+                Enough can't be said about Lennon's vocals on this track—rolled across gravel and the distance of the bar to ask for a dance.
+                Their little shouts are just captivating. They were having so much fun!</p>
+            </div>
+
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
+
+            function handleSwipe() {
+                const threshold = 50; // Minimum distance to be considered a swipe
+                const swipeX = endX - startX;
+                const swipeY = endY - startY;
+
+                if (Math.abs(swipeX) > Math.abs(swipeY)) {
+                    if (Math.abs(swipeX) > threshold) {
+                        if (swipeX < 0) {
+                            // Swipe left (go to next book page)
+                            window.location.href = 'withthebeatles.html';  // Adjust for next book
+                        } else {
+                            // Swipe right (go to previous book page)
+                            window.location.href = 'beatles.html';  // Adjust for previous book
+                        }
+                    }
+                }
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+        });
+    </script>
+
+</body>
+</html>
