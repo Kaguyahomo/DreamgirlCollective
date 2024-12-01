@@ -6,198 +6,112 @@
     <title>Spencer's Blog</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Body styling consistent with the lavender theme */
         body {
             font-family: Arial, sans-serif;
             background-color: #E6E6FA;
             color: #333;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            overflow-x: hidden;
         }
 
-        /* Moving Bunny Animation */
-        .bunny {
-            position: absolute;
-            top: 0;
-            width: 50px;
-            height: 50px;
-            background-image: url('bunny.png');
-            background-size: contain;
-            animation: float 5s infinite alternate;
-        }
-
-        @keyframes float {
-            0% { transform: translateX(-100px) translateY(0); }
-            100% { transform: translateX(100vw) translateY(20px); }
-        }
-
-        /* Main container layout */
         .container {
-            display: flex;
-            max-width: 1200px;
+            max-width: 800px;
+            margin: 0 auto;
             padding: 20px;
-            width: 100%;
         }
 
-        /* Blog post area */
-        #posts-container {
-            flex: 5;
-            padding-right: 20px;
-        }
-
-        .post, .draft {
+        .post {
             background-color: #ff9aa2;
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            white-space: pre-wrap; /* Preserve formatting */
-            word-wrap: break-word; /* Wrap long lines */
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
-        .post h2, .draft h2 {
-            font-size: 1.5rem;
-            color: #333;
+        .post h2 {
+            margin: 0 0 10px;
         }
 
-        .post-meta {
-            font-size: 0.9rem;
+        .post .meta {
+            font-size: 0.9em;
             color: #666;
         }
 
-        .tags {
-            font-size: 0.9rem;
+        .post .tags {
+            margin-top: 10px;
+            font-size: 0.9em;
             color: #fff;
         }
 
-        /* Sidebar styling */
-        .sidebar {
-            flex: 0.8;
-            padding: 10px;
-            background-color: #333;
-            color: white;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            max-width: 200px;
-        }
-
-        .sidebar input {
-            width: 90%;
-            padding: 8px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: none;
-        }
-
-        .sidebar h3 {
-            color: #ff9aa2;
-            font-size: 1.2rem;
-            margin-top: 0;
-        }
-
-        /* Author Mode Toggle Button */
         #author-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 10px;
-            border-radius: 50%;
-            background-color: #ff9aa2;
-            color: white;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            background-image: url('basketball.png');
-            background-size: cover;
-            width: 50px;
-            height: 50px;
-        }
-
-        button {
-            margin: 5px;
-            padding: 10px;
+            margin: 20px auto;
+            display: block;
+            padding: 10px 20px;
             background-color: #ff9aa2;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-        }
-
-        /* Responsive styling for tablet view */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-                padding: 10px;
-            }
-
-            #posts-container, .sidebar {
-                width: 100%;
-                padding: 0;
-                max-width: none;
-            }
-
-            .sidebar {
-                margin-top: 20px;
-                align-items: center;
-            }
-
-            .sidebar input {
-                width: 90%;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Moving Bunny -->
-    <div class="bunny"></div>
-
     <div class="container">
-        <!-- Blog post container -->
-        <section id="posts-container"></section>
-
-        <!-- Sidebar for search -->
-        <aside class="sidebar">
-            <h3>Search Posts</h3>
-            <input type="text" id="search-input" placeholder="Search..." onkeyup="searchPosts()">
-        </aside>
+        <h1>Spencer's Blog</h1>
+        <section id="posts-container">
+            <!-- Blog posts will be dynamically loaded here -->
+        </section>
+        <button id="author-toggle" onclick="toggleAuthorMode()">Author Mode</button>
     </div>
 
-    <!-- Author mode toggle button -->
-    <button id="author-toggle" onclick="toggleAuthorMode()"></button>
-
     <script>
+        const REPO_OWNER = "Kaguyahomo";
+        const REPO_NAME = "DreamgirlCollective";
+        const FILE_PATH = "posts.json";
+        const GITHUB_API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+        const TOKEN = "TOKEN_PLACEHOLDER"; // Will be replaced by GitHub Actions during deployment
+
         let posts = [];
         let isAuthorMode = false;
 
-        // Fetch posts from the JSON file on the server
+        // Fetch posts from GitHub API
         async function loadPosts() {
             try {
-                const response = await fetch('/posts.json');
-                posts = await response.json();
+                const response = await fetch(GITHUB_API_URL, {
+                    headers: {
+                        Authorization: `token ${TOKEN}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch posts: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                const fileContent = atob(data.content); // Decode Base64 content
+                posts = JSON.parse(fileContent);
                 displayPosts();
             } catch (error) {
-                console.error('Error fetching posts:', error);
+                console.error("Error loading posts:", error);
+                document.getElementById("posts-container").innerHTML = "<p>Error loading posts.</p>";
             }
         }
 
         // Display posts
         function displayPosts() {
-            const postsContainer = document.getElementById('posts-container');
-            postsContainer.innerHTML = "<h1>Spencer's Blog</h1>";
+            const postsContainer = document.getElementById("posts-container");
+            postsContainer.innerHTML = ""; // Clear existing posts
 
-            posts.filter(post => post.isPublished).forEach(post => {
-                const postElement = document.createElement('div');
-                postElement.className = 'post';
+            posts.forEach((post) => {
+                const postElement = document.createElement("div");
+                postElement.className = "post";
                 postElement.innerHTML = `
                     <h2>${post.title}</h2>
-                    <div class="post-meta">Posted on ${new Date(post.date).toLocaleDateString()}</div>
+                    <p class="meta">Posted on ${new Date(post.date).toLocaleDateString()}</p>
                     <p>${post.content}</p>
-                    <div class="tags">Tags: ${post.tags ? post.tags.join(', ') : 'No tags'}</div>
+                    <p class="tags">Tags: ${post.tags.join(", ")}</p>
                 `;
                 postsContainer.appendChild(postElement);
             });
@@ -205,8 +119,8 @@
 
         // Toggle author mode
         function toggleAuthorMode() {
-            const password = prompt('Enter author password:');
-            if (password === 'MischiefSisters2') {
+            const password = prompt("Enter author password:");
+            if (password === "MischiefSisters2") {
                 isAuthorMode = !isAuthorMode;
                 if (isAuthorMode) {
                     displayAuthorForm();
@@ -214,13 +128,13 @@
                     loadPosts();
                 }
             } else {
-                alert('Incorrect password!');
+                alert("Incorrect password!");
             }
         }
 
         // Display author form
         function displayAuthorForm() {
-            const postsContainer = document.getElementById('posts-container');
+            const postsContainer = document.getElementById("posts-container");
             postsContainer.innerHTML = `
                 <div class="draft">
                     <input type="text" id="new-post-title" placeholder="Title">
@@ -233,12 +147,15 @@
 
         // Publish a new post
         async function publishPost() {
-            const title = document.getElementById('new-post-title').value.trim();
-            const content = document.getElementById('new-post-content').value.trim();
-            const tags = document.getElementById('new-post-tags').value.split(',').map(tag => tag.trim());
+            const title = document.getElementById("new-post-title").value.trim();
+            const content = document.getElementById("new-post-content").value.trim();
+            const tags = document
+                .getElementById("new-post-tags")
+                .value.split(",")
+                .map((tag) => tag.trim());
 
             if (!title || !content) {
-                alert('Please provide a title and content for the post.');
+                alert("Please provide a title and content for the post.");
                 return;
             }
 
@@ -248,62 +165,55 @@
                 content,
                 date: new Date().toISOString(),
                 tags,
-                isPublished: true
             };
 
             posts.push(newPost);
             await savePosts();
-            alert('Post published!');
+            alert("Post published!");
             isAuthorMode = false;
             loadPosts();
         }
 
-        // Save posts to the server
+        // Save posts to GitHub
         async function savePosts() {
             try {
-                const response = await fetch('/save-posts.php', {
-                    method: 'POST',
+                const content = btoa(JSON.stringify(posts, null, 2)); // Encode content as Base64
+                const response = await fetch(GITHUB_API_URL, {
+                    method: "PUT",
                     headers: {
-                        'Content-Type': 'application/json'
+                        Authorization: `token ${TOKEN}`,
+                        "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(posts)
+                    body: JSON.stringify({
+                        message: "Update posts.json via blog",
+                        content,
+                        sha: await getFileSha(),
+                    }),
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to save posts.');
+                    throw new Error(`Failed to save posts: ${response.statusText}`);
                 }
+
+                console.log("Posts saved successfully!");
             } catch (error) {
-                console.error('Error saving posts:', error);
+                console.error("Error saving posts:", error);
+                alert("Failed to save posts. Check console for details.");
             }
         }
 
-        // Search posts
-        function searchPosts() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const filteredPosts = posts.filter(post =>
-                post.isPublished &&
-                (post.title.toLowerCase().includes(searchTerm) ||
-                post.content.toLowerCase().includes(searchTerm) ||
-                post.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
-            );
-
-            const postsContainer = document.getElementById('posts-container');
-            postsContainer.innerHTML = "<h1>Spencer's Blog</h1>";
-
-            filteredPosts.forEach(post => {
-                const postElement = document.createElement('div');
-                postElement.className = 'post';
-                postElement.innerHTML = `
-                    <h2>${post.title}</h2>
-                    <div class="post-meta">Posted on ${new Date(post.date).toLocaleDateString()}</div>
-                    <p>${post.content}</p>
-                    <div class="tags">Tags: ${post.tags ? post.tags.join(', ') : 'No tags'}</div>
-                `;
-                postsContainer.appendChild(postElement);
+        // Get the SHA of the current file (required for updating via GitHub API)
+        async function getFileSha() {
+            const response = await fetch(GITHUB_API_URL, {
+                headers: {
+                    Authorization: `token ${TOKEN}`,
+                },
             });
+            const data = await response.json();
+            return data.sha;
         }
 
-        // Initialize
+        // Initialize the page
         loadPosts();
     </script>
 </body>
