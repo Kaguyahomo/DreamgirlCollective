@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+=<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,8 +16,17 @@
 
         .container {
             max-width: 800px;
-            margin: 0 auto;
+            margin: 20px auto;
             padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ff9aa2;
         }
 
         .post {
@@ -26,12 +35,14 @@
             margin-bottom: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            white-space: pre-wrap;
+            white-space: pre-wrap; /* Preserve formatting */
             word-wrap: break-word;
         }
 
         .post h2 {
             margin: 0 0 10px;
+            font-size: 1.5em;
+            color: #333;
         }
 
         .post .meta {
@@ -42,7 +53,7 @@
         .post .tags {
             margin-top: 10px;
             font-size: 0.9em;
-            color: #fff;
+            color: white;
         }
 
         #author-toggle {
@@ -54,16 +65,69 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 1em;
+        }
+
+        #author-form {
+            margin-top: 20px;
+            display: none;
+            background-color: #fce4ec;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #author-form input, #author-form textarea {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        #author-form button {
+            background-color: #ff9aa2;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #posts-container {
+            margin-top: 20px;
+        }
+
+        #search-box {
+            margin-bottom: 20px;
+        }
+
+        #search-box input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Spencer's Blog</h1>
+        <div id="search-box">
+            <input type="text" id="search-input" placeholder="Search posts..." onkeyup="searchPosts()">
+        </div>
         <section id="posts-container">
             <!-- Blog posts will be dynamically loaded here -->
         </section>
         <button id="author-toggle" onclick="toggleAuthorMode()">Author Mode</button>
+        <div id="author-form">
+            <h2>Create a New Post</h2>
+            <input type="text" id="new-post-title" placeholder="Title">
+            <textarea id="new-post-content" placeholder="Write your post here..." rows="5"></textarea>
+            <input type="text" id="new-post-tags" placeholder="Tags (comma-separated)">
+            <button onclick="publishPost()">Publish</button>
+        </div>
     </div>
 
     <script>
@@ -71,7 +135,7 @@
         const REPO_NAME = "DreamgirlCollective";
         const FILE_PATH = "posts.json";
         const GITHUB_API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
-        const TOKEN = "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"; // Will be replaced by GitHub Actions during deployment
+        const TOKEN = "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"; // To be replaced by GitHub Actions
 
         let posts = [];
         let isAuthorMode = false;
@@ -104,7 +168,32 @@
             const postsContainer = document.getElementById("posts-container");
             postsContainer.innerHTML = ""; // Clear existing posts
 
-            posts.forEach((post) => {
+            posts.forEach(post => {
+                const postElement = document.createElement("div");
+                postElement.className = "post";
+                postElement.innerHTML = `
+                    <h2>${post.title}</h2>
+                    <p class="meta">Posted on ${new Date(post.date).toLocaleDateString()}</p>
+                    <p>${post.content}</p>
+                    <p class="tags">Tags: ${post.tags.join(", ")}</p>
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        }
+
+        // Search posts
+        function searchPosts() {
+            const searchTerm = document.getElementById("search-input").value.toLowerCase();
+            const filteredPosts = posts.filter(post =>
+                post.title.toLowerCase().includes(searchTerm) ||
+                post.content.toLowerCase().includes(searchTerm) ||
+                post.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+            );
+
+            const postsContainer = document.getElementById("posts-container");
+            postsContainer.innerHTML = ""; // Clear existing posts
+
+            filteredPosts.forEach(post => {
                 const postElement = document.createElement("div");
                 postElement.className = "post";
                 postElement.innerHTML = `
@@ -119,40 +208,15 @@
 
         // Toggle author mode
         function toggleAuthorMode() {
-            const password = prompt("Enter author password:");
-            if (password === "MischiefSisters2") {
-                isAuthorMode = !isAuthorMode;
-                if (isAuthorMode) {
-                    displayAuthorForm();
-                } else {
-                    loadPosts();
-                }
-            } else {
-                alert("Incorrect password!");
-            }
-        }
-
-        // Display author form
-        function displayAuthorForm() {
-            const postsContainer = document.getElementById("posts-container");
-            postsContainer.innerHTML = `
-                <div class="draft">
-                    <input type="text" id="new-post-title" placeholder="Title">
-                    <textarea id="new-post-content" placeholder="Write your post here..." rows="10"></textarea>
-                    <input type="text" id="new-post-tags" placeholder="Enter tags (comma-separated)">
-                    <button onclick="publishPost()">Publish Post</button>
-                </div>
-            `;
+            isAuthorMode = !isAuthorMode;
+            document.getElementById("author-form").style.display = isAuthorMode ? "block" : "none";
         }
 
         // Publish a new post
         async function publishPost() {
             const title = document.getElementById("new-post-title").value.trim();
             const content = document.getElementById("new-post-content").value.trim();
-            const tags = document
-                .getElementById("new-post-tags")
-                .value.split(",")
-                .map((tag) => tag.trim());
+            const tags = document.getElementById("new-post-tags").value.split(",").map(tag => tag.trim());
 
             if (!title || !content) {
                 alert("Please provide a title and content for the post.");
@@ -171,6 +235,7 @@
             await savePosts();
             alert("Post published!");
             isAuthorMode = false;
+            toggleAuthorMode();
             loadPosts();
         }
 
@@ -178,6 +243,8 @@
         async function savePosts() {
             try {
                 const content = btoa(JSON.stringify(posts, null, 2)); // Encode content as Base64
+                const sha = await getFileSha(); // Get current file SHA for GitHub API
+
                 const response = await fetch(GITHUB_API_URL, {
                     method: "PUT",
                     headers: {
@@ -187,7 +254,7 @@
                     body: JSON.stringify({
                         message: "Update posts.json via blog",
                         content,
-                        sha: await getFileSha(),
+                        sha,
                     }),
                 });
 
@@ -202,7 +269,7 @@
             }
         }
 
-        // Get the SHA of the current file (required for updating via GitHub API)
+        // Get the SHA of the current file
         async function getFileSha() {
             const response = await fetch(GITHUB_API_URL, {
                 headers: {
@@ -212,8 +279,8 @@
             const data = await response.json();
             return data.sha;
         }
-        
-        // Initialize the page
+
+        // Initialize
         loadPosts();
     </script>
 </body>
