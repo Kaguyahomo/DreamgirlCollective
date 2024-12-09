@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Library</title>
-    <link rel="stylesheet" href="styles.css">
     <style>
+        /* Global styles */
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -14,29 +14,75 @@
             line-height: 1.6;
         }
 
-        header {
+        h1 {
             text-align: left;
             margin-bottom: 20px;
         }
 
-        /* Main content layout */
-        .content-section h2 {
-            font-size: 1.6rem;
-            color: white;
-            text-align: left;
+        /* Table of Contents */
+        .toc {
+            background-color: #4B0082; /* Indigo background for TOC */
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
 
-        .content-section p {
-            padding: 10px 0;
+        .toc h2 {
+            margin-top: 0;
             color: white;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .toc ul li {
+            margin: 10px 0;
+        }
+
+        .toc a {
+            text-decoration: none;
+            color: #FFDE00; /* Gold color for links */
+            font-size: 18px;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main Content */
+        .content .section {
+            margin-bottom: 20px;
+        }
+
+        .content .section h2 {
+            cursor: pointer;
+            background-color: #6A5ACD; /* SlateBlue for section headers */
+            color: white;
+            padding: 10px;
+            margin: 0;
+            border-radius: 5px;
+        }
+
+        .content .section-content {
+            padding: 10px;
+            background-color: #7B68EE; /* MediumSlateBlue for section content */
+            display: none;
+            border-radius: 5px;
+            margin-top: 10px;
         }
 
         /* Footer */
-        footer p {
+        footer {
             text-align: center;
             color: #666;
             font-size: 0.9rem;
             margin-top: 40px;
+        }
+
+        footer p {
+            color: white;
         }
     </style>
 </head>
@@ -46,34 +92,92 @@
         <h1>Digital Library</h1>
     </header>
 
-    <section class="content-section">
-        <h2>Quotes</h2>
-        <p>
-            "The only thing necessary for the triumph of evil is for good men to do nothing." – Edmund Burke<br>
-            "It is not our differences that divide us. It is our inability to recognize, accept, and celebrate those differences." – Audre Lorde<br>
-            "Injustice anywhere is a threat to justice everywhere." – Martin Luther King Jr.
-        </p>
+    <div class="container">
+        <!-- Table of Contents -->
+        <div class="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#intro" onclick="toggleSection('intro')">Introduction</a></li>
+                <li><a href="#storage" onclick="toggleSection('storage')">Storage</a></li>
+                <li><a href="#circulation" onclick="toggleSection('circulation')">Circulation</a></li>
+                <li><a href="#printing" onclick="toggleSection('printing')">Printing</a></li>
+                <li><a href="#publishing" onclick="toggleSection('publishing')">Publishing</a></li>
+                <li><a href="#editing" onclick="toggleSection('editing')">Editing</a></li>
+                <li><a href="#writing" onclick="toggleSection('writing')">Writing</a></li>
+                <li><a href="#conclusion" onclick="toggleSection('conclusion')">Conclusion</a></li>
+            </ul>
+        </div>
 
-        <h2>Theoretical Justification</h2>
-        <p>
-            The digital library concept is rooted in theories of democratized access to information. The theoretical justification for creating digital libraries is to provide access to knowledge and culture without the limitations of physical space and traditional publishing barriers.
-            By offering a vast array of resources to a global audience, digital libraries serve as tools for education, research, and cultural preservation. They enable users to engage with information in new ways, fostering collaboration, innovation, and intellectual growth.
-        </p>
-
-        <h2>Storage</h2>
-        <p>
-            A digital library relies heavily on storage infrastructure. Digital content is stored on servers in data centers, with backups and redundancy systems in place to ensure data integrity. Cloud storage solutions offer scalability, allowing the library to grow as more resources are digitized. Additionally, metadata plays a crucial role in organizing and retrieving information efficiently.
-        </p>
-
-        <h2>More Coming Soon...</h2>
-        <p>
-            Stay tuned for more updates and additions to our digital library. As we continue to expand our resources, you'll find new sections and content to explore.
-        </p>
-    </section>
+        <!-- Main Content -->
+        <div class="content">
+            <div class="section" id="intro">
+                <h2 onclick="toggleSection('intro')">Introduction</h2>
+                <div class="section-content">
+                    <p>This is the introduction section. The digital library concept is rooted in theories of democratized access to information.</p>
+                </div>
+            </div>
+            <div class="section" id="storage">
+                <h2 onclick="toggleSection('storage')">Storage</h2>
+                <div class="section-content">
+                    <p>This section discusses storage systems, including cloud storage and server infrastructures for digital libraries.</p>
+                </div>
+            </div>
+            <div class="section" id="circulation">
+                <h2 onclick="toggleSection('circulation')">Circulation</h2>
+                <div class="section-content">
+                    <p>This section covers how digital content circulates within the library, including metadata and access controls.</p>
+                </div>
+            </div>
+            <div class="section" id="printing">
+                <h2 onclick="toggleSection('printing')">Printing</h2>
+                <div class="section-content">
+                    <p>Learn about printing processes and how digitized materials can be physically reproduced if necessary.</p>
+                </div>
+            </div>
+            <div class="section" id="publishing">
+                <h2 onclick="toggleSection('publishing')">Publishing</h2>
+                <div class="section-content">
+                    <p>This section discusses the publishing aspect of a digital library, from uploading to distributing content.</p>
+                </div>
+            </div>
+            <div class="section" id="editing">
+                <h2 onclick="toggleSection('editing')">Editing</h2>
+                <div class="section-content">
+                    <p>This section covers editing tools and techniques used in managing and curating digital library content.</p>
+                </div>
+            </div>
+            <div class="section" id="writing">
+                <h2 onclick="toggleSection('writing')">Writing</h2>
+                <div class="section-content">
+                    <p>This section explores the writing processes and best practices for creating content for digital libraries.</p>
+                </div>
+            </div>
+            <div class="section" id="conclusion">
+                <h2 onclick="toggleSection('conclusion')">Conclusion</h2>
+                <div class="section-content">
+                    <p>This is the conclusion. Digital libraries offer unparalleled access to information, fostering global learning and development.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <p>&copy; 2024 Your Site Name. All rights reserved.</p>
     </footer>
+
+    <script>
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const content = section.querySelector('.section-content');
+            
+            // Toggle the display of the section content
+            if (content.style.display === "none" || content.style.display === "") {
+                content.style.display = "block";
+            } else {
+                content.style.display = "none";
+            }
+        }
+    </script>
 
 </body>
 </html>
