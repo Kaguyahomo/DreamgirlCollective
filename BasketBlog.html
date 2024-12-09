@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <style>
-        /* Styling */
+        /* Body styling consistent with the lavender theme */
         body {
             font-family: Arial, sans-serif;
             background-color: #E6E6FA;
@@ -19,46 +19,114 @@
             overflow-x: hidden;
         }
 
+        /* Moving Bunny Animation */
+        .bunny {
+            position: absolute;
+            top: 0;
+            width: 50px;
+            height: 50px;
+            background-image: url('bunny.png');
+            background-size: contain;
+            animation: float 5s infinite alternate;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(-100px) translateY(0); }
+            100% { transform: translateX(100vw) translateY(20px); }
+        }
+
+        /* Main container layout */
         .container {
-            max-width: 800px;
-            margin: 20px auto;
+            display: flex;
+            max-width: 1200px;
             padding: 20px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
         }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #ff9aa2;
+        /* Blog post area */
+        #posts-container {
+            flex: 5;
+            padding-right: 20px;
         }
 
-        .post {
+        .post, .draft {
             background-color: #ff9aa2;
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            white-space: pre-wrap;
-            word-wrap: break-word;
+            white-space: pre-wrap; /* Preserve formatting */
+            word-wrap: break-word; /* Wrap long lines */
         }
 
-        .post h2 {
-            margin: 0 0 10px;
-            font-size: 1.5em;
+        .post h2, .draft h2 {
+            font-size: 1.5rem;
             color: #333;
         }
 
         .post-meta {
-            font-size: 0.9em;
+            font-size: 0.9rem;
             color: #666;
         }
 
         .tags {
-            margin-top: 10px;
-            font-size: 0.9em;
+            font-size: 0.9rem;
             color: #fff;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            flex: 0.8;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            max-width: 200px;
+        }
+
+        .sidebar input {
+            width: 90%;
+            padding: 8px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .sidebar h3 {
+            color: #ff9aa2;
+            font-size: 1.2rem;
+            margin-top: 0;
+        }
+
+        /* Author Mode Toggle Button */
+        #author-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px;
+            border-radius: 50%;
+            background-color: #ff9aa2;
+            color: white;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            background-image: url('basketball.png');
+            background-size: cover;
+            width: 50px;
+            height: 50px;
+        }
+
+        button {
+            margin: 5px;
+            padding: 10px;
+            background-color: #ff9aa2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
         #author-form {
@@ -88,48 +156,56 @@
             cursor: pointer;
         }
 
-        #author-toggle {
-            margin: 20px auto;
-            display: block;
-            padding: 10px 20px;
-            background-color: #ff9aa2;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-        }
+        /* Responsive styling for tablet view */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 10px;
+            }
 
-        /* Search Box */
-        #search-box {
-            margin-bottom: 20px;
-        }
+            #posts-container, .sidebar {
+                width: 100%;
+                padding: 0;
+                max-width: none;
+            }
 
-        #search-box input {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+            .sidebar {
+                margin-top: 20px;
+                align-items: center;
+            }
+
+            .sidebar input {
+                width: 90%;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Moving Bunny -->
+    <div class="bunny"></div>
+
     <div class="container">
-        <h1>Spencer's Blog</h1>
-        <div id="search-box">
-            <input type="text" id="search-input" placeholder="Search posts..." onkeyup="searchPosts()">
-        </div>
+        <!-- Blog post container -->
         <section id="posts-container"></section>
-        <button id="author-toggle" onclick="toggleAuthorMode()">Author Mode</button>
-        <div id="author-form">
-            <h2>Create or Edit a Post</h2>
-            <input type="hidden" id="edit-post-id">
-            <input type="text" id="new-post-title" placeholder="Title">
-            <textarea id="new-post-content" placeholder="Write your post here..." rows="5"></textarea>
-            <input type="text" id="new-post-tags" placeholder="Tags (comma-separated)">
-            <button onclick="publishPost()">Publish</button>
-            <button onclick="cancelEdit()">Cancel</button>
-        </div>
+
+        <!-- Sidebar for search -->
+        <aside class="sidebar">
+            <h3>Search Posts</h3>
+            <input type="text" id="search-input" placeholder="Search..." onkeyup="searchPosts()">
+        </aside>
+    </div>
+
+    <!-- Author mode toggle button -->
+    <button id="author-toggle" onclick="toggleAuthorMode()">Author Mode</button>
+
+    <div id="author-form">
+        <h2>Create or Edit a Post</h2>
+        <input type="hidden" id="edit-post-id">
+        <input type="text" id="new-post-title" placeholder="Title">
+        <textarea id="new-post-content" placeholder="Write your post here..." rows="10"></textarea>
+        <input type="text" id="new-post-tags" placeholder="Tags (comma-separated)">
+        <button onclick="publishPost()">Publish</button>
+        <button onclick="cancelEdit()">Cancel</button>
     </div>
 
     <script>
@@ -155,7 +231,7 @@
         // Display posts
         function displayPosts() {
             const postsContainer = document.getElementById('posts-container');
-            postsContainer.innerHTML = "";
+            postsContainer.innerHTML = "<h1>Spencer's Blog</h1>";
 
             posts.forEach(post => {
                 const postElement = document.createElement('div');
@@ -183,7 +259,8 @@
                 post.tags.some(tag => tag.toLowerCase().includes(searchTerm))
             );
             const postsContainer = document.getElementById('posts-container');
-            postsContainer.innerHTML = "";
+            postsContainer.innerHTML = "<h1>Spencer's Blog</h1>";
+
             filteredPosts.forEach(post => {
                 const postElement = document.createElement('div');
                 postElement.className = 'post';
@@ -222,11 +299,9 @@
             }
 
             if (id) {
-                // Update post
                 await supabase.from('posts').update({ title, content, tags }).eq('id', id);
                 alert('Post updated successfully!');
             } else {
-                // Insert new post
                 await supabase.from('posts').insert({
                     title,
                     content,
