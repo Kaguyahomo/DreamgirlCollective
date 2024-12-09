@@ -5,72 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Library</title>
     <style>
-        /* Global styles */
+        /* General Body and Background */
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-            color: white;
-            background-color: #E6E6FA; /* Lavender background */
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            background-color: #FFCCE5; /* Soft pink background */
+            background-image: url('https://www.example.com/bunny-hopping.gif'); /* Replace with actual bunny gif URL */
+            background-repeat: no-repeat;
+            background-size: 100px;
+            animation: bunnyHop 1.5s infinite;
             line-height: 1.6;
         }
 
-        h1 {
-            text-align: left;
-            margin-bottom: 20px;
+        /* Animation for Bunny Hopping */
+        @keyframes bunnyHop {
+            0% { background-position: 0 0; }
+            100% { background-position: 1000px 0; }
         }
 
-        /* Table of Contents */
-        .toc {
-            background-color: #4B0082; /* Indigo background for TOC */
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        /* Main content container */
+        .container {
+            padding: 20px;
+            background-color: transparent; /* No background for the content */
         }
 
-        .toc h2 {
-            margin-top: 0;
-            color: white;
-        }
-
-        .toc ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .toc ul li {
-            margin: 10px 0;
-        }
-
-        .toc a {
-            text-decoration: none;
-            color: #FFDE00; /* Gold color for links */
-            font-size: 18px;
-        }
-
-        .toc a:hover {
-            text-decoration: underline;
-        }
-
-        /* Main Content */
-        .content .section {
-            margin-bottom: 20px;
-        }
-
-        .content .section h2 {
-            cursor: pointer;
-            background-color: #6A5ACD; /* SlateBlue for section headers */
-            color: white;
-            padding: 10px;
+        /* Table of Contents and Section Styling */
+        .toc h2, .section h2 {
             margin: 0;
+            padding: 10px;
+            background-color: #FF99CC; /* Soft pink background for headers */
+            color: white;
+            cursor: pointer;
+            border: 1px solid #fff;
             border-radius: 5px;
+            text-align: center;
         }
 
-        .content .section-content {
-            padding: 10px;
-            background-color: #7B68EE; /* MediumSlateBlue for section content */
+        /* Collapsible Section Content */
+        .section-content {
             display: none;
+            padding: 10px;
+            background-color: #FF80BF; /* Lighter pink for content */
             border-radius: 5px;
-            margin-top: 10px;
+            margin-top: 5px;
+        }
+
+        .toc {
+            margin-bottom: 20px;
         }
 
         /* Footer */
@@ -84,79 +67,56 @@
         footer p {
             color: white;
         }
+
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Digital Library</h1>
+        <h1 style="text-align:center; padding: 20px; background-color: #FF66B2;">Digital Library</h1>
     </header>
 
     <div class="container">
-        <!-- Table of Contents -->
+        <!-- Table of Contents and Sections -->
         <div class="toc">
-            <h2>Table of Contents</h2>
-            <ul>
-                <li><a href="#intro" onclick="toggleSection('intro')">Introduction</a></li>
-                <li><a href="#storage" onclick="toggleSection('storage')">Storage</a></li>
-                <li><a href="#circulation" onclick="toggleSection('circulation')">Circulation</a></li>
-                <li><a href="#printing" onclick="toggleSection('printing')">Printing</a></li>
-                <li><a href="#publishing" onclick="toggleSection('publishing')">Publishing</a></li>
-                <li><a href="#editing" onclick="toggleSection('editing')">Editing</a></li>
-                <li><a href="#writing" onclick="toggleSection('writing')">Writing</a></li>
-                <li><a href="#conclusion" onclick="toggleSection('conclusion')">Conclusion</a></li>
-            </ul>
-        </div>
+            <h2 onclick="toggleSection('intro')">Introduction</h2>
+            <div class="section-content" id="intro">
+                <p>This is the introduction section. The digital library concept is rooted in theories of democratized access to information.</p>
+            </div>
 
-        <!-- Main Content -->
-        <div class="content">
-            <div class="section" id="intro">
-                <h2 onclick="toggleSection('intro')">Introduction</h2>
-                <div class="section-content">
-                    <p>This is the introduction section. The digital library concept is rooted in theories of democratized access to information.</p>
-                </div>
+            <h2 onclick="toggleSection('storage')">Storage</h2>
+            <div class="section-content" id="storage">
+                <p>This section discusses storage systems, including cloud storage and server infrastructures for digital libraries.</p>
             </div>
-            <div class="section" id="storage">
-                <h2 onclick="toggleSection('storage')">Storage</h2>
-                <div class="section-content">
-                    <p>This section discusses storage systems, including cloud storage and server infrastructures for digital libraries.</p>
-                </div>
+
+            <h2 onclick="toggleSection('circulation')">Circulation</h2>
+            <div class="section-content" id="circulation">
+                <p>This section covers how digital content circulates within the library, including metadata and access controls.</p>
             </div>
-            <div class="section" id="circulation">
-                <h2 onclick="toggleSection('circulation')">Circulation</h2>
-                <div class="section-content">
-                    <p>This section covers how digital content circulates within the library, including metadata and access controls.</p>
-                </div>
+
+            <h2 onclick="toggleSection('printing')">Printing</h2>
+            <div class="section-content" id="printing">
+                <p>Learn about printing processes and how digitized materials can be physically reproduced if necessary.</p>
             </div>
-            <div class="section" id="printing">
-                <h2 onclick="toggleSection('printing')">Printing</h2>
-                <div class="section-content">
-                    <p>Learn about printing processes and how digitized materials can be physically reproduced if necessary.</p>
-                </div>
+
+            <h2 onclick="toggleSection('publishing')">Publishing</h2>
+            <div class="section-content" id="publishing">
+                <p>This section discusses the publishing aspect of a digital library, from uploading to distributing content.</p>
             </div>
-            <div class="section" id="publishing">
-                <h2 onclick="toggleSection('publishing')">Publishing</h2>
-                <div class="section-content">
-                    <p>This section discusses the publishing aspect of a digital library, from uploading to distributing content.</p>
-                </div>
+
+            <h2 onclick="toggleSection('editing')">Editing</h2>
+            <div class="section-content" id="editing">
+                <p>This section covers editing tools and techniques used in managing and curating digital library content.</p>
             </div>
-            <div class="section" id="editing">
-                <h2 onclick="toggleSection('editing')">Editing</h2>
-                <div class="section-content">
-                    <p>This section covers editing tools and techniques used in managing and curating digital library content.</p>
-                </div>
+
+            <h2 onclick="toggleSection('writing')">Writing</h2>
+            <div class="section-content" id="writing">
+                <p>This section explores the writing processes and best practices for creating content for digital libraries.</p>
             </div>
-            <div class="section" id="writing">
-                <h2 onclick="toggleSection('writing')">Writing</h2>
-                <div class="section-content">
-                    <p>This section explores the writing processes and best practices for creating content for digital libraries.</p>
-                </div>
-            </div>
-            <div class="section" id="conclusion">
-                <h2 onclick="toggleSection('conclusion')">Conclusion</h2>
-                <div class="section-content">
-                    <p>This is the conclusion. Digital libraries offer unparalleled access to information, fostering global learning and development.</p>
-                </div>
+
+            <h2 onclick="toggleSection('conclusion')">Conclusion</h2>
+            <div class="section-content" id="conclusion">
+                <p>This is the conclusion. Digital libraries offer unparalleled access to information, fostering global learning and development.</p>
             </div>
         </div>
     </div>
@@ -166,6 +126,7 @@
     </footer>
 
     <script>
+        // Function to toggle section visibility
         function toggleSection(sectionId) {
             const section = document.getElementById(sectionId);
             const content = section.querySelector('.section-content');
