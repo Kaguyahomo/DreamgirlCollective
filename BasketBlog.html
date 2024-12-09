@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <style>
-        /* Body styling consistent with the lavender theme */
+        /* Lavender theme styling */
         body {
             font-family: Arial, sans-serif;
             background-color: #E6E6FA;
@@ -19,23 +19,6 @@
             overflow-x: hidden;
         }
 
-        /* Moving Bunny Animation */
-        .bunny {
-            position: absolute;
-            top: 0;
-            width: 50px;
-            height: 50px;
-            background-image: url('bunny.png');
-            background-size: contain;
-            animation: float 5s infinite alternate;
-        }
-
-        @keyframes float {
-            0% { transform: translateX(-100px) translateY(0); }
-            100% { transform: translateX(100vw) translateY(20px); }
-        }
-
-        /* Main container layout */
         .container {
             display: flex;
             max-width: 1200px;
@@ -48,17 +31,16 @@
             padding-right: 20px;
         }
 
-        .post, .draft {
+        .post {
             background-color: #ff9aa2;
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            white-space: pre-wrap;
-            word-wrap: break-word;
+            white-space: pre-wrap; /* Preserve formatting */
         }
 
-        .post h2, .draft h2 {
+        .post h2 {
             font-size: 1.5rem;
             color: #333;
         }
@@ -71,33 +53,6 @@
         .tags {
             font-size: 0.9rem;
             color: #fff;
-        }
-
-        /* Sidebar styling */
-        .sidebar {
-            flex: 0.8;
-            padding: 10px;
-            background-color: #333;
-            color: white;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            max-width: 200px;
-        }
-
-        .sidebar input {
-            width: 90%;
-            padding: 8px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: none;
-        }
-
-        .sidebar h3 {
-            color: #ff9aa2;
-            font-size: 1.2rem;
-            margin-top: 0;
         }
 
         #author-toggle {
@@ -146,23 +101,14 @@
     </style>
 </head>
 <body>
-    <!-- Moving Bunny -->
-    <div class="bunny"></div>
-
     <div class="container">
-        <!-- Blog post container -->
         <section id="posts-container"></section>
-
-        <!-- Sidebar for search -->
-        <aside class="sidebar">
-            <h3>Search Posts</h3>
-            <input type="text" id="search-input" placeholder="Search..." onkeyup="searchPosts()">
-        </aside>
     </div>
 
     <!-- Author mode toggle button -->
     <button id="author-toggle" onclick="toggleAuthorMode()">Author Mode</button>
 
+    <!-- Author form -->
     <div id="author-form">
         <h2>Create or Edit a Post</h2>
         <input type="hidden" id="edit-post-id">
@@ -217,22 +163,23 @@
 
         // Toggle author mode
         function toggleAuthorMode() {
-            if (isAuthorMode) {
-                if (confirm("Do you want to log out of Author Mode?")) {
+            if (!isAuthorMode) {
+                const password = prompt('Enter author password:');
+                if (password === 'MischiefSisters2') {
+                    isAuthorMode = true;
+                    document.getElementById('author-form').style.display = 'block';
+                    document.getElementById('author-toggle').innerText = 'Exit Author Mode';
+                    loadPosts();
+                } else {
+                    alert('Incorrect password!');
+                }
+            } else {
+                if (confirm('Are you sure you want to exit Author Mode?')) {
                     isAuthorMode = false;
                     document.getElementById('author-form').style.display = 'none';
+                    document.getElementById('author-toggle').innerText = 'Author Mode';
                     loadPosts();
-                    return;
                 }
-            }
-
-            const password = prompt('Enter author password:');
-            if (password === 'MischiefSisters2') {
-                isAuthorMode = true;
-                document.getElementById('author-form').style.display = 'block';
-                loadPosts();
-            } else {
-                alert('Incorrect password!');
             }
         }
 
@@ -291,7 +238,6 @@
             document.getElementById('new-post-title').value = '';
             document.getElementById('new-post-content').value = '';
             document.getElementById('new-post-tags').value = '';
-            document.getElementById('author-form').style.display = 'none';
         }
 
         // Initialize
