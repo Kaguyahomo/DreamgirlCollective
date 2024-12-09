@@ -61,12 +61,11 @@
             right: 20px;
             padding: 10px;
             border-radius: 50%;
-            background-color: #ff9aa2;
+            background-color: #ff69b4;
             color: white;
             cursor: pointer;
             border: none;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            background-image: url('basketball.png');
             background-size: cover;
             width: 50px;
             height: 50px;
@@ -106,7 +105,7 @@
     </div>
 
     <!-- Author mode toggle button -->
-    <button id="author-toggle" onclick="toggleAuthorMode()">Author Mode</button>
+    <button id="author-toggle" onclick="toggleAuthorMode()">+</button>
 
     <!-- Author form -->
     <div id="author-form">
@@ -177,7 +176,7 @@
                 if (confirm('Are you sure you want to exit Author Mode?')) {
                     isAuthorMode = false;
                     document.getElementById('author-form').style.display = 'none';
-                    document.getElementById('author-toggle').innerText = 'Author Mode';
+                    document.getElementById('author-toggle').innerText = '+';
                     loadPosts();
                 }
             }
