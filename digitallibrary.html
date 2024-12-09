@@ -13,7 +13,7 @@
             color: white;
             background-color: #FFCCE5; /* Soft pink background */
             background-image: url('https://www.example.com/bunny-hopping.gif'); /* Replace with actual bunny gif URL */
-            background-repeat: no-repeat;
+            background-repeat: repeat-x;
             background-size: 100px;
             animation: bunnyHop 1.5s infinite;
             line-height: 1.6;
@@ -27,22 +27,103 @@
             100% { background-position: 1000px 0; }
         }
 
-        /* Main content container */
-        .container {
+        /* General layout for the whole page */
+        header {
+            text-align: center;
             padding: 20px;
-            background-color: transparent; /* No background for the content */
+            background-color: #FF66B2; /* Intense pink header */
         }
 
-        /* Table of Contents and Section Styling */
-        .toc h2, .section h2 {
+        h1 {
+            margin: 0;
+        }
+
+        .toc {
             margin: 0;
             padding: 10px;
-            background-color: #FF99CC; /* Soft pink background for headers */
+        }
+
+        /* Styling for Table of Contents (TOC) and Sections */
+        .toc h2 {
+            margin: 10px 0;
+            padding: 15px;
+            background-color: #FF99CC; /* Soft pink */
             color: white;
-            cursor: pointer;
-            border: 1px solid #fff;
+            border: 1px solid white;
             border-radius: 5px;
+            cursor: pointer;
             text-align: center;
+        }
+
+        .section-content {
+            padding: 
+
+Here’s a more refined version of your digital library page, with the following improvements:
+
+- **Background Animation**: Bunnies hopping in the background.
+- **Pink and White Color Scheme**: The design is consistent with your desired aesthetic.
+- **Collapsing/Expanding Sections**: The table of contents (TOC) and sections expand and collapse seamlessly as one unit without separation.
+- **No Separation Between TOC and Sections**: Everything is part of a single piece that expands and collapses.
+
+### Full HTML with Improved Aesthetic and Functionality:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Library</title>
+    <style>
+        /* General Body and Background */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: white;
+            background-color: #FFCCE5; /* Soft pink background */
+            background-image: url('https://www.example.com/bunny-hopping.gif'); /* Replace with actual bunny gif URL */
+            background-repeat: repeat-x;
+            background-size: 100px;
+            animation: bunnyHop 1.5s infinite;
+            line-height: 1.6;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Animation for Bunny Hopping */
+        @keyframes bunnyHop {
+            0% { background-position: 0 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        /* Header Styling */
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #FF66B2; /* Intense pink header */
+        }
+
+        h1 {
+            margin: 0;
+            color: white;
+        }
+
+        /* Styling for Table of Contents (TOC) and Sections */
+        .toc h2 {
+            margin: 10px 0;
+            padding: 15px;
+            background-color: #FF99CC; /* Soft pink */
+            color: white;
+            border: 1px solid white;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .toc h2:hover {
+            background-color: #ff66b2; /* Darker pink on hover */
         }
 
         /* Collapsible Section Content */
@@ -54,8 +135,8 @@
             margin-top: 5px;
         }
 
-        .toc {
-            margin-bottom: 20px;
+        .container {
+            padding: 20px;
         }
 
         /* Footer */
