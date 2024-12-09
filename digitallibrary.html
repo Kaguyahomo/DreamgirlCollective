@@ -10,13 +10,15 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            color: #fff;
+            color: white;
             background-color: #FFCCE5; /* Soft pink background */
             background-image: url('https://www.example.com/bunny-hopping.gif'); /* Replace with actual bunny gif URL */
             background-repeat: no-repeat;
             background-size: 100px;
             animation: bunnyHop 1.5s infinite;
             line-height: 1.6;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* Animation for Bunny Hopping */
@@ -68,12 +70,38 @@
             color: white;
         }
 
+        /* Link List Styling from politicalwriting.html */
+        .link-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            justify-items: center;
+            color: white;
+        }
+
+        .link-list li {
+            font-size: 1.5rem;
+        }
+
+        .link-list a {
+            text-decoration: none;
+            color: white;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .link-list a:hover {
+            color: #ff6f82; /* Pink on hover */
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <h1 style="text-align:center; padding: 20px; background-color: #FF66B2;">Digital Library</h1>
+        <h1>Digital Library</h1>
     </header>
 
     <div class="container">
@@ -119,6 +147,13 @@
                 <p>This is the conclusion. Digital libraries offer unparalleled access to information, fostering global learning and development.</p>
             </div>
         </div>
+
+        <!-- Additional Link Section (like your politicalwriting.html) -->
+        <section>
+            <ul class="link-list">
+                <li><a href="digitallibrary.html">Digital Library</a></li>
+            </ul>
+        </section>
     </div>
 
     <footer>
