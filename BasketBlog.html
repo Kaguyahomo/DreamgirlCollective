@@ -43,7 +43,6 @@
             width: 100%;
         }
 
-        /* Blog post area */
         #posts-container {
             flex: 5;
             padding-right: 20px;
@@ -55,8 +54,8 @@
             margin-bottom: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            white-space: pre-wrap; /* Preserve formatting */
-            word-wrap: break-word; /* Wrap long lines */
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
         .post h2, .draft h2 {
@@ -101,7 +100,6 @@
             margin-top: 0;
         }
 
-        /* Author Mode Toggle Button */
         #author-toggle {
             position: fixed;
             bottom: 20px;
@@ -117,16 +115,6 @@
             background-size: cover;
             width: 50px;
             height: 50px;
-        }
-
-        button {
-            margin: 5px;
-            padding: 10px;
-            background-color: #ff9aa2;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
         }
 
         #author-form {
@@ -154,29 +142,6 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-        }
-
-        /* Responsive styling for tablet view */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-                padding: 10px;
-            }
-
-            #posts-container, .sidebar {
-                width: 100%;
-                padding: 0;
-                max-width: none;
-            }
-
-            .sidebar {
-                margin-top: 20px;
-                align-items: center;
-            }
-
-            .sidebar input {
-                width: 90%;
-            }
         }
     </style>
 </head>
@@ -250,36 +215,21 @@
             });
         }
 
-        // Search posts
-        function searchPosts() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const filteredPosts = posts.filter(post =>
-                post.title.toLowerCase().includes(searchTerm) ||
-                post.content.toLowerCase().includes(searchTerm) ||
-                post.tags.some(tag => tag.toLowerCase().includes(searchTerm))
-            );
-            const postsContainer = document.getElementById('posts-container');
-            postsContainer.innerHTML = "<h1>Spencer's Blog</h1>";
-
-            filteredPosts.forEach(post => {
-                const postElement = document.createElement('div');
-                postElement.className = 'post';
-                postElement.innerHTML = `
-                    <h2>${post.title}</h2>
-                    <p class="post-meta">Posted on ${new Date(post.date).toLocaleDateString()}</p>
-                    <p>${post.content}</p>
-                    <p class="tags">Tags: ${post.tags ? post.tags.join(', ') : 'No tags'}</p>
-                `;
-                postsContainer.appendChild(postElement);
-            });
-        }
-
         // Toggle author mode
         function toggleAuthorMode() {
+            if (isAuthorMode) {
+                if (confirm("Do you want to log out of Author Mode?")) {
+                    isAuthorMode = false;
+                    document.getElementById('author-form').style.display = 'none';
+                    loadPosts();
+                    return;
+                }
+            }
+
             const password = prompt('Enter author password:');
             if (password === 'MischiefSisters2') {
-                isAuthorMode = !isAuthorMode;
-                document.getElementById('author-form').style.display = isAuthorMode ? 'block' : 'none';
+                isAuthorMode = true;
+                document.getElementById('author-form').style.display = 'block';
                 loadPosts();
             } else {
                 alert('Incorrect password!');
