@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spencer's Blog</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <style>
         /* Body styling consistent with the lavender theme */
         body {
@@ -171,18 +172,23 @@
     <button id="author-toggle" onclick="toggleAuthorMode()"></button>
 
     <script>
+        // Supabase configuration
+        const SUPABASE_URL = "https://gnsfphzvgpbdgfodmwnl.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imduc2ZwaHp2Z3BiZGdmb2Rtd25sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM3NjY5MTcsImV4cCI6MjA0OTM0MjkxN30.3_HC0q8epQZFyRInpapNKEUB40GF1HKs7HJ1Uggx1ZE";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         let posts = [];
         let isAuthorMode = false;
 
-        // Fetch posts from the JSON file on the server
+        // Load posts from Supabase
         async function loadPosts() {
-            try {
-                const response = await fetch('/posts.json');
-                posts = await response.json();
-                displayPosts();
-            } catch (error) {
+            const { data, error } = await supabase.from('posts').select('*').order('date', { ascending: false });
+            if (error) {
                 console.error('Error fetching posts:', error);
+                return;
             }
+            posts = data;
+            displayPosts();
         }
 
         // Display posts
@@ -231,7 +237,7 @@
             `;
         }
 
-        // Publish a new post
+        // Publish a new post to Supabase
         async function publishPost() {
             const title = document.getElementById('new-post-title').value.trim();
             const content = document.getElementById('new-post-content').value.trim();
@@ -242,38 +248,21 @@
                 return;
             }
 
-            const newPost = {
-                id: Date.now(),
+            const { error } = await supabase.from('posts').insert({
                 title,
                 content,
-                date: new Date().toISOString(),
                 tags,
+                date: new Date().toISOString(),
                 isPublished: true
-            };
+            });
 
-            posts.push(newPost);
-            await savePosts();
-            alert('Post published!');
-            isAuthorMode = false;
-            loadPosts();
-        }
-
-        // Save posts to the server
-        async function savePosts() {
-            try {
-                const response = await fetch('/save-posts.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(posts)
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to save posts.');
-                }
-            } catch (error) {
-                console.error('Error saving posts:', error);
+            if (error) {
+                alert('Error publishing post.');
+                console.error(error);
+            } else {
+                alert('Post published!');
+                isAuthorMode = false;
+                loadPosts();
             }
         }
 
