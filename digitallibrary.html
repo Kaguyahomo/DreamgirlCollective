@@ -4,42 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Library</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
-        /* General Body and Background */
+        /* Ensure vertical scrolling */
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            color: white;
-            background-color: #FFCCE5; /* Soft pink background */
-            background-image: url('https://cdn.pixabay.com/photo/2013/07/12/17/44/rabbit-153315_1280.png'); /* Bunny GIF */
-            background-repeat: repeat-x;
-            background-size: 100px;
-            animation: bunnyHop 1.5s infinite linear;
-            line-height: 1.6;
             overflow-y: scroll;
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Animation for Bunny Hopping */
-        @keyframes bunnyHop {
-            0% { background-position: 0 0; }
-            100% { background-position: 1000px 0; }
-        }
-
-        /* Header Styling */
+        /* Style for the header */
         header {
             text-align: center;
-            padding: 20px;
-            background-color: #FF66B2; /* Intense pink header */
+            margin-bottom: 20px;
         }
 
-        h1 {
-            margin: 0;
+        /* Style for the links section */
+        .link-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            justify-items: center;
             color: white;
         }
 
-        /* Styling for TOC and Sections */
+        .link-list li {
+            font-size: 1.5rem;
+        }
+
+        .link-list a {
+            text-decoration: none;
+            color: white; /* White text */
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .link-list a:hover {
+            color: #ff6f82; /* Pink on hover */
+        }
+
+        /* General layout styling */
+        header, nav, section, footer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Footer */
+        footer p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Styling for Table of Contents (TOC) and Sections */
         .toc h2 {
             margin: 10px 0;
             padding: 15px;
@@ -64,58 +82,53 @@
             border-radius: 5px;
             margin-top: 5px;
         }
-
-        .container {
-            padding: 20px;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            color: #666;
-            font-size: 0.9rem;
-            margin-top: 40px;
-        }
-
-        footer p {
-            color: white;
-        }
-
-        /* Link List Styling */
-        .link-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 20px;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            justify-items: center;
-            color: white;
-        }
-
-        .link-list li {
-            font-size: 1.5rem;
-        }
-
-        .link-list a {
-            text-decoration: none;
-            color: white;
-            font-size: 1.5rem;
-            transition: color 0.3s ease;
-        }
-
-        .link-list a:hover {
-            color: #ff6f82; /* Pink on hover */
-        }
     </style>
+    <script>
+        // Handle swipe gestures
+        document.addEventListener('DOMContentLoaded', function () {
+            let startX, startY, endX, endY;
+
+            function handleSwipe() {
+                const threshold = 50; // Minimum distance to be considered a swipe
+                const swipeX = endX - startX;
+
+                if (Math.abs(swipeX) > threshold) {
+                    if (swipeX < 0) {
+                        // Swipe left to go to digitallibrary.html
+                        window.location.href = 'politicalwriting.html';
+                    }
+                }
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                startX = e.changedTouches[0].screenX;
+                startY = e.changedTouches[0].screenY;
+            });
+
+            document.addEventListener('touchend', function (e) {
+                endX = e.changedTouches[0].screenX;
+                endY = e.changedTouches[0].screenY;
+                handleSwipe();
+            });
+        });
+
+        // Toggle section visibility
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section.style.display === "none" || section.style.display === "") {
+                section.style.display = "block";
+            } else {
+                section.style.display = "none";
+            }
+        }
+    </script>
 </head>
 <body>
-
     <header>
         <h1>Digital Library</h1>
     </header>
 
-    <div class="container">
+    <section>
         <!-- Table of Contents and Sections -->
         <div class="toc">
             <h2 onclick="toggleSection('intro')">Introduction</h2>
@@ -158,30 +171,10 @@
                 <p>This is the conclusion. Digital libraries offer unparalleled access to information, fostering global learning and development.</p>
             </div>
         </div>
-
-        <!-- Additional Link Section -->
-        <section>
-            <ul class="link-list">
-                <li><a href="digitallibrary.html">Digital Library</a></li>
-            </ul>
-        </section>
-    </div>
+    </section>
 
     <footer>
         <p>&copy; 2024 Your Site Name. All rights reserved.</p>
     </footer>
-
-    <script>
-        // Function to toggle section visibility
-        function toggleSection(sectionId) {
-            const section = document.getElementById(sectionId);
-            if (section.style.display === "none" || section.style.display === "") {
-                section.style.display = "block";
-            } else {
-                section.style.display = "none";
-            }
-        }
-    </script>
-
 </body>
 </html>
