@@ -6,47 +6,19 @@
     <title>Digital Library</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Ensure vertical scrolling */
+        /* General Body Styling */
         body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: white;
+            background-color: #FFCCE5; /* Soft pink background */
             overflow-y: scroll;
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Style for the header */
+        /* Header Styling */
         header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        /* Style for the links section */
-        .link-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 20px;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            justify-items: center;
-            color: white;
-        }
-
-        .link-list li {
-            font-size: 1.5rem;
-        }
-
-        .link-list a {
-            text-decoration: none;
-            color: white; /* White text */
-            font-size: 1.5rem;
-            transition: color 0.3s ease;
-        }
-
-        .link-list a:hover {
-            color: #ff6f82; /* Pink on hover */
-        }
-
-        /* General layout styling */
-        header, nav, section, footer {
             text-align: center;
             margin-bottom: 20px;
         }
@@ -57,30 +29,59 @@
             color: #666;
         }
 
-        /* Styling for Table of Contents (TOC) and Sections */
+        /* Content Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #FF99CC; /* Main text box pink */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Table of Contents Styling */
+        .toc {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+
         .toc h2 {
+            position: relative;
             margin: 10px 0;
-            padding: 15px;
-            background-color: #FF99CC; /* Soft pink */
+            padding: 10px 20px;
+            background: none; /* Remove box highlighting */
             color: white;
-            border: 1px solid white;
-            border-radius: 5px;
+            font-size: 1.2rem;
             cursor: pointer;
-            text-align: center;
-            transition: background-color 0.3s ease;
+            text-align: left;
+            transition: color 0.3s ease;
+        }
+
+        .toc h2::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 100%;
+            background-color: white; /* Vertical line for toggle */
         }
 
         .toc h2:hover {
-            background-color: #ff66b2; /* Darker pink on hover */
+            color: #ff66b2; /* Darker pink on hover */
         }
 
         /* Collapsible Section Content */
         .section-content {
             display: none;
-            padding: 10px;
-            background-color: #FF80BF; /* Lighter pink for content */
+            padding: 10px 20px;
+            margin-bottom: 10px;
+            color: #333; /* Darker text for content */
+            background-color: #fff; /* White content background */
             border-radius: 5px;
-            margin-top: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
     </style>
     <script>
@@ -94,7 +95,7 @@
 
                 if (Math.abs(swipeX) > threshold) {
                     if (swipeX < 0) {
-                        // Swipe left to go to digitallibrary.html
+                        // Swipe left to go to politicalwriting.html
                         window.location.href = 'politicalwriting.html';
                     }
                 }
@@ -128,7 +129,7 @@
         <h1>Digital Library</h1>
     </header>
 
-    <section>
+    <div class="container">
         <!-- Table of Contents and Sections -->
         <div class="toc">
             <h2 onclick="toggleSection('intro')">Introduction</h2>
@@ -171,7 +172,7 @@
                 <p>This is the conclusion. Digital libraries offer unparalleled access to information, fostering global learning and development.</p>
             </div>
         </div>
-    </section>
+    </div>
 
     <footer>
         <p>&copy; 2024 Your Site Name. All rights reserved.</p>
