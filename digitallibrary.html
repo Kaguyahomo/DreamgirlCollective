@@ -12,29 +12,39 @@
             margin: 0;
             padding: 0;
             color: white;
-            background-color: #FFCCE5; /* Soft pink background */
+            background-color: #E6E6FA; /* Light lavender background */
+            background-image: url('https://cdn.pixabay.com/photo/2013/07/12/17/44/rabbit-153315_1280.png'); /* Bunny GIF */
+            background-repeat: repeat-x;
+            background-size: 100px;
+            animation: bunnyHop 1.5s infinite linear;
             overflow-y: scroll;
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Header Styling */
-        header {
-            text-align: center;
-            margin-bottom: 20px;
+        /* Animation for Bunny Hopping */
+        @keyframes bunnyHop {
+            0% { background-position: 0 0; }
+            100% { background-position: 1000px 0; }
         }
 
-        /* Footer */
+        /* Header and Footer Styling */
+        header, footer {
+            text-align: center;
+            background-color: #FF66B2; /* Intense pink */
+            padding: 20px;
+        }
+
         footer p {
             font-size: 0.9rem;
-            color: #666;
+            color: white;
         }
 
         /* Content Container */
         .container {
             max-width: 800px;
-            margin: 0 auto;
+            margin: 20px auto;
             padding: 20px;
-            background-color: #FFCCE5; /* Main text box pink */
+            background-color: #FF66B2; /* Matches header/footer color */
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -70,7 +80,7 @@
         }
 
         .toc h2:hover {
-            color: #ff66b2; /* Darker pink on hover */
+            color: #ff99cc; /* Softer pink on hover */
         }
 
         /* Collapsible Section Content */
@@ -78,8 +88,8 @@
             display: none;
             padding: 10px 20px;
             margin-bottom: 10px;
-            color: #333; /* Darker text for content */
-            background-color: #fff; /* White content background */
+            color: white;
+            background-color: #FF99CC; /* Soft pink */
             border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
