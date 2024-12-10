@@ -12,80 +12,10 @@
             padding: 0;
             color: white;
             background-color: #FFCCE5; /* Soft pink background */
-            background-image: url('https://www.example.com/bunny-hopping.gif'); /* Replace with actual bunny gif URL */
+            background-image: url('https://cdn.pixabay.com/photo/2013/07/12/17/44/rabbit-153315_1280.png'); /* Bunny GIF */
             background-repeat: repeat-x;
             background-size: 100px;
-            animation: bunnyHop 1.5s infinite;
-            line-height: 1.6;
-            overflow-y: scroll;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* Animation for Bunny Hopping */
-        @keyframes bunnyHop {
-            0% { background-position: 0 0; }
-            100% { background-position: 1000px 0; }
-        }
-
-        /* General layout for the whole page */
-        header {
-            text-align: center;
-            padding: 20px;
-            background-color: #FF66B2; /* Intense pink header */
-        }
-
-        h1 {
-            margin: 0;
-        }
-
-        .toc {
-            margin: 0;
-            padding: 10px;
-        }
-
-        /* Styling for Table of Contents (TOC) and Sections */
-        .toc h2 {
-            margin: 10px 0;
-            padding: 15px;
-            background-color: #FF99CC; /* Soft pink */
-            color: white;
-            border: 1px solid white;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .section-content {
-            padding: 
-
-Here’s a more refined version of your digital library page, with the following improvements:
-
-- **Background Animation**: Bunnies hopping in the background.
-- **Pink and White Color Scheme**: The design is consistent with your desired aesthetic.
-- **Collapsing/Expanding Sections**: The table of contents (TOC) and sections expand and collapse seamlessly as one unit without separation.
-- **No Separation Between TOC and Sections**: Everything is part of a single piece that expands and collapses.
-
-### Full HTML with Improved Aesthetic and Functionality:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Library</title>
-    <style>
-        /* General Body and Background */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            color: white;
-            background-color: #FFCCE5; /* Soft pink background */
-            background-image: url('https://www.example.com/bunny-hopping.gif'); /* Replace with actual bunny gif URL */
-            background-repeat: repeat-x;
-            background-size: 100px;
-            animation: bunnyHop 1.5s infinite;
+            animation: bunnyHop 1.5s infinite linear;
             line-height: 1.6;
             overflow-y: scroll;
             -webkit-overflow-scrolling: touch;
@@ -109,7 +39,7 @@ Here’s a more refined version of your digital library page, with the following
             color: white;
         }
 
-        /* Styling for Table of Contents (TOC) and Sections */
+        /* Styling for TOC and Sections */
         .toc h2 {
             margin: 10px 0;
             padding: 15px;
@@ -151,7 +81,7 @@ Here’s a more refined version of your digital library page, with the following
             color: white;
         }
 
-        /* Link List Styling from politicalwriting.html */
+        /* Link List Styling */
         .link-list {
             list-style-type: none;
             padding: 0;
@@ -229,7 +159,7 @@ Here’s a more refined version of your digital library page, with the following
             </div>
         </div>
 
-        <!-- Additional Link Section (like your politicalwriting.html) -->
+        <!-- Additional Link Section -->
         <section>
             <ul class="link-list">
                 <li><a href="digitallibrary.html">Digital Library</a></li>
@@ -245,13 +175,10 @@ Here’s a more refined version of your digital library page, with the following
         // Function to toggle section visibility
         function toggleSection(sectionId) {
             const section = document.getElementById(sectionId);
-            const content = section.querySelector('.section-content');
-            
-            // Toggle the display of the section content
-            if (content.style.display === "none" || content.style.display === "") {
-                content.style.display = "block";
+            if (section.style.display === "none" || section.style.display === "") {
+                section.style.display = "block";
             } else {
-                content.style.display = "none";
+                section.style.display = "none";
             }
         }
     </script>
