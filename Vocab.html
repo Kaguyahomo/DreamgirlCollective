@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Vocab Quiz</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #E6E6FA; /* Lavender background */
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Bunny Background Animation */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://cdn.pixabay.com/photo/2013/07/12/17/44/rabbit-153315_1280.png'); /* Bunny GIF */
+            background-repeat: repeat-x;
+            background-size: 100px;
+            animation: bunnyHop 5s infinite linear;
+            z-index: -1;
+        }
+
+        @keyframes bunnyHop {
+            0% { background-position: 0 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        /* Layout */
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .left, .middle, .right {
+            background-color: #FF99CC; /* Soft pink */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .left, .right {
+            min-height: 300px;
+        }
+
+        .middle {
+            min-height: 400px;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+        }
+
+        /* Leaderboard */
+        .leaderboard {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .leaderboard li {
+            margin: 10px 0;
+        }
+
+        /* Anti-Copying Measures */
+        body, input, textarea {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Quiz Submission Button */
+        .submit-btn {
+            display: block;
+            margin: 20px auto;
+            background-color: #FF66B2;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background-color: #ff4c8a;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Weekly Vocab Quiz</h1>
+    </header>
+    <div class="container">
+        <!-- Left Column: Sign-up -->
+        <div class="left">
+            <h2>Sign Up</h2>
+            <form id="signup-form">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" placeholder="Enter your phone number" required>
+                <button type="submit" class="submit-btn">Sign Up</button>
+            </form>
+        </div>
+
+        <!-- Middle Column: Vocab List or Quiz -->
+        <div class="middle">
+            <h2 id="middle-title">Study This Week's Words</h2>
+            <div id="content">
+                <!-- Vocabulary Words or Quiz will load here dynamically -->
+            </div>
+        </div>
+
+        <!-- Right Column: Leaderboard -->
+        <div class="right">
+            <h2>Leaderboard</h2>
+            <ul class="leaderboard" id="leaderboard">
+                <!-- Leaderboard will load here dynamically -->
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Weekly Vocab Quiz. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Supabase Configuration
+        const SUPABASE_URL = "https://your-supabase-url.supabase.co";
+        const SUPABASE_KEY = "your-anon-key";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // DOM Elements
+        const contentDiv = document.getElementById("content");
+        const leaderboardList = document.getElementById("leaderboard");
+        const signupForm = document.getElementById("signup-form");
+
+        // Vocabulary Words
+        const vocabWords = [
+            { word: "Ambivalent", definition: "Having mixed feelings" },
+            { word: "Cacophony", definition: "A harsh, discordant mixture of sounds" },
+            { word: "Ethereal", definition: "Extremely delicate and light in a way that seems not of this world" },
+            // Add more words as needed
+        ];
+
+        // Load Weekly Words or Quiz
+        function loadContent() {
+            const now = new Date();
+            const day = now.getDay();
+            const hour = now.getHours();
+
+            // If it's Sunday noon to 1 PM, show the quiz
+            if (day === 0 && hour === 12) {
+                showQuiz();
+            } else {
+                showWords();
+            }
+        }
+
+        // Show Weekly Words
+        function showWords() {
+            contentDiv.innerHTML = "";
+            vocabWords.forEach(({ word, definition }) => {
+                const entry = document.createElement("p");
+                entry.textContent = `${word} - ${definition}`;
+                contentDiv.appendChild(entry);
+            });
+        }
+
+        // Show Quiz
+        function showQuiz() {
+            contentDiv.innerHTML = `<h3>Enter your name:</h3>
+                <input type="text" id="name" placeholder="Your Name" required>`;
+            vocabWords.forEach(({ word }) => {
+                const quizEntry = document.createElement("div");
+                quizEntry.innerHTML = `
+                    <p>${word}</p>
+                    <input type="text" placeholder="Enter your definition">
+                `;
+                contentDiv.appendChild(quizEntry);
+            });
+
+            const submitButton = document.createElement("button");
+            submitButton.textContent = "Submit Quiz";
+            submitButton.className = "submit-btn";
+            contentDiv.appendChild(submitButton);
+
+            submitButton.addEventListener("click", gradeQuiz);
+        }
+
+        // Grade Quiz
+        function gradeQuiz() {
+            // Logic to grade quiz and update leaderboard
+        }
+
+        // Sign Up for Notifications
+        signupForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById("phone").value;
+
+            const { error } = await supabase.from("subscribers").insert([{ phone }]);
+            if (error) {
+                alert("Error signing up!");
+                return;
+            }
+            alert("Signed up successfully!");
+        });
+
+        // Load Leaderboard
+        async function loadLeaderboard() {
+            const { data, error } = await supabase.from("leaderboard").select("*").order("score", { ascending: false });
+            if (error) {
+                console.error("Error loading leaderboard:", error);
+                return;
+            }
+
+            leaderboardList.innerHTML = "";
+            data.forEach(({ name, score, total }) => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${name} - ${score}/${total}`;
+                leaderboardList.appendChild(listItem);
+            });
+        }
+
+        // Initialize
+        loadContent();
+        loadLeaderboard();
+    </script>
+</body>
+</html>
