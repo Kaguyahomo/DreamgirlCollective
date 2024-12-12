@@ -10,7 +10,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #FFE4E1; /* Soft pink background */
+            background-color: #E6E6FA; /* Lavender background */
             color: white;
             overflow: hidden;
             position: relative;
@@ -90,6 +90,17 @@
         button:hover {
             background-color: #FF4C8A;
         }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .left, .middle, .right {
+                margin-bottom: 20px;
+            }
+        }
     </style>
     <script>
         // Vocabulary Data
@@ -145,34 +156,59 @@
             submitButton.textContent = "Submit Quiz";
             contentDiv.appendChild(submitButton);
 
-            submitButton.addEventListener("click", () => alert("Quiz submitted and graded!"));
+            submitButton.addEventListener("click", handleSubmitQuiz);
         }
 
-        // Alert Signup (using Email-to-SMS Gateway)
+        // Handle Quiz Submission
+        async function handleSubmitQuiz() {
+            const name = document.getElementById("name").value;
+            const answers = Array.from(document.querySelectorAll('.middle input[type="text"]')).map(input => input.value);
+
+            // Grade the quiz
+            let score = 0;
+            answers.forEach((answer, index) => {
+                if (answer.toLowerCase() === vocabWords[index].definition.toLowerCase()) {
+                    score++;
+                }
+            });
+
+            // Update leaderboard
+            const leaderboardEntry = `${name} - ${score}/${vocabWords.length}`;
+            const leaderboardList = document.getElementById("leaderboard");
+            const listItem = document.createElement("li");
+            listItem.textContent = leaderboardEntry;
+            leaderboardList.appendChild(listItem);
+
+            alert(`You scored ${score}/${vocabWords.length}`);
+        }
+
+        // Sign-Up Form
         async function handleSignup(event) {
             event.preventDefault();
-            const phoneNumber = document.getElementById("phone").value;
+            const phone = document.getElementById("phone").value;
             const carrierEmail = document.getElementById("carrier-email").value;
 
+            const emailTo = `${phone}${carrierEmail}`;
             try {
                 const response = await fetch("signup.php", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ phoneNumber, carrierEmail }),
+                    body: JSON.stringify({ emailTo }),
                 });
 
-                const data = await response.json();
-                if (data.success) {
-                    alert("You've been signed up and notified!");
+                const result = await response.json();
+                if (result.success) {
+                    alert("You are successfully signed up!");
                 } else {
-                    alert("There was an error signing you up.");
+                    alert("Sign-up failed.");
                 }
             } catch (error) {
-                alert("Failed to sign up.");
+                console.error(error);
+                alert("An error occurred during sign-up.");
             }
         }
 
-        // Initialize Page
+        // Initialize
         document.addEventListener("DOMContentLoaded", () => {
             loadContent();
             document.getElementById("signup-form").addEventListener("submit", handleSignup);
@@ -195,7 +231,6 @@
                     <option value="@vtext.com">Verizon</option>
                     <option value="@txt.att.net">AT&T</option>
                     <option value="@tmomail.net">T-Mobile</option>
-                    <!-- Add more carriers as needed -->
                 </select>
                 <button type="submit">Sign Up</button>
             </form>
@@ -207,10 +242,7 @@
         <!-- Right Column: Leaderboard -->
         <div class="right">
             <h2>Leaderboard</h2>
-            <ul class="leaderboard" id="leaderboard">
-                <li>1. Jane Doe - 9/10</li>
-                <li>2. John Smith - 8/10</li>
-            </ul>
+            <ul class="leaderboard" id="leaderboard"></ul>
         </div>
     </div>
     <footer>
