@@ -4,20 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weekly Vocab Quiz</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <style>
         /* General Styling */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #E6E6FA; /* Lavender background */
+            background-color: #FFE4E1; /* Soft pink background */
             color: white;
             overflow: hidden;
             position: relative;
         }
 
-        /* Bunny Background Animation */
+        /* Bunny Background */
         body::before {
             content: '';
             position: fixed;
@@ -48,21 +47,17 @@
         }
 
         .left, .middle, .right {
-            background-color: #FF99CC; /* Soft pink */
+            background-color: #FFB6C1; /* Soft pink */
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .left, .right {
-            min-height: 300px;
         }
 
         .middle {
             min-height: 400px;
         }
 
-        h1, h2, h3 {
+        h1, h2 {
             text-align: center;
         }
 
@@ -77,30 +72,112 @@
             margin: 10px 0;
         }
 
-        /* Anti-Copying Measures */
-        body, input, textarea {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
+        /* Form Styling */
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
         }
 
-        /* Quiz Submission Button */
-        .submit-btn {
-            display: block;
-            margin: 20px auto;
-            background-color: #FF66B2;
+        button {
+            background-color: #FF66B2; /* Bright pink button */
             color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
             cursor: pointer;
         }
 
-        .submit-btn:hover {
-            background-color: #ff4c8a;
+        button:hover {
+            background-color: #FF4C8A;
         }
     </style>
+    <script>
+        // Vocabulary Data
+        const vocabWords = [
+            { word: "Ambivalent", definition: "Having mixed feelings" },
+            { word: "Cacophony", definition: "A harsh, discordant mixture of sounds" },
+            { word: "Ethereal", definition: "Extremely delicate and light in a way that seems not of this world" },
+        ];
+
+        // Load Vocabulary Words or Quiz
+        function loadContent() {
+            const now = new Date();
+            const day = now.getDay();
+            const hour = now.getHours();
+            const contentDiv = document.getElementById("content");
+
+            // Display Quiz for 1 Hour on Sunday Noon
+            if (day === 0 && hour === 12) {
+                showQuiz(contentDiv);
+            } else {
+                showWords(contentDiv);
+            }
+        }
+
+        // Show Vocabulary Words
+        function showWords(contentDiv) {
+            contentDiv.innerHTML = "<h2>Study This Week's Words</h2>";
+            vocabWords.forEach(({ word, definition }) => {
+                const entry = document.createElement("p");
+                entry.textContent = `${word} - ${definition}`;
+                contentDiv.appendChild(entry);
+            });
+        }
+
+        // Show Quiz
+        function showQuiz(contentDiv) {
+            contentDiv.innerHTML = `
+                <h2>Weekly Quiz</h2>
+                <label for="name">Enter Your Name:</label>
+                <input type="text" id="name" placeholder="Your Name" required>
+            `;
+
+            vocabWords.forEach(({ word }) => {
+                const quizEntry = document.createElement("div");
+                quizEntry.innerHTML = `
+                    <p>${word}</p>
+                    <input type="text" placeholder="Enter your definition" required>
+                `;
+                contentDiv.appendChild(quizEntry);
+            });
+
+            const submitButton = document.createElement("button");
+            submitButton.textContent = "Submit Quiz";
+            contentDiv.appendChild(submitButton);
+
+            submitButton.addEventListener("click", () => alert("Quiz submitted and graded!"));
+        }
+
+        // Alert Signup (using Email-to-SMS Gateway)
+        async function handleSignup(event) {
+            event.preventDefault();
+            const phoneNumber = document.getElementById("phone").value;
+            const carrierEmail = document.getElementById("carrier-email").value;
+
+            try {
+                const response = await fetch("signup.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ phoneNumber, carrierEmail }),
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert("You've been signed up and notified!");
+                } else {
+                    alert("There was an error signing you up.");
+                }
+            } catch (error) {
+                alert("Failed to sign up.");
+            }
+        }
+
+        // Initialize Page
+        document.addEventListener("DOMContentLoaded", () => {
+            loadContent();
+            document.getElementById("signup-form").addEventListener("submit", handleSignup);
+        });
+    </script>
 </head>
 <body>
     <header>
@@ -113,132 +190,31 @@
             <form id="signup-form">
                 <label for="phone">Phone Number:</label>
                 <input type="tel" id="phone" placeholder="Enter your phone number" required>
-                <button type="submit" class="submit-btn">Sign Up</button>
+                <label for="carrier-email">Carrier Email:</label>
+                <select id="carrier-email" required>
+                    <option value="@vtext.com">Verizon</option>
+                    <option value="@txt.att.net">AT&T</option>
+                    <option value="@tmomail.net">T-Mobile</option>
+                    <!-- Add more carriers as needed -->
+                </select>
+                <button type="submit">Sign Up</button>
             </form>
         </div>
 
         <!-- Middle Column: Vocab List or Quiz -->
-        <div class="middle">
-            <h2 id="middle-title">Study This Week's Words</h2>
-            <div id="content">
-                <!-- Vocabulary Words or Quiz will load here dynamically -->
-            </div>
-        </div>
+        <div class="middle" id="content"></div>
 
         <!-- Right Column: Leaderboard -->
         <div class="right">
             <h2>Leaderboard</h2>
             <ul class="leaderboard" id="leaderboard">
-                <!-- Leaderboard will load here dynamically -->
+                <li>1. Jane Doe - 9/10</li>
+                <li>2. John Smith - 8/10</li>
             </ul>
         </div>
     </div>
-
     <footer>
         <p>&copy; 2024 Weekly Vocab Quiz. All rights reserved.</p>
     </footer>
-
-    <script>
-        // Supabase Configuration
-        const SUPABASE_URL = "https://your-supabase-url.supabase.co";
-        const SUPABASE_KEY = "your-anon-key";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        // DOM Elements
-        const contentDiv = document.getElementById("content");
-        const leaderboardList = document.getElementById("leaderboard");
-        const signupForm = document.getElementById("signup-form");
-
-        // Vocabulary Words
-        const vocabWords = [
-            { word: "Ambivalent", definition: "Having mixed feelings" },
-            { word: "Cacophony", definition: "A harsh, discordant mixture of sounds" },
-            { word: "Ethereal", definition: "Extremely delicate and light in a way that seems not of this world" },
-            // Add more words as needed
-        ];
-
-        // Load Weekly Words or Quiz
-        function loadContent() {
-            const now = new Date();
-            const day = now.getDay();
-            const hour = now.getHours();
-
-            // If it's Sunday noon to 1 PM, show the quiz
-            if (day === 0 && hour === 12) {
-                showQuiz();
-            } else {
-                showWords();
-            }
-        }
-
-        // Show Weekly Words
-        function showWords() {
-            contentDiv.innerHTML = "";
-            vocabWords.forEach(({ word, definition }) => {
-                const entry = document.createElement("p");
-                entry.textContent = `${word} - ${definition}`;
-                contentDiv.appendChild(entry);
-            });
-        }
-
-        // Show Quiz
-        function showQuiz() {
-            contentDiv.innerHTML = `<h3>Enter your name:</h3>
-                <input type="text" id="name" placeholder="Your Name" required>`;
-            vocabWords.forEach(({ word }) => {
-                const quizEntry = document.createElement("div");
-                quizEntry.innerHTML = `
-                    <p>${word}</p>
-                    <input type="text" placeholder="Enter your definition">
-                `;
-                contentDiv.appendChild(quizEntry);
-            });
-
-            const submitButton = document.createElement("button");
-            submitButton.textContent = "Submit Quiz";
-            submitButton.className = "submit-btn";
-            contentDiv.appendChild(submitButton);
-
-            submitButton.addEventListener("click", gradeQuiz);
-        }
-
-        // Grade Quiz
-        function gradeQuiz() {
-            // Logic to grade quiz and update leaderboard
-        }
-
-        // Sign Up for Notifications
-        signupForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const phone = document.getElementById("phone").value;
-
-            const { error } = await supabase.from("subscribers").insert([{ phone }]);
-            if (error) {
-                alert("Error signing up!");
-                return;
-            }
-            alert("Signed up successfully!");
-        });
-
-        // Load Leaderboard
-        async function loadLeaderboard() {
-            const { data, error } = await supabase.from("leaderboard").select("*").order("score", { ascending: false });
-            if (error) {
-                console.error("Error loading leaderboard:", error);
-                return;
-            }
-
-            leaderboardList.innerHTML = "";
-            data.forEach(({ name, score, total }) => {
-                const listItem = document.createElement("li");
-                listItem.textContent = `${name} - ${score}/${total}`;
-                leaderboardList.appendChild(listItem);
-            });
-        }
-
-        // Initialize
-        loadContent();
-        loadLeaderboard();
-    </script>
 </body>
 </html>
