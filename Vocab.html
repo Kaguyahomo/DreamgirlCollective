@@ -4,9 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weekly Vocab Quiz</title>
-    <link rel="stylesheet" href="styles.css">
     <style>
-        /* Specific Styles for the Quiz Page */
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #E6E6FA; /* Lavender background */
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Bunny Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://cdn.pixabay.com/photo/2013/07/12/17/44/rabbit-153315_1280.png'); /* Bunny GIF */
+            background-repeat: repeat-x;
+            background-size: 100px;
+            animation: bunnyHop 5s infinite linear;
+            z-index: -1;
+        }
+
+        @keyframes bunnyHop {
+            0% { background-position: 0 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        /* Layout */
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .left, .middle, .right {
+            background-color: #FFB6C1; /* Soft pink */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .middle {
+            min-height: 400px;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        /* Leaderboard */
         .leaderboard {
             list-style: none;
             padding: 0;
@@ -15,28 +70,31 @@
 
         .leaderboard li {
             margin: 10px 0;
+        }
+
+        /* Form Styling */
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+        }
+
+        button {
+            background-color: #FF66B2; /* Bright pink button */
             color: white;
+            cursor: pointer;
         }
 
-        .middle {
-            min-height: 400px;
+        button:hover {
+            background-color: #FF4C8A;
         }
 
-        /* Countdown Timer Styling */
-        .countdown {
-            text-align: center;
-            padding: 1rem;
-            background-color: #ffd1dc; /* Pastel pink */
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        /* Responsive Adjustments */
+        /* Responsive Design */
         @media (max-width: 768px) {
             .container {
-                display: flex;
-                flex-direction: column;
-                gap: 20px;
+                grid-template-columns: 1fr;
             }
 
             .left, .middle, .right {
@@ -45,48 +103,19 @@
         }
     </style>
     <script>
-        let vocabWords = [];
-        const usedWords = [];
-
-        // Fetch Vocabulary Words from JSON
-        async function fetchVocabulary() {
-            try {
-                const response = await fetch('vocab.json');
-                const allWords = await response.json();
-
-                // Randomly select 10 words and remove them from the JSON
-                const selectedWords = allWords.sort(() => 0.5 - Math.random()).slice(0, 10);
-                vocabWords = selectedWords;
-
-                // Remove selected words from the JSON for the next week
-                const remainingWords = allWords.filter(word => !selectedWords.includes(word));
-                saveUpdatedJSON(remainingWords);
-
-                loadContent();
-            } catch (error) {
-                console.error('Error fetching vocabulary words:', error);
-            }
-        }
-
-        // Save updated JSON after removing used words
-        async function saveUpdatedJSON(remainingWords) {
-            try {
-                await fetch('save-json.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(remainingWords)
-                });
-            } catch (error) {
-                console.error('Error saving updated JSON:', error);
-            }
-        }
+        // Vocabulary Data
+        const vocabWords = [
+            { word: "Ambivalent", definition: "Having mixed feelings" },
+            { word: "Cacophony", definition: "A harsh, discordant mixture of sounds" },
+            { word: "Ethereal", definition: "Extremely delicate and light in a way that seems not of this world" },
+        ];
 
         // Load Vocabulary Words or Quiz
         function loadContent() {
             const now = new Date();
             const day = now.getDay();
             const hour = now.getHours();
-            const contentDiv = document.getElementById('content');
+            const contentDiv = document.getElementById("content");
 
             // Display Quiz for 1 Hour on Sunday Noon
             if (day === 0 && hour === 12) {
@@ -98,9 +127,9 @@
 
         // Show Vocabulary Words
         function showWords(contentDiv) {
-            contentDiv.innerHTML = '<h2>Study This Week\'s Words</h2>';
+            contentDiv.innerHTML = "<h2>Study This Week's Words</h2>";
             vocabWords.forEach(({ word, definition }) => {
-                const entry = document.createElement('p');
+                const entry = document.createElement("p");
                 entry.textContent = `${word} - ${definition}`;
                 contentDiv.appendChild(entry);
             });
@@ -115,7 +144,7 @@
             `;
 
             vocabWords.forEach(({ word }) => {
-                const quizEntry = document.createElement('div');
+                const quizEntry = document.createElement("div");
                 quizEntry.innerHTML = `
                     <p>${word}</p>
                     <input type="text" placeholder="Enter your definition" required>
@@ -123,16 +152,16 @@
                 contentDiv.appendChild(quizEntry);
             });
 
-            const submitButton = document.createElement('button');
-            submitButton.textContent = 'Submit Quiz';
+            const submitButton = document.createElement("button");
+            submitButton.textContent = "Submit Quiz";
             contentDiv.appendChild(submitButton);
 
-            submitButton.addEventListener('click', handleSubmitQuiz);
+            submitButton.addEventListener("click", handleSubmitQuiz);
         }
 
         // Handle Quiz Submission
         async function handleSubmitQuiz() {
-            const name = document.getElementById('name').value;
+            const name = document.getElementById("name").value;
             const answers = Array.from(document.querySelectorAll('.middle input[type="text"]')).map(input => input.value);
 
             // Grade the quiz
@@ -143,74 +172,53 @@
                 }
             });
 
-            // Update leaderboard dynamically
+            // Update leaderboard
             const leaderboardEntry = `${name} - ${score}/${vocabWords.length}`;
-            const leaderboardList = document.getElementById('leaderboard');
-            const listItem = document.createElement('li');
+            const leaderboardList = document.getElementById("leaderboard");
+            const listItem = document.createElement("li");
             listItem.textContent = leaderboardEntry;
             leaderboardList.appendChild(listItem);
 
             alert(`You scored ${score}/${vocabWords.length}`);
         }
 
-        // Countdown Timer
-        function updateCountdown() {
-            const now = new Date();
-            const nextSundayNoon = new Date();
-            nextSundayNoon.setDate(now.getDate() + ((7 - now.getDay()) % 7));
-            nextSundayNoon.setHours(12, 0, 0, 0);
-
-            const timeDifference = nextSundayNoon - now;
-            const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-
-            document.getElementById('countdown').textContent = `Next Quiz: ${days}d ${hours}h ${minutes}m ${seconds}s`;
-
-            if (timeDifference > 0) {
-                setTimeout(updateCountdown, 1000);
-            }
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchVocabulary();
-            document.getElementById('signup-form').addEventListener('submit', handleSignup);
-            updateCountdown();
-        });
-
         // Sign-Up Form
         async function handleSignup(event) {
             event.preventDefault();
-            const phone = document.getElementById('phone').value;
-            const carrierEmail = document.getElementById('carrier-email').value;
+            const phone = document.getElementById("phone").value;
+            const carrierEmail = document.getElementById("carrier-email").value;
 
             const emailTo = `${phone}${carrierEmail}`;
             try {
-                const response = await fetch('signup.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                const response = await fetch("signup.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ emailTo }),
                 });
 
                 const result = await response.json();
                 if (result.success) {
-                    alert('You are successfully signed up!');
+                    alert("You are successfully signed up!");
                 } else {
-                    alert('Sign-up failed.');
+                    alert("Sign-up failed.");
                 }
             } catch (error) {
-                console.error('Error during sign-up:', error);
+                console.error(error);
+                alert("An error occurred during sign-up.");
             }
         }
+
+        // Initialize
+        document.addEventListener("DOMContentLoaded", () => {
+            loadContent();
+            document.getElementById("signup-form").addEventListener("submit", handleSignup);
+        });
     </script>
 </head>
 <body>
     <header>
         <h1>Weekly Vocab Quiz</h1>
     </header>
-    <div class="countdown" id="countdown"></div>
     <div class="container">
         <!-- Left Column: Sign-up -->
         <div class="left">
