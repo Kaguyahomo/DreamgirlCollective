@@ -6,16 +6,16 @@
     <title>Weekly Vocab Quiz</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Specific Adjustments */
+        /* Specific Styles for the Quiz Page */
         .leaderboard {
             list-style: none;
             padding: 0;
             margin: 0;
-            color: white;
         }
 
         .leaderboard li {
             margin: 10px 0;
+            color: white;
         }
 
         .middle {
@@ -31,7 +31,7 @@
             margin-bottom: 20px;
         }
 
-        /* Mobile-Friendly Adjustments */
+        /* Responsive Adjustments */
         @media (max-width: 768px) {
             .container {
                 display: flex;
@@ -46,6 +46,7 @@
     </style>
     <script>
         let vocabWords = [];
+        const usedWords = [];
 
         // Fetch Vocabulary Words from JSON
         async function fetchVocabulary() {
@@ -53,11 +54,30 @@
                 const response = await fetch('vocab.json');
                 const allWords = await response.json();
 
-                // Shuffle and select 10 words for the week
-                vocabWords = allWords.sort(() => 0.5 - Math.random()).slice(0, 10);
+                // Randomly select 10 words and remove them from the JSON
+                const selectedWords = allWords.sort(() => 0.5 - Math.random()).slice(0, 10);
+                vocabWords = selectedWords;
+
+                // Remove selected words from the JSON for the next week
+                const remainingWords = allWords.filter(word => !selectedWords.includes(word));
+                saveUpdatedJSON(remainingWords);
+
                 loadContent();
             } catch (error) {
                 console.error('Error fetching vocabulary words:', error);
+            }
+        }
+
+        // Save updated JSON after removing used words
+        async function saveUpdatedJSON(remainingWords) {
+            try {
+                await fetch('save-json.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(remainingWords)
+                });
+            } catch (error) {
+                console.error('Error saving updated JSON:', error);
             }
         }
 
@@ -66,7 +86,7 @@
             const now = new Date();
             const day = now.getDay();
             const hour = now.getHours();
-            const contentDiv = document.getElementById("content");
+            const contentDiv = document.getElementById('content');
 
             // Display Quiz for 1 Hour on Sunday Noon
             if (day === 0 && hour === 12) {
@@ -78,9 +98,9 @@
 
         // Show Vocabulary Words
         function showWords(contentDiv) {
-            contentDiv.innerHTML = "<h2>Study This Week's Words</h2>";
+            contentDiv.innerHTML = '<h2>Study This Week\'s Words</h2>';
             vocabWords.forEach(({ word, definition }) => {
-                const entry = document.createElement("p");
+                const entry = document.createElement('p');
                 entry.textContent = `${word} - ${definition}`;
                 contentDiv.appendChild(entry);
             });
@@ -95,7 +115,7 @@
             `;
 
             vocabWords.forEach(({ word }) => {
-                const quizEntry = document.createElement("div");
+                const quizEntry = document.createElement('div');
                 quizEntry.innerHTML = `
                     <p>${word}</p>
                     <input type="text" placeholder="Enter your definition" required>
@@ -103,16 +123,16 @@
                 contentDiv.appendChild(quizEntry);
             });
 
-            const submitButton = document.createElement("button");
-            submitButton.textContent = "Submit Quiz";
+            const submitButton = document.createElement('button');
+            submitButton.textContent = 'Submit Quiz';
             contentDiv.appendChild(submitButton);
 
-            submitButton.addEventListener("click", handleSubmitQuiz);
+            submitButton.addEventListener('click', handleSubmitQuiz);
         }
 
         // Handle Quiz Submission
         async function handleSubmitQuiz() {
-            const name = document.getElementById("name").value;
+            const name = document.getElementById('name').value;
             const answers = Array.from(document.querySelectorAll('.middle input[type="text"]')).map(input => input.value);
 
             // Grade the quiz
@@ -123,40 +143,14 @@
                 }
             });
 
-            // Update leaderboard
+            // Update leaderboard dynamically
             const leaderboardEntry = `${name} - ${score}/${vocabWords.length}`;
-            const leaderboardList = document.getElementById("leaderboard");
-            const listItem = document.createElement("li");
+            const leaderboardList = document.getElementById('leaderboard');
+            const listItem = document.createElement('li');
             listItem.textContent = leaderboardEntry;
             leaderboardList.appendChild(listItem);
 
             alert(`You scored ${score}/${vocabWords.length}`);
-        }
-
-        // Sign-Up Form
-        async function handleSignup(event) {
-            event.preventDefault();
-            const phone = document.getElementById("phone").value;
-            const carrierEmail = document.getElementById("carrier-email").value;
-
-            const emailTo = `${phone}${carrierEmail}`;
-            try {
-                const response = await fetch("signup.php", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ emailTo }),
-                });
-
-                const result = await response.json();
-                if (result.success) {
-                    alert("You are successfully signed up!");
-                } else {
-                    alert("Sign-up failed.");
-                }
-            } catch (error) {
-                console.error(error);
-                alert("An error occurred during sign-up.");
-            }
         }
 
         // Countdown Timer
@@ -180,11 +174,36 @@
         }
 
         // Initialize
-        document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener('DOMContentLoaded', () => {
             fetchVocabulary();
-            document.getElementById("signup-form").addEventListener("submit", handleSignup);
+            document.getElementById('signup-form').addEventListener('submit', handleSignup);
             updateCountdown();
         });
+
+        // Sign-Up Form
+        async function handleSignup(event) {
+            event.preventDefault();
+            const phone = document.getElementById('phone').value;
+            const carrierEmail = document.getElementById('carrier-email').value;
+
+            const emailTo = `${phone}${carrierEmail}`;
+            try {
+                const response = await fetch('signup.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ emailTo }),
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('You are successfully signed up!');
+                } else {
+                    alert('Sign-up failed.');
+                }
+            } catch (error) {
+                console.error('Error during sign-up:', error);
+            }
+        }
     </script>
 </head>
 <body>
