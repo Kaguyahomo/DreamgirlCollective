@@ -12,7 +12,7 @@
             padding: 0;
             background-color: #E6E6FA; /* Lavender background */
             color: white;
-            overflow: hidden;
+            overflow-y: scroll; /* Enable scrolling */
             position: relative;
         }
 
@@ -36,7 +36,7 @@
             100% { background-position: 1000px 0; }
         }
 
-        /* Layout */
+        /* Container Layout */
         .container {
             display: grid;
             grid-template-columns: 1fr 2fr 1fr;
@@ -46,6 +46,7 @@
             padding: 20px;
         }
 
+        /* Left, Middle, and Right Columns */
         .left, .middle, .right {
             background-color: #FFB6C1; /* Soft pink */
             padding: 20px;
@@ -70,6 +71,7 @@
 
         .leaderboard li {
             margin: 10px 0;
+            color: white;
         }
 
         /* Form Styling */
@@ -94,11 +96,21 @@
         /* Responsive Design */
         @media (max-width: 768px) {
             .container {
-                grid-template-columns: 1fr;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
             }
 
-            .left, .middle, .right {
-                margin-bottom: 20px;
+            .right {
+                order: -1; /* Move leaderboard to the top */
+            }
+
+            .left {
+                order: 2; /* Move signup to the bottom */
+            }
+
+            .middle {
+                order: 1; /* Keep the middle section in the center */
             }
         }
     </style>
@@ -160,7 +172,7 @@
         }
 
         // Handle Quiz Submission
-        async function handleSubmitQuiz() {
+        function handleSubmitQuiz() {
             const name = document.getElementById("name").value;
             const answers = Array.from(document.querySelectorAll('.middle input[type="text"]')).map(input => input.value);
 
@@ -172,7 +184,7 @@
                 }
             });
 
-            // Update leaderboard
+            // Update leaderboard dynamically
             const leaderboardEntry = `${name} - ${score}/${vocabWords.length}`;
             const leaderboardList = document.getElementById("leaderboard");
             const listItem = document.createElement("li");
@@ -182,36 +194,9 @@
             alert(`You scored ${score}/${vocabWords.length}`);
         }
 
-        // Sign-Up Form
-        async function handleSignup(event) {
-            event.preventDefault();
-            const phone = document.getElementById("phone").value;
-            const carrierEmail = document.getElementById("carrier-email").value;
-
-            const emailTo = `${phone}${carrierEmail}`;
-            try {
-                const response = await fetch("signup.php", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ emailTo }),
-                });
-
-                const result = await response.json();
-                if (result.success) {
-                    alert("You are successfully signed up!");
-                } else {
-                    alert("Sign-up failed.");
-                }
-            } catch (error) {
-                console.error(error);
-                alert("An error occurred during sign-up.");
-            }
-        }
-
         // Initialize
         document.addEventListener("DOMContentLoaded", () => {
             loadContent();
-            document.getElementById("signup-form").addEventListener("submit", handleSignup);
         });
     </script>
 </head>
@@ -220,6 +205,15 @@
         <h1>Weekly Vocab Quiz</h1>
     </header>
     <div class="container">
+        <!-- Right Column: Leaderboard -->
+        <div class="right">
+            <h2>Leaderboard</h2>
+            <ul class="leaderboard" id="leaderboard"></ul>
+        </div>
+
+        <!-- Middle Column: Vocab List or Quiz -->
+        <div class="middle" id="content"></div>
+
         <!-- Left Column: Sign-up -->
         <div class="left">
             <h2>Sign Up</h2>
@@ -234,15 +228,6 @@
                 </select>
                 <button type="submit">Sign Up</button>
             </form>
-        </div>
-
-        <!-- Middle Column: Vocab List or Quiz -->
-        <div class="middle" id="content"></div>
-
-        <!-- Right Column: Leaderboard -->
-        <div class="right">
-            <h2>Leaderboard</h2>
-            <ul class="leaderboard" id="leaderboard"></ul>
         </div>
     </div>
     <footer>
