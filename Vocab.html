@@ -1,266 +1,139 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Vocab Quiz</title>
-    <style>
-        /* General Styling */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #E6E6FA; /* Light pastel purple background */
-            color: white; /* White text color */
-            background-image: url('8bit-bunny.png'); /* Bunny background */
-            background-size: 100px 100px; /* Adjusted size of the bunnies */
-            background-repeat: repeat;
-            background-position: 0 0;
-            background-attachment: fixed;
-            animation: bunny-hop-diagonal 2s infinite ease-in-out; /* Diagonal hopping animation */
-            min-height: 100vh; /* Ensure body covers the full viewport height */
-            overflow-y: scroll; /* Enable scrolling */
-        }
+<script>
+    const now = new Date(); // Current date and time
+    let vocabWords = []; // Holds the selected words for the week
 
-        @keyframes bunny-hop-diagonal {
-            0% { background-position: 0 0; }
-            25% { background-position: 25px 25px; }
-            50% { background-position: 50px 0; }
-            75% { background-position: 75px 25px; }
-            100% { background-position: 100px 0; }
-        }
-
-        /* Container Layout */
-        .container {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 20px;
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-        }
-
-        .left, .middle, .right {
-            background-color: #FFB6C1; /* Soft pink */
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .middle {
-            min-height: 400px;
-        }
-
-        h1, h2 {
-            text-align: center;
-        }
-
-        /* Leaderboard */
-        .leaderboard {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            color: white;
-        }
-
-        .leaderboard li {
-            margin: 10px 0;
-            font-size: 1.2rem;
-        }
-
-        .placeholder {
-            opacity: 0.5;
-        }
-
-        /* Form Styling */
-        input, button {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: none;
-        }
-
-        button {
-            background-color: #FF66B2; /* Bright pink button */
-            color: white;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #FF4C8A;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                display: flex;
-                flex-direction: column;
-                gap: 20px;
-            }
-
-            .right {
-                order: -1; /* Move leaderboard to the top */
-            }
-
-            .left {
-                order: 2; /* Move signup to the bottom */
-            }
-
-            .middle {
-                order: 1; /* Keep the middle section in the center */
-            }
-        }
-    </style>
-    <script>
-        let vocabWords = [];
-        const usedWords = [];
-
-        // Fetch Vocabulary Words from JSON
-        async function fetchVocabulary() {
-            try {
-                const response = await fetch('vocab.json');
-                const allWords = await response.json();
-
-                // Randomly select 10 words
-                vocabWords = allWords.sort(() => 0.5 - Math.random()).slice(0, 10);
-                const remainingWords = allWords.filter(word => !vocabWords.includes(word));
-
-                // Save remaining words back to the JSON
-                await saveUpdatedJSON(remainingWords);
-
-                loadContent();
-            } catch (error) {
-                console.error('Error fetching vocabulary words:', error);
-            }
-        }
-
-        // Save updated JSON after removing used words
-        async function saveUpdatedJSON(remainingWords) {
-            try {
-                await fetch('save-json.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(remainingWords)
-                });
-            } catch (error) {
-                console.error('Error saving updated JSON:', error);
-            }
-        }
-
-        // Load Vocabulary Words or Quiz
-        function loadContent() {
-            const now = new Date();
-            const day = now.getDay();
-            const hour = now.getHours();
-            const contentDiv = document.getElementById('content');
-
-            // Display Quiz for 1 Hour on Sunday Noon
-            if (day === 0 && hour === 12) {
-                showQuiz(contentDiv);
+    // Fetch current week's words
+    async function fetchCurrentWeekWords() {
+        try {
+            const response = await fetch('current-week.json'); // Fetch current week's words
+            if (response.ok) {
+                vocabWords = await response.json();
             } else {
-                showWords(contentDiv);
+                // If no current-week.json, select new words
+                await selectNewWords();
             }
+            loadContent();
+        } catch (error) {
+            console.error('Error fetching current week\'s words:', error);
         }
+    }
 
-        // Show Vocabulary Words
-        function showWords(contentDiv) {
-            contentDiv.innerHTML = '<h2>Study This Week\'s Words</h2>';
-            vocabWords.forEach(({ word, definition }) => {
-                const entry = document.createElement('p');
-                entry.textContent = `${word} - ${definition}`;
-                contentDiv.appendChild(entry);
+    // Select 10 random words and update current-week.json
+    async function selectNewWords() {
+        try {
+            const response = await fetch('vocab.json'); // Fetch all vocab words
+            const allWords = await response.json();
+
+            if (allWords.length === 0) {
+                alert('No more words available in the database!');
+                return;
+            }
+
+            // Shuffle and select 10 words
+            vocabWords = allWords.sort(() => 0.5 - Math.random()).slice(0, 10);
+
+            // Save selected words to current-week.json
+            await saveJSON('current-week.json', vocabWords);
+
+            // Remove selected words from vocab.json
+            const remainingWords = allWords.filter(word => !vocabWords.includes(word));
+            await saveJSON('vocab.json', remainingWords);
+
+        } catch (error) {
+            console.error('Error selecting new words:', error);
+        }
+    }
+
+    // Save JSON data to the server
+    async function saveJSON(filename, data) {
+        try {
+            await fetch(`save-json.php?filename=${filename}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
             });
+        } catch (error) {
+            console.error(`Error saving ${filename}:`, error);
         }
+    }
 
-        // Show Quiz
-        function showQuiz(contentDiv) {
-            contentDiv.innerHTML = `
-                <h2>Weekly Quiz</h2>
-                <label for="name">Enter Your Name:</label>
-                <input type="text" id="name" placeholder="Your Name" required>
-            `;
+    // Load Content: Display words or quiz
+    function loadContent() {
+        const day = now.getDay();
+        const hour = now.getHours();
+        const contentDiv = document.getElementById('content');
 
-            vocabWords.forEach(({ word }) => {
-                const quizEntry = document.createElement('div');
-                quizEntry.innerHTML = `
-                    <p>${word}</p>
-                    <input type="text" placeholder="Enter your definition" required>
-                `;
-                contentDiv.appendChild(quizEntry);
-            });
-
-            const submitButton = document.createElement('button');
-            submitButton.textContent = 'Submit Quiz';
-            contentDiv.appendChild(submitButton);
-
-            submitButton.addEventListener('click', handleSubmitQuiz);
+        if (day === 0 && hour === 12) {
+            // Quiz live on Sunday at noon
+            showQuiz(contentDiv);
+        } else {
+            // Show study words
+            showWords(contentDiv);
         }
+    }
 
-        // Handle Quiz Submission
-        async function handleSubmitQuiz() {
-            const name = document.getElementById('name').value;
-            const answers = Array.from(document.querySelectorAll('.middle input[type="text"]')).map(input => input.value);
-
-            // Grade the quiz
-            let score = 0;
-            answers.forEach((answer, index) => {
-                if (answer.toLowerCase() === vocabWords[index].definition.toLowerCase()) {
-                    score++;
-                }
-            });
-
-            // Update leaderboard dynamically
-            const leaderboardList = document.getElementById('leaderboard');
-            const listItem = document.createElement('li');
-            listItem.textContent = `${name} - ${score}/${vocabWords.length}`;
-            leaderboardList.appendChild(listItem);
-
-            alert(`You scored ${score}/${vocabWords.length}`);
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchVocabulary();
+    // Display vocabulary words for study
+    function showWords(contentDiv) {
+        contentDiv.innerHTML = '<h2>Study This Week\'s Words</h2>';
+        vocabWords.forEach(({ word, definition }) => {
+            const entry = document.createElement('p');
+            entry.textContent = `${word} - ${definition}`;
+            contentDiv.appendChild(entry);
         });
-    </script>
-</head>
-<body>
-    <header>
-        <h1>Weekly Vocab Quiz</h1>
-    </header>
-    <div class="container">
-        <!-- Right Column: Leaderboard -->
-        <div class="right">
-            <h2>Leaderboard</h2>
-            <ul class="leaderboard" id="leaderboard">
-                <li class="placeholder">1. First - TBD</li>
-                <li class="placeholder">2. Second - TBD</li>
-                <li class="placeholder">3. Third - TBD</li>
-            </ul>
-        </div>
+    }
 
-        <!-- Middle Column: Vocab List or Quiz -->
-        <div class="middle" id="content"></div>
+    // Display quiz
+    function showQuiz(contentDiv) {
+        contentDiv.innerHTML = `
+            <h2>Weekly Quiz</h2>
+            <label for="name">Enter Your Name:</label>
+            <input type="text" id="name" placeholder="Your Name" required>
+        `;
 
-        <!-- Left Column: Sign-up -->
-        <div class="left">
-            <h2>Sign Up</h2>
-            <form id="signup-form">
-                <label for="phone">Phone Number:</label>
-                <input type="tel" id="phone" placeholder="Enter your phone number" required>
-                <label for="carrier-email">Carrier Email:</label>
-                <select id="carrier-email" required>
-                    <option value="@vtext.com">Verizon</option>
-                    <option value="@txt.att.net">AT&T</option>
-                    <option value="@tmomail.net">T-Mobile</option>
-                </select>
-                <button type="submit">Sign Up</button>
-            </form>
-        </div>
-    </div>
-    <footer>
-        <p>&copy; 2024 Weekly Vocab Quiz. All rights reserved.</p>
-    </footer>
-</body>
-</html>
+        vocabWords.forEach(({ word }) => {
+            const quizEntry = document.createElement('div');
+            quizEntry.innerHTML = `
+                <p>${word}</p>
+                <input type="text" placeholder="Enter your definition" required>
+            `;
+            contentDiv.appendChild(quizEntry);
+        });
+
+        const submitButton = document.createElement('button');
+        submitButton.textContent = 'Submit Quiz';
+        contentDiv.appendChild(submitButton);
+
+        submitButton.addEventListener('click', handleSubmitQuiz);
+    }
+
+    // Handle quiz submission
+    async function handleSubmitQuiz() {
+        const name = document.getElementById('name').value;
+        const answers = Array.from(document.querySelectorAll('.middle input[type="text"]')).map(input => input.value);
+
+        // Grade the quiz
+        let score = 0;
+        answers.forEach((answer, index) => {
+            if (answer.toLowerCase() === vocabWords[index].definition.toLowerCase()) {
+                score++;
+            }
+        });
+
+        // Update leaderboard
+        const leaderboardList = document.getElementById('leaderboard');
+        const listItem = document.createElement('li');
+        listItem.textContent = `${name} - ${score}/${vocabWords.length}`;
+        leaderboardList.appendChild(listItem);
+
+        alert(`You scored ${score}/${vocabWords.length}`);
+
+        // Display next week's words
+        await selectNewWords();
+        showWords(document.getElementById('content'));
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchCurrentWeekWords();
+    });
+</script>
