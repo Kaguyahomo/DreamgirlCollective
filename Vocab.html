@@ -10,30 +10,24 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #E6E6FA; /* Lavender background */
-            color: white;
+            background-color: #E6E6FA; /* Light pastel purple background */
+            color: white; /* White text color */
+            background-image: url('8bit-bunny.png'); /* Bunny background */
+            background-size: 100px 100px; /* Adjusted size of the bunnies */
+            background-repeat: repeat;
+            background-position: 0 0;
+            background-attachment: fixed;
+            animation: bunny-hop-diagonal 2s infinite ease-in-out; /* Diagonal hopping animation */
+            min-height: 100vh; /* Ensure body covers the full viewport height */
             overflow-y: scroll; /* Enable scrolling */
-            position: relative;
         }
 
-        /* Bunny Background */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('https://cdn.pixabay.com/photo/2013/07/12/17/44/rabbit-153315_1280.png'); /* Bunny GIF */
-            background-repeat: repeat-x;
-            background-size: 100px;
-            animation: bunnyHop 5s infinite linear;
-            z-index: -1;
-        }
-
-        @keyframes bunnyHop {
+        @keyframes bunny-hop-diagonal {
             0% { background-position: 0 0; }
-            100% { background-position: 1000px 0; }
+            25% { background-position: 25px 25px; }
+            50% { background-position: 50px 0; }
+            75% { background-position: 75px 25px; }
+            100% { background-position: 100px 0; }
         }
 
         /* Container Layout */
@@ -46,7 +40,6 @@
             padding: 20px;
         }
 
-        /* Left, Middle, and Right Columns */
         .left, .middle, .right {
             background-color: #FFB6C1; /* Soft pink */
             padding: 20px;
@@ -67,11 +60,16 @@
             list-style: none;
             padding: 0;
             margin: 0;
+            color: white;
         }
 
         .leaderboard li {
             margin: 10px 0;
-            color: white;
+            font-size: 1.2rem;
+        }
+
+        .placeholder {
+            opacity: 0.5;
         }
 
         /* Form Styling */
@@ -115,19 +113,47 @@
         }
     </style>
     <script>
-        // Vocabulary Data
-        const vocabWords = [
-            { word: "Ambivalent", definition: "Having mixed feelings" },
-            { word: "Cacophony", definition: "A harsh, discordant mixture of sounds" },
-            { word: "Ethereal", definition: "Extremely delicate and light in a way that seems not of this world" },
-        ];
+        let vocabWords = [];
+        const usedWords = [];
+
+        // Fetch Vocabulary Words from JSON
+        async function fetchVocabulary() {
+            try {
+                const response = await fetch('vocab.json');
+                const allWords = await response.json();
+
+                // Randomly select 10 words
+                vocabWords = allWords.sort(() => 0.5 - Math.random()).slice(0, 10);
+                const remainingWords = allWords.filter(word => !vocabWords.includes(word));
+
+                // Save remaining words back to the JSON
+                await saveUpdatedJSON(remainingWords);
+
+                loadContent();
+            } catch (error) {
+                console.error('Error fetching vocabulary words:', error);
+            }
+        }
+
+        // Save updated JSON after removing used words
+        async function saveUpdatedJSON(remainingWords) {
+            try {
+                await fetch('save-json.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(remainingWords)
+                });
+            } catch (error) {
+                console.error('Error saving updated JSON:', error);
+            }
+        }
 
         // Load Vocabulary Words or Quiz
         function loadContent() {
             const now = new Date();
             const day = now.getDay();
             const hour = now.getHours();
-            const contentDiv = document.getElementById("content");
+            const contentDiv = document.getElementById('content');
 
             // Display Quiz for 1 Hour on Sunday Noon
             if (day === 0 && hour === 12) {
@@ -139,9 +165,9 @@
 
         // Show Vocabulary Words
         function showWords(contentDiv) {
-            contentDiv.innerHTML = "<h2>Study This Week's Words</h2>";
+            contentDiv.innerHTML = '<h2>Study This Week\'s Words</h2>';
             vocabWords.forEach(({ word, definition }) => {
-                const entry = document.createElement("p");
+                const entry = document.createElement('p');
                 entry.textContent = `${word} - ${definition}`;
                 contentDiv.appendChild(entry);
             });
@@ -156,7 +182,7 @@
             `;
 
             vocabWords.forEach(({ word }) => {
-                const quizEntry = document.createElement("div");
+                const quizEntry = document.createElement('div');
                 quizEntry.innerHTML = `
                     <p>${word}</p>
                     <input type="text" placeholder="Enter your definition" required>
@@ -164,16 +190,16 @@
                 contentDiv.appendChild(quizEntry);
             });
 
-            const submitButton = document.createElement("button");
-            submitButton.textContent = "Submit Quiz";
+            const submitButton = document.createElement('button');
+            submitButton.textContent = 'Submit Quiz';
             contentDiv.appendChild(submitButton);
 
-            submitButton.addEventListener("click", handleSubmitQuiz);
+            submitButton.addEventListener('click', handleSubmitQuiz);
         }
 
         // Handle Quiz Submission
-        function handleSubmitQuiz() {
-            const name = document.getElementById("name").value;
+        async function handleSubmitQuiz() {
+            const name = document.getElementById('name').value;
             const answers = Array.from(document.querySelectorAll('.middle input[type="text"]')).map(input => input.value);
 
             // Grade the quiz
@@ -185,18 +211,17 @@
             });
 
             // Update leaderboard dynamically
-            const leaderboardEntry = `${name} - ${score}/${vocabWords.length}`;
-            const leaderboardList = document.getElementById("leaderboard");
-            const listItem = document.createElement("li");
-            listItem.textContent = leaderboardEntry;
+            const leaderboardList = document.getElementById('leaderboard');
+            const listItem = document.createElement('li');
+            listItem.textContent = `${name} - ${score}/${vocabWords.length}`;
             leaderboardList.appendChild(listItem);
 
             alert(`You scored ${score}/${vocabWords.length}`);
         }
 
         // Initialize
-        document.addEventListener("DOMContentLoaded", () => {
-            loadContent();
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchVocabulary();
         });
     </script>
 </head>
@@ -208,7 +233,11 @@
         <!-- Right Column: Leaderboard -->
         <div class="right">
             <h2>Leaderboard</h2>
-            <ul class="leaderboard" id="leaderboard"></ul>
+            <ul class="leaderboard" id="leaderboard">
+                <li class="placeholder">1. First - TBD</li>
+                <li class="placeholder">2. Second - TBD</li>
+                <li class="placeholder">3. Third - TBD</li>
+            </ul>
         </div>
 
         <!-- Middle Column: Vocab List or Quiz -->
