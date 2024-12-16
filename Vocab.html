@@ -6,75 +6,21 @@
     <title>Weekly Vocab Quiz</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* General Styling */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #E6E6FA; /* Light pastel purple background */
-            color: white; /* White text color */
-            background-image: url('8bit-bunny.png'); /* Bunny background */
-            background-size: 100px 100px; /* Adjusted size of the bunnies */
-            background-repeat: repeat;
-            background-position: 0 0;
-            background-attachment: fixed;
-            animation: bunny-hop-diagonal 2s infinite ease-in-out; /* Diagonal hopping animation */
-            min-height: 100vh; /* Ensure body covers the full viewport height */
-            overflow-y: scroll; /* Enable scrolling */
-        }
-
-        @keyframes bunny-hop-diagonal {
-            0% { background-position: 0 0; }
-            25% { background-position: 25px 25px; }
-            50% { background-position: 50px 0; }
-            75% { background-position: 75px 25px; }
-            100% { background-position: 100px 0; }
-        }
-
-        /* Container Layout */
-        .container {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 20px;
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-        }
-
-        .left, .middle, .right {
+        .admin-section {
             background-color: #FFB6C1; /* Soft pink */
             padding: 20px;
+            margin: 20px auto;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
         }
 
-        .middle {
-            min-height: 400px;
-        }
-
-        h1, h2 {
+        .admin-section h2 {
             text-align: center;
+            margin-bottom: 10px;
         }
 
-        /* Leaderboard */
-        .leaderboard {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            color: white;
-        }
-
-        .leaderboard li {
-            margin: 10px 0;
-            font-size: 1.2rem;
-        }
-
-        .placeholder {
-            opacity: 0.5;
-        }
-
-        /* Form Styling */
-        input, button {
+        textarea, button {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -83,7 +29,7 @@
         }
 
         button {
-            background-color: #FF66B2; /* Bright pink button */
+            background-color: #FF66B2;
             color: white;
             cursor: pointer;
         }
@@ -91,49 +37,13 @@
         button:hover {
             background-color: #FF4C8A;
         }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                display: flex;
-                flex-direction: column;
-                gap: 20px;
-            }
-
-            .right {
-                order: -1; /* Move leaderboard to the top */
-            }
-
-            .left {
-                order: 2; /* Move signup to the bottom */
-            }
-
-            .middle {
-                order: 1; /* Keep the middle section in the center */
-            }
-        }
     </style>
-    <!-- Link JavaScript -->
-    <script src="vocab.js" defer></script>
 </head>
 <body>
     <header>
         <h1>Weekly Vocab Quiz</h1>
     </header>
     <div class="container">
-        <!-- Right Column: Leaderboard -->
-        <div class="right">
-            <h2>Leaderboard</h2>
-            <ul class="leaderboard" id="leaderboard">
-                <li class="placeholder">1. First - TBD</li>
-                <li class="placeholder">2. Second - TBD</li>
-                <li class="placeholder">3. Third - TBD</li>
-            </ul>
-        </div>
-
-        <!-- Middle Column: Vocab List or Quiz -->
-        <div class="middle" id="content"></div>
-
         <!-- Left Column: Sign-up -->
         <div class="left">
             <h2>Sign Up</h2>
@@ -149,9 +59,90 @@
                 <button type="submit">Sign Up</button>
             </form>
         </div>
+
+        <!-- Middle Column: Vocab List or Quiz -->
+        <div class="middle" id="content">
+            <!-- This space is dynamically updated -->
+        </div>
+
+        <!-- Right Column: Leaderboard -->
+        <div class="right">
+            <h2>Leaderboard</h2>
+            <ul class="leaderboard" id="leaderboard">
+                <!-- Leaderboard entries dynamically added -->
+            </ul>
+        </div>
     </div>
+
+    <!-- Admin Section for Adding Vocab Words -->
+    <div class="admin-section">
+        <h2>Add New Vocabulary Words</h2>
+        <textarea id="vocab-input" rows="4" placeholder="Enter vocab words separated by commas"></textarea>
+        <button id="fetch-definitions">Fetch Definitions & Save</button>
+        <div id="fetch-status" style="text-align: center;"></div>
+    </div>
+
     <footer>
         <p>&copy; 2024 Weekly Vocab Quiz. All rights reserved.</p>
     </footer>
+
+    <script>
+        // Fetch Definitions and Save to vocab.json
+        document.getElementById('fetch-definitions').addEventListener('click', async () => {
+            const vocabInput = document.getElementById('vocab-input').value.trim();
+            const statusDiv = document.getElementById('fetch-status');
+            if (!vocabInput) {
+                statusDiv.textContent = "Please enter some words!";
+                return;
+            }
+
+            const words = vocabInput.split(',').map(word => word.trim());
+            const vocabList = [];
+
+            statusDiv.textContent = "Fetching definitions...";
+
+            for (const word of words) {
+                try {
+                    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        const definition = data[0]?.meanings[0]?.definitions[0]?.definition || "No definition available";
+                        vocabList.push({ word, definition });
+                    } else {
+                        vocabList.push({ word, definition: "No definition available" });
+                    }
+                } catch (error) {
+                    console.error(`Error fetching definition for ${word}:`, error);
+                    vocabList.push({ word, definition: "Error fetching definition" });
+                }
+            }
+
+            // Save the new words to vocab.json
+            const saveResponse = await saveJSON('vocab.json', vocabList);
+            if (saveResponse) {
+                statusDiv.textContent = "Vocabulary words added successfully!";
+                document.getElementById('vocab-input').value = ""; // Clear input
+            } else {
+                statusDiv.textContent = "Failed to save vocabulary words.";
+            }
+        });
+
+        // Save JSON to Server
+        async function saveJSON(filename, data) {
+            try {
+                const response = await fetch(`save-json.php?filename=${filename}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+                return result.success;
+            } catch (error) {
+                console.error('Error saving JSON:', error);
+                return false;
+            }
+        }
+    </script>
 </body>
 </html>
