@@ -5,17 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spencer's Blog</title>
     <style>
-        /* Pink and white theme */
+        /* Pink and white theme with animated bunnies */
         body {
             font-family: Arial, sans-serif;
             background-color: #FFE4E1;
-            color: #333;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        .bunny {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: url('bunny.png') no-repeat center;
+            background-size: contain;
+            animation: hop 3s infinite ease-in-out;
+        }
+
+        @keyframes hop {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
 
         .container {
@@ -84,6 +98,10 @@
     </style>
 </head>
 <body>
+    <div class="bunny" style="left: 20%;"></div>
+    <div class="bunny" style="left: 50%; animation-delay: 1s;"></div>
+    <div class="bunny" style="left: 80%; animation-delay: 2s;"></div>
+
     <div class="container" id="posts-container"></div>
 
     <button id="author-toggle" onclick="toggleAuthorMode()">+</button>
