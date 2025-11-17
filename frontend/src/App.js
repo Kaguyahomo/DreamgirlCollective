@@ -1,27 +1,39 @@
-import React, { useState } from "react";
-import AdminWordBank from "./components/AdminWordBank";
-import DailyQuiz from "./components/DailyQuiz";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import VocabHome from "./components/VocabHome";
+import VocabQuiz from "./components/VocabQuiz";
 import Leaderboard from "./components/Leaderboard";
-import LoginSignup from "./components/LoginSignup";
+import AdminLogin from "./components/AdminLogin";
+import AdminWordBank from "./components/AdminWordBank";
 
-function App() {
-  const [user, setUser] = useState(null);
-
+export default function App() {
   return (
-    <div>
-      <h1>Wordle Vocab Quiz</h1>
-      {!user &&
-        <LoginSignup setUser={setUser} />
-      }
-      {user &&
-        <>
-          <button onClick={() => setUser(null)}>Logout</button>
-          <DailyQuiz user={user} />
-          <Leaderboard />
-          {user.is_admin && <AdminWordBank />}
-        </>
-      }
-    </div>
+    <Router>
+      <Routes>
+
+        {/* Vocab hub */}
+        <Route path="/vocab" element={<VocabHome />} />
+
+        {/* Quiz */}
+        <Route path="/quiz" element={<VocabQuiz />} />
+
+        {/* Leaderboard */}
+        <Route path="/leaderboard" element={<Leaderboard />} />
+
+        {/* Admin access */}
+        <Route
+          path="/admin/words"
+          element={
+            localStorage.getItem("admin") ? (
+              <AdminWordBank />
+            ) : (
+              <AdminLogin onLogin={() => window.location.reload()} />
+            )
+          }
+        />
+
+      </Routes>
+    </Router>
   );
 }
-export default App;

@@ -1,0 +1,48 @@
+.pink-card {
+  background: #ffe6f1;
+  border: 2px solid #ff99cc;
+  padding: 20px;
+  border-radius: 12px;
+  margin: 30px auto;
+  max-width: 520px;
+  text-align: center;
+  box-shadow: 0 3px 8px rgba(255, 153, 204, 0.2);
+}
+
+.quiz-word {
+  font-size: 2rem;
+  color: #ff3385;
+  margin-bottom: 15px;
+}
+
+.feedback {
+  color: #ff66aa;
+  margin-top: 10px;
+}
+
+button {
+  background: #ff99cc;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  color: white;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #ff66aa;
+}
+
+input {
+  padding: 10px;
+  border: 1px solid #ff99cc;
+  border-radius: 8px;
+  width: 90%;
+  margin-bottom: 10px;
+}
+
+.center {
+  text-align: center;
+  color: #ff3385;
+}
