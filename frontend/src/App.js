@@ -37,3 +37,13 @@ export default function App() {
     </Router>
   );
 }
+<Route
+  path="/admin/backup"
+  element={
+    localStorage.getItem("admin") ? (
+      <AdminBackupWords />
+    ) : (
+      <AdminLogin onLogin={() => window.location.reload()} />
+    )
+  }
+/>

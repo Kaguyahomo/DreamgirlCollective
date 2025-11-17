@@ -38,3 +38,5 @@ cron.schedule("0 3 * * 0", () => {
     SELECT word, definition FROM words_backup
   \);
 });
+const backupRoutes = require("./routes/backup");
+app.use("/api/backup", backupRoutes);
