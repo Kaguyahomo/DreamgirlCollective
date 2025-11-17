@@ -23,3 +23,18 @@ app.use('/api/scores', scoresRouter);
 app.listen(PORT, () => {
   console.log(`Backend running on port ${PORT}`);
 });
+const cron = require("node-cron");
+const db = require("./db");
+
+cron.schedule("0 3 * * 0", () => {
+  console.log("Weekly vocab reset running…");
+
+  // Clear active list
+  db.run("DELETE FROM words");
+
+  // Restore from backup
+  db.run(\
+    INSERT INTO words (word, definition)
+    SELECT word, definition FROM words_backup
+  \);
+});
