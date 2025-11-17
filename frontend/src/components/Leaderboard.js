@@ -1,21 +1,31 @@
-import React, { useState, useEffect } from "react";
-import api from "../api";
+import React, { useEffect, useState } from "react";
 
 export default function Leaderboard() {
-  const [data, setData] = useState([]);
+  const [list, setList] = useState([]);
 
   useEffect(() => {
-    api.get("/scores/leaderboard").then(res => setData(res.data.leaderboard));
+    load();
   }, []);
 
+  async function load() {
+    const res = await fetch("http://localhost:3001/api/leaderboard/week");
+    const data = await res.json();
+    setList(data.leaderboard);
+  }
+
   return (
-    <div>
-      <h2>Leaderboard (today)</h2>
-      <ul>
-        {data.map((e, i) => (
-          <li key={i}>{e.username}: {e.score}/5</li>
+    <div className="pink-card" style={{ maxWidth: "500px" }}>
+      <h2>Weekly Leaderboard ??</h2>
+
+      <ul style={{ textAlign: "left" }}>
+        {list.map((row, i) => (
+          <li key={i} style={{ margin: "6px 0" }}>
+            <strong>{i + 1}.</strong> {row.name} — {row.score}
+          </li>
         ))}
       </ul>
+
+      {list.length === 0 && <p>No scores yet ??</p>}
     </div>
   );
 }
