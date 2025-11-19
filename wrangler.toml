@@ -9,7 +9,3 @@ pages_build_output_dir = "./"
 binding = "dreamgirl_db"
 database_name = "dreamgirl-db"
 database_id = "31f7672d-162b-43d2-a89d-61ee42876ae1"
-
-# Weekly cron job to reload vocab
-[triggers]
-crons = ["0 5 * * 1"]
