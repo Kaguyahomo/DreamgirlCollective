@@ -1,33 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin – Vocab Manager</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Admin — Word Bank</title>
+    <link rel="stylesheet" href="../styles.css">
 </head>
 
 <body>
-  <h1>Admin – Vocabulary Manager</h1>
 
-  <div id="login-box">
-    <input id="password" placeholder="Admin Password">
-    <button onclick="adminLogin()">Login</button>
-  </div>
+<header>
+    <img src="../header-image.png" class="header-image left">
+    <h1>Vocabulary Admin</h1>
+    <img src="../header-image.png" class="header-image right">
+</header>
 
-  <div id="admin-panel" class="hidden">
-    <h2>Add New Word</h2>
-    <input id="word" placeholder="Word">
-    <input id="definition" placeholder="Definition">
-    <button onclick="addWord()">Add</button>
+<nav>
+    <a href="../kaguya.html"><img src="../header-image.png"></a>
+    <a href="../vocab/index.html"><img src="../header-image.png"></a>
+</nav>
 
-    <h2>Delete Word</h2>
-    <input id="delete-word" placeholder="Word">
-    <button onclick="deleteWord()">Delete</button>
+<section>
 
-    <h2>Current Words</h2>
-    <ul id="word-list"></ul>
-  </div>
+    <h2>Word Bank Manager</h2>
 
-  <script src="admin.js"></script>
+    <h3>Add New Word</h3>
+    <input id="new-word" placeholder="Word">
+    <input id="new-definition" placeholder="Definition">
+    <button onclick="addWord()">Add Word</button>
+
+    <hr style="margin:2rem 0;">
+
+    <h3>All Words</h3>
+    <div id="word-list"></div>
+
+</section>
+
+<script>
+const API = "https://renelaird.pages.dev/api";
+
+async function loadWords() {
+    const res = await fetch(`${API}/words/all`);
+    const data = await res.json();
+
+    let html = "<ul>";
+    data.words.forEach(w => {
+        html += `
+            <li>
+                <b>${w.word}</b>: ${w.definition}
+                <button onclick="deleteWord('${w.word}')">Delete</button>
+            </li>`;
+    });
+    html += "</ul>";
+
+    document.getElementById("word-list").innerHTML = html;
+}
+
+async function addWord() {
+    const word = document.getElementById("new-word").value.trim();
+    const definition = document.getElementById("new-definition").value.trim();
+
+    if (!word || !definition) return;
+
+    await fetch(`${API}/words/add`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({word, definition})
+    });
+
+    loadWords();
+}
+
+async function deleteWord(word) {
+    await fetch(`${API}/words/delete/${word}`, { method: "DELETE" });
+    loadWords();
+}
+
+loadWords();
+</script>
+
 </body>
 </html>
