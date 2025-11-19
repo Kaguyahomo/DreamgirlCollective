@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Admin – Vocab Manager</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>Admin – Vocabulary Manager</h1>
+
+  <div id="login-box">
+    <input id="password" placeholder="Admin Password">
+    <button onclick="adminLogin()">Login</button>
+  </div>
+
+  <div id="admin-panel" class="hidden">
+    <h2>Add New Word</h2>
+    <input id="word" placeholder="Word">
+    <input id="definition" placeholder="Definition">
+    <button onclick="addWord()">Add</button>
+
+    <h2>Delete Word</h2>
+    <input id="delete-word" placeholder="Word">
+    <button onclick="deleteWord()">Delete</button>
+
+    <h2>Current Words</h2>
+    <ul id="word-list"></ul>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

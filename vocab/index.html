@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vocab Practice</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header>
+    <h1>Weekly Vocabulary Quiz</h1>
+  </header>
+
+  <main>
+    <div id="quiz-container">
+      <p id="question"></p>
+
+      <div id="choices"></div>
+
+      <button id="next-btn" class="hidden">Next</button>
+    </div>
+
+    <div id="results" class="hidden">
+      <h2>Your Score:</h2>
+      <p id="score"></p>
+      <button onclick="startQuiz()">Try Again</button>
+    </div>
+  </main>
+
+  <footer>
+    <a href="/vocab/admin.html">Admin Panel</a>
+  </footer>
+
+  <script src="vocab.js"></script>
+</body>
+</html>
