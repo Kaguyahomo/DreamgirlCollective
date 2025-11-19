@@ -1,36 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Vocab Practice</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Vocabulary Quiz</title>
+    <link rel="stylesheet" href="../styles.css">
 </head>
 
 <body>
-  <header>
-    <h1>Weekly Vocabulary Quiz</h1>
-  </header>
 
-  <main>
-    <div id="quiz-container">
-      <p id="question"></p>
+<header>
+    <img src="../header-image.png" class="header-image left">
+    <h1>Vocabulary Quiz</h1>
+    <img src="../header-image.png" class="header-image right">
+</header>
 
-      <div id="choices"></div>
+<nav>
+    <a href="../kaguya.html"><img src="../header-image.png" alt="Kaguya"></a>
+    <a href="../index.html"><img src="../header-image.png" alt="Home"></a>
+    <a href="../request.html"><img src="../Request.png" alt="Request"></a>
+    <a href="../creativewriting.html"><img src="../cw.gif" alt="CW"></a>
+</nav>
 
-      <button id="next-btn" class="hidden">Next</button>
+<section>
+
+    <h2>Test Your Vocabulary!</h2>
+
+    <div id="quiz-box" style="text-align:center;">
+
+        <p id="word-display" style="font-size:1.5rem; margin-bottom:1rem;">
+            Loading word...
+        </p>
+
+        <input id="definition-input" placeholder="Enter definition..." />
+
+        <button onclick="submitAnswer()">Submit</button>
+
+        <p id="feedback" style="margin-top:1rem; font-weight:bold;"></p>
+
     </div>
 
-    <div id="results" class="hidden">
-      <h2>Your Score:</h2>
-      <p id="score"></p>
-      <button onclick="startQuiz()">Try Again</button>
-    </div>
-  </main>
+    <hr style="margin:3rem 0; border-color:white;">
 
-  <footer>
-    <a href="/vocab/admin.html">Admin Panel</a>
-  </footer>
+    <h2>Leaderboard</h2>
+    <div id="leaderboard"></div>
 
-  <script src="vocab.js"></script>
+</section>
+
+<!-- ADMIN LINK HIDDEN IN CORNER -->
+<a href="admin.html" 
+   style="
+        position: fixed;
+        bottom: 15px;
+        right: 15px;
+        opacity: 0.5;
+        color: white;
+        font-size: 0.8rem;
+        text-decoration:none;
+   ">
+    Admin
+</a>
+
+<footer>
+    <p>Dreamgirl Collective</p>
+</footer>
+
+<script>
+const API = "https://renelaird.pages.dev/api";
+
+// Load first word
+async function loadWord() {
+    const res = await fetch(`${API}/quizzes/next`);
+    const data = await res.json();
+    window.currentWord = data.word;
+    document.getElementById("word-display").textContent = data.word.word;
+}
+
+async function submitAnswer() {
+    const guess = document.getElementById("definition-input").value.trim();
+    if (!guess) return;
+
+    const res = await fetch(`${API}/quizzes/submit`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            word: window.currentWord.word,
+            guess
+        })
+    });
+
+    const data = await res.json();
+
+    document.getElementById("feedback").textContent = data.correct
+        ? "✓ Correct!"
+        : `✗ Incorrect — ${window.currentWord.definition}`;
+
+    loadWord();
+}
+
+async function loadLeaderboard() {
+    const res = await fetch(`${API}/leaderboard`);
+    const data = await res.json();
+
+    let html = "<ul>";
+    data.leaderboard.forEach(item => {
+        html += `<li>${item.user}: ${item.score}</li>`;
+    });
+    html += "</ul>";
+
+    document.getElementById("leaderboard").innerHTML = html;
+}
+
+loadWord();
+loadLeaderboard();
+</script>
+
 </body>
 </html>
