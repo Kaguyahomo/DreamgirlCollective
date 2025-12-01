@@ -189,6 +189,13 @@ async function fetchDefinition() {
     }
 }
 
+// Safely strip HTML tags using DOMParser (secure alternative to regex)
+function stripHtmlTags(html) {
+    if (!html) return '';
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return (doc.body.textContent || '').trim();
+}
+
 // Fetch from Wiktionary API - broader coverage including uncommon words
 async function fetchFromWiktionary(word) {
     try {
@@ -212,9 +219,9 @@ async function fetchFromWiktionary(word) {
             for (const entry of data.en) {
                 if (entry.definitions && entry.definitions.length > 0) {
                     const partOfSpeech = entry.partOfSpeech || "";
-                    // Get the definition text, strip HTML tags
+                    // Get the definition text, safely strip HTML using DOMParser
                     let defText = entry.definitions[0].definition || "";
-                    defText = defText.replace(/<[^>]*>/g, '').trim();
+                    defText = stripHtmlTags(defText);
                     
                     if (defText) {
                         return partOfSpeech ? `(${partOfSpeech}) ${defText}` : defText;
