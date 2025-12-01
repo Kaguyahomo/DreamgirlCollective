@@ -4,9 +4,85 @@
     <meta charset="UTF-8">
     <title>Admin — Word Bank</title>
     <link rel="stylesheet" href="../styles.css">
+    <style>
+        .word-input-section {
+            margin-bottom: 2rem;
+        }
+        .definition-preview {
+            background-color: rgba(255,255,255,0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            text-align: left;
+            display: none;
+        }
+        .definition-preview.show {
+            display: block;
+        }
+        .word-bank {
+            background-color: rgba(255,255,255,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .word-bank ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+        }
+        .word-bank li {
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .word-bank li button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+        .word-info {
+            flex: 1;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        .error-msg {
+            color: #cc0000;
+            font-weight: bold;
+        }
+        .success-msg {
+            color: #00aa00;
+            font-weight: bold;
+        }
+        h3 {
+            color: #ff3377;
+            border-bottom: 2px solid #ff88bb;
+            padding-bottom: 0.5rem;
+        }
+        .logout-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: #ff88bb;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
+
+<button class="logout-btn" onclick="logout()">Logout</button>
 
 <header>
     <img src="../header-image.png" class="header-image left">
@@ -16,65 +92,253 @@
 
 <nav>
     <a href="../kaguya.html"><img src="../header-image.png"></a>
-    <a href="../vocab/index.html"><img src="../header-image.png"></a>
+    <a href="index.html"><img src="../header-image.png"></a>
 </nav>
 
 <section>
 
     <h2>Word Bank Manager</h2>
 
-    <h3>Add New Word</h3>
-    <input id="new-word" placeholder="Word">
-    <input id="new-definition" placeholder="Definition">
-    <button onclick="addWord()">Add Word</button>
+    <!-- Add New Word Section -->
+    <div class="word-input-section">
+        <h3>Add New Word</h3>
+        <input id="new-word" placeholder="Enter a word..." onkeyup="handleWordInput(event)">
+        <button onclick="fetchDefinition()">Lookup Definition</button>
+        
+        <div id="definition-preview" class="definition-preview">
+            <p><strong>Word:</strong> <span id="preview-word"></span></p>
+            <p><strong>Definition:</strong> <span id="preview-definition"></span></p>
+            <button onclick="addWordToBank()">Add to Word Bank</button>
+        </div>
+        
+        <p id="lookup-status"></p>
+    </div>
 
-    <hr style="margin:2rem 0;">
+    <hr style="margin:2rem 0; border-color: #ff88bb;">
 
-    <h3>All Words</h3>
-    <div id="word-list"></div>
+    <!-- Unused Words Bank -->
+    <div>
+        <h3>📚 Word Bank (Unused Words)</h3>
+        <p style="font-size: 0.9rem; color: #666;">Words waiting to be used in quizzes</p>
+        <div id="unused-words" class="word-bank">
+            <p class="loading">Loading words...</p>
+        </div>
+    </div>
+
+    <hr style="margin:2rem 0; border-color: #ff88bb;">
+
+    <!-- Tested Words Section -->
+    <div>
+        <h3>✅ Words Already Tested</h3>
+        <p style="font-size: 0.9rem; color: #666;">Words that have been sent out as quiz questions</p>
+        <div id="tested-words" class="word-bank">
+            <p class="loading">Loading tested words...</p>
+        </div>
+    </div>
 
 </section>
+
+<footer>
+    <p>Dreamgirl Collective - Admin Panel</p>
+</footer>
 
 <script>
 const API = "https://renelaird.pages.dev/api";
 
-async function loadWords() {
-    const res = await fetch(`${API}/words/all`);
-    const data = await res.json();
+// Check authentication on page load
+function checkAuth() {
+    const auth = sessionStorage.getItem("vocabAdminAuth");
+    if (auth !== "true") {
+        window.location.href = "index.html";
+    }
+}
 
+function logout() {
+    sessionStorage.removeItem("vocabAdminAuth");
+    window.location.href = "index.html";
+}
+
+// Fetch definition from Free Dictionary API
+async function fetchDefinition() {
+    const word = document.getElementById("new-word").value.trim();
+    if (!word) {
+        showStatus("Please enter a word", "error");
+        return;
+    }
+    
+    showStatus("Looking up definition...", "loading");
+    
+    try {
+        const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+        
+        if (!res.ok) {
+            showStatus("Word not found in dictionary. You can enter a custom definition below.", "error");
+            document.getElementById("preview-word").textContent = word;
+            document.getElementById("preview-definition").innerHTML = '<input id="custom-definition" placeholder="Enter custom definition..." style="width: 80%;">';
+            document.getElementById("definition-preview").classList.add("show");
+            return;
+        }
+        
+        const data = await res.json();
+        
+        if (data && data.length > 0 && data[0].meanings && data[0].meanings.length > 0) {
+            const meanings = data[0].meanings;
+            let definition = "";
+            
+            // Get the first definition from each part of speech
+            meanings.forEach((meaning, index) => {
+                if (meaning.definitions && meaning.definitions.length > 0) {
+                    const partOfSpeech = meaning.partOfSpeech;
+                    const def = meaning.definitions[0].definition;
+                    if (index === 0) {
+                        definition = `(${partOfSpeech}) ${def}`;
+                    }
+                }
+            });
+            
+            document.getElementById("preview-word").textContent = word;
+            document.getElementById("preview-definition").textContent = definition;
+            document.getElementById("definition-preview").classList.add("show");
+            showStatus("Definition found!", "success");
+        } else {
+            showStatus("No definition found. Enter a custom definition.", "error");
+        }
+    } catch (err) {
+        console.error("Error fetching definition:", err);
+        showStatus("Error looking up word. Please try again or enter custom definition.", "error");
+        document.getElementById("preview-word").textContent = word;
+        document.getElementById("preview-definition").innerHTML = '<input id="custom-definition" placeholder="Enter custom definition..." style="width: 80%;">';
+        document.getElementById("definition-preview").classList.add("show");
+    }
+}
+
+function showStatus(message, type) {
+    const statusEl = document.getElementById("lookup-status");
+    statusEl.textContent = message;
+    statusEl.className = type === "error" ? "error-msg" : type === "success" ? "success-msg" : "loading";
+}
+
+function handleWordInput(event) {
+    if (event.key === "Enter") {
+        fetchDefinition();
+    }
+}
+
+// Add word to the bank
+async function addWordToBank() {
+    const word = document.getElementById("preview-word").textContent.trim();
+    let definition = document.getElementById("preview-definition").textContent.trim();
+    
+    // Check if there's a custom definition input
+    const customDefInput = document.getElementById("custom-definition");
+    if (customDefInput) {
+        definition = customDefInput.value.trim();
+    }
+    
+    if (!word || !definition) {
+        showStatus("Word and definition are required", "error");
+        return;
+    }
+    
+    try {
+        await fetch(`${API}/words/add`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({word, definition, tested: false})
+        });
+        
+        showStatus("Word added to bank!", "success");
+        document.getElementById("new-word").value = "";
+        document.getElementById("definition-preview").classList.remove("show");
+        loadWords();
+    } catch (err) {
+        showStatus("Error adding word: " + err.message, "error");
+    }
+}
+
+// Load all words and separate them
+async function loadWords() {
+    try {
+        const res = await fetch(`${API}/words/all`);
+        const data = await res.json();
+        
+        const words = data.words || data || [];
+        
+        const unusedWords = words.filter(w => !w.tested);
+        const testedWords = words.filter(w => w.tested);
+        
+        renderWordList("unused-words", unusedWords, true);
+        renderWordList("tested-words", testedWords, false);
+    } catch (err) {
+        console.error("Error loading words:", err);
+        document.getElementById("unused-words").innerHTML = '<p class="error-msg">Error loading words</p>';
+        document.getElementById("tested-words").innerHTML = '<p class="error-msg">Error loading words</p>';
+    }
+}
+
+function renderWordList(containerId, words, showMarkTested) {
+    const container = document.getElementById(containerId);
+    
+    if (words.length === 0) {
+        container.innerHTML = '<p style="color: #666; font-style: italic;">No words in this category</p>';
+        return;
+    }
+    
     let html = "<ul>";
-    data.words.forEach(w => {
+    words.forEach(w => {
+        const wordEscaped = escapeHtml(w.word);
+        const defEscaped = escapeHtml(w.definition);
         html += `
             <li>
-                <b>${w.word}</b>: ${w.definition}
-                <button onclick="deleteWord('${w.word}')">Delete</button>
+                <div class="word-info">
+                    <strong>${wordEscaped}</strong>: ${defEscaped}
+                </div>
+                <div>
+                    ${showMarkTested ? `<button onclick="markAsTested('${wordEscaped}')">Mark Tested</button>` : ''}
+                    <button onclick="deleteWord('${wordEscaped}')" style="background: #ff6666;">Delete</button>
+                </div>
             </li>`;
     });
     html += "</ul>";
-
-    document.getElementById("word-list").innerHTML = html;
+    
+    container.innerHTML = html;
 }
 
-async function addWord() {
-    const word = document.getElementById("new-word").value.trim();
-    const definition = document.getElementById("new-definition").value.trim();
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#039;');
+}
 
-    if (!word || !definition) return;
-
-    await fetch(`${API}/words/add`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({word, definition})
-    });
-
-    loadWords();
+async function markAsTested(word) {
+    try {
+        await fetch(`${API}/words/mark-tested`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({word})
+        });
+        loadWords();
+    } catch (err) {
+        alert("Error marking word as tested: " + err.message);
+    }
 }
 
 async function deleteWord(word) {
-    await fetch(`${API}/words/delete/${word}`, { method: "DELETE" });
-    loadWords();
+    if (!confirm(`Delete "${word}"?`)) return;
+    
+    try {
+        await fetch(`${API}/words/delete/${encodeURIComponent(word)}`, { method: "DELETE" });
+        loadWords();
+    } catch (err) {
+        alert("Error deleting word: " + err.message);
+    }
 }
 
+// Initialize
+checkAuth();
 loadWords();
 </script>
 
