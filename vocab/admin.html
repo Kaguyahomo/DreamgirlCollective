@@ -158,7 +158,7 @@ function logout() {
     window.location.href = "index.html";
 }
 
-// Fetch definition from Free Dictionary API
+// Fetch definition from Wiktionary API (primary) with Free Dictionary API fallback
 async function fetchDefinition() {
     const word = document.getElementById("new-word").value.trim();
     if (!word) {
@@ -168,10 +168,73 @@ async function fetchDefinition() {
     
     showStatus("Looking up definition...", "loading");
     
+    // Try Wiktionary API first (more comprehensive coverage)
+    let definition = await fetchFromWiktionary(word);
+    
+    // Fall back to Free Dictionary API if Wiktionary doesn't have it
+    if (!definition) {
+        definition = await fetchFromFreeDictionary(word);
+    }
+    
+    if (definition) {
+        document.getElementById("preview-word").textContent = word;
+        document.getElementById("preview-definition").textContent = definition;
+        document.getElementById("definition-preview").classList.add("show");
+        showStatus("Definition found!", "success");
+    } else {
+        showStatus("Word not found in dictionaries. You can enter a custom definition below.", "error");
+        document.getElementById("preview-word").textContent = word;
+        document.getElementById("preview-definition").innerHTML = '<input id="custom-definition" placeholder="Enter custom definition..." style="width: 80%;">';
+        document.getElementById("definition-preview").classList.add("show");
+    }
+}
+
+// Fetch from Wiktionary API - broader coverage including uncommon words
+async function fetchFromWiktionary(word) {
     try {
-        // Add timeout to prevent hanging requests
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        
+        const res = await fetch(`https://en.wiktionary.org/api/rest_v1/page/definition/${encodeURIComponent(word)}`, {
+            signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!res.ok) {
+            return null;
+        }
+        
+        const data = await res.json();
+        
+        // Wiktionary returns definitions organized by language then part of speech
+        if (data && data.en && data.en.length > 0) {
+            for (const entry of data.en) {
+                if (entry.definitions && entry.definitions.length > 0) {
+                    const partOfSpeech = entry.partOfSpeech || "";
+                    // Get the definition text, strip HTML tags
+                    let defText = entry.definitions[0].definition || "";
+                    defText = defText.replace(/<[^>]*>/g, '').trim();
+                    
+                    if (defText) {
+                        return partOfSpeech ? `(${partOfSpeech}) ${defText}` : defText;
+                    }
+                }
+            }
+        }
+        
+        return null;
+    } catch (err) {
+        console.error("Wiktionary API error:", err);
+        return null;
+    }
+}
+
+// Fetch from Free Dictionary API - fallback for common words
+async function fetchFromFreeDictionary(word) {
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
         
         const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`, {
             signal: controller.signal
@@ -180,43 +243,30 @@ async function fetchDefinition() {
         clearTimeout(timeoutId);
         
         if (!res.ok) {
-            showStatus("Word not found in dictionary. You can enter a custom definition below.", "error");
-            document.getElementById("preview-word").textContent = word;
-            document.getElementById("preview-definition").innerHTML = '<input id="custom-definition" placeholder="Enter custom definition..." style="width: 80%;">';
-            document.getElementById("definition-preview").classList.add("show");
-            return;
+            return null;
         }
         
         const data = await res.json();
         
         if (data && data.length > 0 && data[0].meanings && data[0].meanings.length > 0) {
             const meanings = data[0].meanings;
-            let definition = "";
             
-            // Get the first definition from each part of speech
-            meanings.forEach((meaning, index) => {
+            for (const meaning of meanings) {
                 if (meaning.definitions && meaning.definitions.length > 0) {
-                    const partOfSpeech = meaning.partOfSpeech;
-                    const def = meaning.definitions[0].definition;
-                    if (index === 0) {
-                        definition = `(${partOfSpeech}) ${def}`;
+                    const partOfSpeech = meaning.partOfSpeech || "";
+                    const def = meaning.definitions[0].definition || "";
+                    
+                    if (def) {
+                        return partOfSpeech ? `(${partOfSpeech}) ${def}` : def;
                     }
                 }
-            });
-            
-            document.getElementById("preview-word").textContent = word;
-            document.getElementById("preview-definition").textContent = definition;
-            document.getElementById("definition-preview").classList.add("show");
-            showStatus("Definition found!", "success");
-        } else {
-            showStatus("No definition found. Enter a custom definition.", "error");
+            }
         }
+        
+        return null;
     } catch (err) {
-        console.error("Error fetching definition:", err);
-        showStatus("Error looking up word. Please try again or enter custom definition.", "error");
-        document.getElementById("preview-word").textContent = word;
-        document.getElementById("preview-definition").innerHTML = '<input id="custom-definition" placeholder="Enter custom definition..." style="width: 80%;">';
-        document.getElementById("definition-preview").classList.add("show");
+        console.error("Free Dictionary API error:", err);
+        return null;
     }
 }
 
