@@ -2,81 +2,87 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin — Word Bank</title>
     <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="admin.css">
 </head>
 
 <body>
 
 <header>
-    <img src="../header-image.png" class="header-image left">
+    <img src="../header-image.png" class="header-image left" alt="Header">
     <h1>Vocabulary Admin</h1>
-    <img src="../header-image.png" class="header-image right">
+    <img src="../header-image.png" class="header-image right" alt="Header">
 </header>
 
 <nav>
-    <a href="../kaguya.html"><img src="../header-image.png"></a>
-    <a href="../vocab/index.html"><img src="../header-image.png"></a>
+    <a href="../kaguya.html"><img src="../header-image.png" alt="Kaguya"></a>
+    <a href="index.html"><img src="../header-image.png" alt="Vocab Quiz"></a>
 </nav>
 
-<section>
+<!-- Login Section -->
+<div id="login-section" class="login-container">
+    <h2>Admin Login</h2>
+    <input type="text" id="username" placeholder="Username" autocomplete="username">
+    <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+    <button onclick="adminLogin()">Login</button>
+    <div id="login-error" class="message message-error hidden"></div>
+    <div class="security-warning">
+        ⚠️ Security Notice: This is a client-side login for demonstration purposes only. 
+        Do not use for sensitive data.
+    </div>
+</div>
 
+<!-- Admin Panel (hidden until login) -->
+<div id="admin-panel" class="admin-panel hidden">
+    <button class="logout-btn" onclick="adminLogout()">Logout</button>
+    
     <h2>Word Bank Manager</h2>
+    
+    <div class="admin-grid">
+        <!-- Pane 1: Add/Lookup Words -->
+        <div class="admin-pane">
+            <h3>🔍 Add / Lookup Word</h3>
+            <div class="lookup-section">
+                <input type="text" id="lookup-word" placeholder="Enter a word...">
+                <button onclick="lookupWord()">Lookup</button>
+            </div>
+            <div id="lookup-loading" class="loading hidden">Looking up...</div>
+            <div id="lookup-error" class="message message-error hidden"></div>
+            <div id="preview-box" class="preview-box hidden">
+                <div id="preview-word" class="word-title"></div>
+                <div id="preview-phonetic" class="phonetic"></div>
+                <div id="preview-definition" class="definition"></div>
+                <button id="add-to-bank-btn" class="add-to-bank-btn" onclick="addToUnused()">
+                    + Add to Unused Words
+                </button>
+            </div>
+        </div>
+        
+        <!-- Pane 2: Unused Words -->
+        <div class="admin-pane">
+            <h3>📦 Unused Words (<span id="unused-count">0</span>)</h3>
+            <ul id="unused-list" class="word-list">
+                <li class="empty-list">No unused words yet.</li>
+            </ul>
+        </div>
+        
+        <!-- Pane 3: Sent Words -->
+        <div class="admin-pane">
+            <h3>✉️ Sent Words (<span id="sent-count">0</span>)</h3>
+            <ul id="sent-list" class="word-list">
+                <li class="empty-list">No sent words yet.</li>
+            </ul>
+        </div>
+    </div>
+</div>
 
-    <h3>Add New Word</h3>
-    <input id="new-word" placeholder="Word">
-    <input id="new-definition" placeholder="Definition">
-    <button onclick="addWord()">Add Word</button>
+<footer>
+    <p>Dreamgirl Collective</p>
+</footer>
 
-    <hr style="margin:2rem 0;">
-
-    <h3>All Words</h3>
-    <div id="word-list"></div>
-
-</section>
-
-<script>
-const API = "https://renelaird.pages.dev/api";
-
-async function loadWords() {
-    const res = await fetch(`${API}/words/all`);
-    const data = await res.json();
-
-    let html = "<ul>";
-    data.words.forEach(w => {
-        html += `
-            <li>
-                <b>${w.word}</b>: ${w.definition}
-                <button onclick="deleteWord('${w.word}')">Delete</button>
-            </li>`;
-    });
-    html += "</ul>";
-
-    document.getElementById("word-list").innerHTML = html;
-}
-
-async function addWord() {
-    const word = document.getElementById("new-word").value.trim();
-    const definition = document.getElementById("new-definition").value.trim();
-
-    if (!word || !definition) return;
-
-    await fetch(`${API}/words/add`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({word, definition})
-    });
-
-    loadWords();
-}
-
-async function deleteWord(word) {
-    await fetch(`${API}/words/delete/${word}`, { method: "DELETE" });
-    loadWords();
-}
-
-loadWords();
-</script>
+<script src="admin.js"></script>
 
 </body>
 </html>
