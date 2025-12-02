@@ -1,6 +1,32 @@
 // Maximum file size: 400MB
 const MAX_FILE_SIZE = 400 * 1024 * 1024;
 
+// Allowed video MIME types
+const ALLOWED_VIDEO_TYPES = [
+  "video/mp4",
+  "video/webm",
+  "video/ogg",
+  "video/quicktime",
+  "video/x-msvideo",
+  "video/x-matroska",
+  "video/mpeg",
+  "video/3gpp",
+  "video/3gpp2"
+];
+
+// Allowed image MIME types for thumbnails
+const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp"
+];
+
+// Generate a cryptographically secure random ID
+function generateSecureId() {
+  return crypto.randomUUID();
+}
+
 export async function onRequest(context) {
   const url = new URL(context.request.url);
   const method = context.request.method;
@@ -9,11 +35,7 @@ export async function onRequest(context) {
   // Handle CORS preflight
   if (method === "OPTIONS") {
     return new Response(null, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-      },
+      headers: corsHeaders(),
     });
   }
 
@@ -68,16 +90,25 @@ async function handleVideoUpload(context) {
         );
       }
 
-      // Generate unique filename
+      // Validate file type is a video
+      const fileType = file.type || "";
+      if (!ALLOWED_VIDEO_TYPES.includes(fileType)) {
+        return Response.json(
+          { error: "Invalid file type. Only video files are allowed." },
+          { status: 400, headers: corsHeaders() }
+        );
+      }
+
+      // Generate unique filename using cryptographically secure random
       const timestamp = Date.now();
-      const randomId = Math.random().toString(36).substring(2, 15);
+      const randomId = generateSecureId();
       const extension = getExtension(file.name) || "mp4";
       const key = `videos/${timestamp}-${randomId}.${extension}`;
 
       // Upload to R2
       await bucket.put(key, file.stream(), {
         httpMetadata: {
-          contentType: file.type || "video/mp4",
+          contentType: fileType,
         },
         customMetadata: {
           originalName: file.name,
@@ -139,16 +170,25 @@ async function handleThumbnailUpload(context) {
         );
       }
 
-      // Generate unique filename
+      // Validate file type is an image
+      const fileType = file.type || "";
+      if (!ALLOWED_IMAGE_TYPES.includes(fileType)) {
+        return Response.json(
+          { error: "Invalid file type. Only image files are allowed." },
+          { status: 400, headers: corsHeaders() }
+        );
+      }
+
+      // Generate unique filename using cryptographically secure random
       const timestamp = Date.now();
-      const randomId = Math.random().toString(36).substring(2, 15);
+      const randomId = generateSecureId();
       const extension = getExtension(file.name) || "jpg";
       const key = `thumbnails/${timestamp}-${randomId}.${extension}`;
 
       // Upload to R2
       await bucket.put(key, file.stream(), {
         httpMetadata: {
-          contentType: file.type || "image/jpeg",
+          contentType: fileType,
         },
         customMetadata: {
           originalName: file.name,
@@ -186,11 +226,20 @@ async function handleThumbnailUpload(context) {
 
       const mimeType = matches[1];
       const base64Data = matches[2];
+
+      // Validate MIME type is an allowed image type
+      if (!ALLOWED_IMAGE_TYPES.includes(mimeType)) {
+        return Response.json(
+          { error: "Invalid file type. Only image files are allowed." },
+          { status: 400, headers: corsHeaders() }
+        );
+      }
+
       const binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
 
-      // Generate unique filename
+      // Generate unique filename using cryptographically secure random
       const timestamp = Date.now();
-      const randomId = Math.random().toString(36).substring(2, 15);
+      const randomId = generateSecureId();
       const extension = mimeType.split("/")[1] || "jpg";
       const key = `thumbnails/${timestamp}-${randomId}.${extension}`;
 
@@ -291,9 +340,10 @@ function getExtension(filename) {
 }
 
 function corsHeaders() {
+  // Restrict CORS to the specific domain
   return {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Origin": "https://renelaird.pages.dev",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   };
 }
