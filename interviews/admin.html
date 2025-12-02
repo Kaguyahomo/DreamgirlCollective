@@ -606,7 +606,7 @@ function uploadFileWithProgress(url, file, onProgress) {
             try {
                 if (!xhr.responseText || xhr.responseText.trim() === '') {
                     // This typically happens when the server times out during large file processing
-                    reject(new Error("Server returned an empty response. The file may be too large for single-request upload. Try a smaller file or wait for the chunked upload to process."));
+                    reject(new Error("Server returned an empty response. The server may have timed out processing the file. Files over 25MB are automatically uploaded in chunks to avoid this issue."));
                     return;
                 }
                 const response = JSON.parse(xhr.responseText);
