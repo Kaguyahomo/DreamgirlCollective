@@ -1,8 +1,9 @@
 // Maximum file size: 400MB
 const MAX_FILE_SIZE = 400 * 1024 * 1024;
 
-// Chunk size for multipart uploads (50MB - well under Cloudflare's 100MB limit)
-const CHUNK_SIZE = 50 * 1024 * 1024;
+// Chunk size for multipart uploads (25MB - smaller chunks for more reliable uploads)
+// Using smaller chunks helps avoid Cloudflare Workers CPU time limits
+const CHUNK_SIZE = 25 * 1024 * 1024;
 
 // Allowed video MIME types
 const ALLOWED_VIDEO_TYPES = [
