@@ -697,6 +697,9 @@ async function uploadFileChunked(file, onProgress) {
         
     } catch (error) {
         // Attempt to abort the upload if it was started
+        // Note: If abort fails, the incomplete multipart upload will remain in R2 until
+        // R2's lifecycle policies clean it up. This is acceptable as it doesn't affect
+        // the user experience and R2 handles cleanup automatically.
         if (uploadId && key) {
             try {
                 await fetch(`${API}/upload/multipart/abort`, {
@@ -705,7 +708,8 @@ async function uploadFileChunked(file, onProgress) {
                     body: JSON.stringify({ key, uploadId })
                 });
             } catch (abortError) {
-                console.error("Failed to abort upload:", abortError);
+                // Log but don't throw - the main error is more important
+                console.error("Failed to abort multipart upload (will be cleaned by R2 lifecycle):", abortError);
             }
         }
         return { success: false, error: error.message };

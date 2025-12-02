@@ -528,8 +528,19 @@ async function handleMultipartComplete(context) {
     // Resume and complete the multipart upload
     const multipartUpload = bucket.resumeMultipartUpload(key, uploadId);
     
-    // Sort parts by partNumber before completing
-    const sortedParts = parts.sort((a, b) => a.partNumber - b.partNumber);
+    // Validate and sort parts by partNumber before completing
+    const validParts = parts.filter(p => 
+      p && typeof p.partNumber === 'number' && !isNaN(p.partNumber) && p.etag
+    );
+    
+    if (validParts.length !== parts.length) {
+      return Response.json(
+        { error: "Invalid parts data. Each part must have a valid partNumber and etag." },
+        { status: 400, headers: corsHeaders() }
+      );
+    }
+    
+    const sortedParts = validParts.sort((a, b) => a.partNumber - b.partNumber);
     
     await multipartUpload.complete(sortedParts);
 
