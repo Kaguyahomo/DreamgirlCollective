@@ -329,11 +329,11 @@ async function handleImageUpload(context) {
         );
       }
 
-      // Images should be limited to 10MB
-      const maxImageSize = 10 * 1024 * 1024;
+      // Images should be limited to 20MB
+      const maxImageSize = 20 * 1024 * 1024;
       if (file.size > maxImageSize) {
         return Response.json(
-          { error: "Image too large. Maximum size is 10MB" },
+          { error: "Image too large. Maximum size is 20MB" },
           { status: 400, headers: corsHeaders() }
         );
       }

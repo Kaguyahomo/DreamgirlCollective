@@ -192,7 +192,7 @@
             <div class="form-group">
                 <label for="image-file">Or Upload Image File</label>
                 <input type="file" id="image-file" accept="image/*" onchange="handleImageSelect(event)">
-                <p class="upload-note">Upload images up to 10MB. Files are stored in cloud storage and will be accessible via URL.</p>
+                <p class="upload-note">Upload images up to 20MB. Files are stored in cloud storage and will be accessible via URL.</p>
             </div>
             
             <img id="image-preview" class="image-preview" alt="Preview">
@@ -226,8 +226,8 @@
 
 <script>
 const API = "https://renelaird.pages.dev/api";
-// Maximum file size for upload (10MB)
-const MAX_IMAGE_FILE_SIZE = 10 * 1024 * 1024;
+// Maximum file size for upload (20MB)
+const MAX_IMAGE_FILE_SIZE = 20 * 1024 * 1024;
 // Upload timeout in milliseconds (5 minutes)
 const UPLOAD_TIMEOUT_MS = 5 * 60 * 1000;
 
@@ -297,7 +297,7 @@ async function uploadPicture() {
         
         // If an image file was selected, upload it
         if (imageFile && !imageUrl) {
-            // Check file size - max 10MB
+            // Check file size - max 20MB
             if (imageFile.size > MAX_IMAGE_FILE_SIZE) {
                 showStatus(`Image file is too large (max ${MAX_IMAGE_FILE_SIZE / (1024 * 1024)}MB). Please upload a smaller file or use an image hosting service.`, "error");
                 return;
