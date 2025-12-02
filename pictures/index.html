@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Pictures</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .pictures-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        .picture-card {
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .picture-card:hover {
+            transform: scale(1.02);
+        }
+        .picture-thumbnail {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            background-color: rgba(0,0,0,0.1);
+        }
+        .picture-info {
+            padding: 1rem;
+        }
+        .picture-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #ff3377;
+        }
+        .picture-date {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .picture-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .picture-modal.show {
+            display: flex;
+        }
+        .picture-modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        .picture-modal img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+        }
+        .picture-modal-title {
+            color: white;
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 1.2rem;
+        }
+        .close-modal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+            text-align: center;
+            padding: 2rem;
+        }
+        .no-pictures {
+            color: #666;
+            font-style: italic;
+            text-align: center;
+            padding: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <img src="../header-image.png" class="header-image left">
+    <h1>Digital Pictures</h1>
+    <img src="../header-image.png" class="header-image right">
+</header>
+
+<nav>
+    <a href="../kaguya.html"><img src="../header-image.png" alt="Kaguya"></a>
+    <a href="../index.html"><img src="../header-image.png" alt="Home"></a>
+    <a href="../request.html"><img src="../Request.png" alt="Request"></a>
+    <a href="../creativewriting.html"><img src="../cw.gif" alt="CW"></a>
+</nav>
+
+<section>
+
+    <h2>Digital Pictures</h2>
+    <p>Browse my collection of digital pictures sorted by date</p>
+
+    <div id="pictures-container" class="pictures-grid">
+        <p class="loading">Loading pictures...</p>
+    </div>
+
+</section>
+
+<!-- Picture Viewer Modal -->
+<div id="picture-modal" class="picture-modal">
+    <div class="picture-modal-content">
+        <button class="close-modal" onclick="closePictureModal()">&times;</button>
+        <img id="modal-picture" src="" alt="">
+        <p id="modal-title" class="picture-modal-title"></p>
+    </div>
+</div>
+
+<!-- ADMIN LOGIN BUTTON (small pink circle) -->
+<div id="admin-circle" 
+   onclick="showLoginModal()"
+   style="
+        position: fixed;
+        bottom: 15px;
+        right: 15px;
+        width: 20px;
+        height: 20px;
+        background-color: #ff88bb;
+        border-radius: 50%;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.3s;
+   ">
+</div>
+
+<!-- Login Modal -->
+<div id="login-modal" style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+">
+    <div style="
+        background-color: #ffd1dc;
+        padding: 2rem;
+        border-radius: 8px;
+        text-align: center;
+        max-width: 300px;
+    ">
+        <h3 style="margin-top: 0; color: #ff3377;">Admin Login</h3>
+        <input id="login-username" placeholder="Username" style="
+            width: 90%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #ff88bb;
+            border-radius: 6px;
+        ">
+        <input id="login-password" type="password" placeholder="Password" style="
+            width: 90%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #ff88bb;
+            border-radius: 6px;
+        ">
+        <br>
+        <button onclick="attemptLogin()" style="
+            background: #ff88bb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border-radius: 8px;
+            cursor: pointer;
+        ">Login</button>
+        <button onclick="hideLoginModal()" style="
+            background: #ccc;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border-radius: 8px;
+            cursor: pointer;
+        ">Cancel</button>
+        <p id="login-error" style="color: red; margin-top: 10px; display: none;">Invalid credentials</p>
+    </div>
+</div>
+
+<footer>
+    <p>Dreamgirl Collective</p>
+</footer>
+
+<script>
+const API = "https://renelaird.pages.dev/api";
+
+// Safely parse JSON from a response, handling empty or malformed responses
+async function safeJsonParse(response) {
+    const text = await response.text();
+    if (!text || text.trim() === '') {
+        throw new Error("Server returned an empty response");
+    }
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        throw new Error("Server returned an invalid response");
+    }
+}
+
+// Load pictures on page load
+async function loadPictures() {
+    try {
+        const res = await fetch(`${API}/pictures/all`);
+        const data = await safeJsonParse(res);
+        
+        const pictures = data.pictures || data || [];
+        
+        // Sort by date descending (newest first)
+        pictures.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        renderPictures(pictures);
+    } catch (err) {
+        console.error("Error loading pictures:", err);
+        document.getElementById("pictures-container").innerHTML = 
+            '<p class="no-pictures">Error loading pictures. Please try again later.</p>';
+    }
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#039;');
+}
+
+function renderPictures(pictures) {
+    const container = document.getElementById("pictures-container");
+    
+    if (pictures.length === 0) {
+        container.innerHTML = '<p class="no-pictures">No pictures available yet.</p>';
+        return;
+    }
+    
+    container.innerHTML = '';
+    
+    pictures.forEach(picture => {
+        const card = document.createElement('div');
+        card.className = 'picture-card';
+        card.dataset.imageUrl = picture.image_url;
+        card.dataset.title = picture.title;
+        
+        const formattedDate = new Date(picture.date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        card.innerHTML = `
+            <img class="picture-thumbnail" 
+                 src="${escapeHtml(picture.image_url) || '../header-image.png'}" 
+                 alt="${escapeHtml(picture.title)}"
+                 onerror="this.src='../header-image.png'">
+            <div class="picture-info">
+                <p class="picture-title">${escapeHtml(picture.title)}</p>
+                <p class="picture-date">${escapeHtml(formattedDate)}</p>
+            </div>
+        `;
+        
+        card.addEventListener('click', function() {
+            openPictureModal(this.dataset.imageUrl, this.dataset.title);
+        });
+        
+        container.appendChild(card);
+    });
+}
+
+function openPictureModal(imageUrl, title) {
+    const modal = document.getElementById("picture-modal");
+    const image = document.getElementById("modal-picture");
+    const titleEl = document.getElementById("modal-title");
+    
+    image.src = imageUrl;
+    image.alt = title;
+    titleEl.textContent = title;
+    modal.classList.add("show");
+    document.body.style.overflow = "hidden";
+}
+
+function closePictureModal() {
+    const modal = document.getElementById("picture-modal");
+    const image = document.getElementById("modal-picture");
+    
+    image.src = "";
+    modal.classList.remove("show");
+    document.body.style.overflow = "";
+}
+
+// Close modal on escape key
+document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") {
+        closePictureModal();
+    }
+});
+
+// Close modal when clicking outside picture
+document.getElementById("picture-modal").addEventListener("click", function(e) {
+    if (e.target === this) {
+        closePictureModal();
+    }
+});
+
+// Admin login functions
+function showLoginModal() {
+    document.getElementById("login-modal").style.display = "flex";
+}
+
+function hideLoginModal() {
+    document.getElementById("login-modal").style.display = "none";
+    document.getElementById("login-error").style.display = "none";
+    document.getElementById("login-username").value = "";
+    document.getElementById("login-password").value = "";
+}
+
+function attemptLogin() {
+    const username = document.getElementById("login-username").value.trim();
+    const password = document.getElementById("login-password").value;
+    
+    if (username === "Rene" && password === "MischiefSisters2!") {
+        // Store auth in sessionStorage
+        sessionStorage.setItem("picturesAdminAuth", "true");
+        window.location.href = "admin.html";
+    } else {
+        document.getElementById("login-error").style.display = "block";
+    }
+}
+
+// Allow Enter key to submit login
+document.addEventListener("keypress", function(e) {
+    if (e.key === "Enter" && document.getElementById("login-modal").style.display === "flex") {
+        attemptLogin();
+    }
+});
+
+// Initialize
+loadPictures();
+</script>
+
+</body>
+</html>
