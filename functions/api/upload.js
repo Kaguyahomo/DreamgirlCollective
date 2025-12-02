@@ -53,6 +53,11 @@ export async function onRequest(context) {
     return handleThumbnailUpload(context);
   }
 
+  // POST /api/upload/image - Upload image to R2 (for pictures feature)
+  if (method === "POST" && pathname.endsWith("/image")) {
+    return handleImageUpload(context);
+  }
+
   // GET /api/upload/media/:key - Get media from R2
   if (method === "GET" && pathname.includes("/media/")) {
     return handleMediaGet(context);
@@ -293,6 +298,86 @@ async function handleThumbnailUpload(context) {
     );
   } catch (err) {
     console.error("Thumbnail upload error:", err);
+    return Response.json(
+      { error: err.message },
+      { status: 500, headers: corsHeaders() }
+    );
+  }
+}
+
+async function handleImageUpload(context) {
+  try {
+    const bucket = context.env.MEDIA_BUCKET;
+    
+    if (!bucket) {
+      return Response.json(
+        { error: "R2 bucket not configured" },
+        { status: 500, headers: corsHeaders() }
+      );
+    }
+
+    const contentType = context.request.headers.get("content-type") || "";
+    
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await context.request.formData();
+      const file = formData.get("file");
+      
+      if (!file) {
+        return Response.json(
+          { error: "No file provided" },
+          { status: 400, headers: corsHeaders() }
+        );
+      }
+
+      // Images should be limited to 10MB
+      const maxImageSize = 10 * 1024 * 1024;
+      if (file.size > maxImageSize) {
+        return Response.json(
+          { error: "Image too large. Maximum size is 10MB" },
+          { status: 400, headers: corsHeaders() }
+        );
+      }
+
+      // Validate file type is an image
+      const fileType = file.type || "";
+      if (!ALLOWED_IMAGE_TYPES.includes(fileType)) {
+        return Response.json(
+          { error: "Invalid file type. Only image files are allowed." },
+          { status: 400, headers: corsHeaders() }
+        );
+      }
+
+      // Generate unique filename using cryptographically secure random
+      const timestamp = Date.now();
+      const randomId = generateSecureId();
+      const extension = getExtension(file.name) || "jpg";
+      const key = `pictures/${timestamp}-${randomId}.${extension}`;
+
+      // Upload to R2
+      await bucket.put(key, file.stream(), {
+        httpMetadata: {
+          contentType: fileType,
+        },
+        customMetadata: {
+          originalName: file.name,
+          uploadedAt: new Date().toISOString(),
+        },
+      });
+
+      const imageUrl = `/api/upload/media/${key}`;
+
+      return Response.json(
+        { success: true, url: imageUrl, key },
+        { headers: corsHeaders() }
+      );
+    }
+
+    return Response.json(
+      { error: "Invalid content type. Use multipart/form-data" },
+      { status: 400, headers: corsHeaders() }
+    );
+  } catch (err) {
+    console.error("Image upload error:", err);
     return Response.json(
       { error: err.message },
       { status: 500, headers: corsHeaders() }
