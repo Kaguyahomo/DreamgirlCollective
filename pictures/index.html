@@ -339,6 +339,7 @@ function renderPictures(pictures) {
         
         const description = picture.description || picture.title || '';
         const imageUrl = escapeHtml(picture.image_url) || '../header-image.png';
+        const hasDescription = description.trim().length > 0;
         
         card.innerHTML = `
             <div class="picture-card-inner">
@@ -357,8 +358,8 @@ function renderPictures(pictures) {
                         <h3>📮 Postcard</h3>
                         <p class="postcard-date">${escapeHtml(formattedDate)}</p>
                     </div>
-                    <div class="postcard-description">
-                        ${description ? escapeHtml(description) : '<p class="no-description">No description yet...</p>'}
+                    <div class="postcard-description ${hasDescription ? '' : 'no-description'}">
+                        ${hasDescription ? escapeHtml(description) : 'No description yet...'}
                     </div>
                     <div class="postcard-footer">
                         <span>Tap to flip back</span>

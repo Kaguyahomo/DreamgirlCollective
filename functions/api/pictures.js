@@ -30,7 +30,7 @@ export async function onRequest(context) {
         .prepare(
           "INSERT INTO pictures (title, description, date, image_url) VALUES (?, ?, ?, ?)"
         )
-        .bind(description || '', description || '', date, image_url)
+        .bind('', description || '', date, image_url)
         .run();
       
       return Response.json({ success: true });
