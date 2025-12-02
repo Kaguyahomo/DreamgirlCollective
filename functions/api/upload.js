@@ -1,6 +1,9 @@
 // Maximum file size: 400MB
 const MAX_FILE_SIZE = 400 * 1024 * 1024;
 
+// Chunk size for multipart uploads (50MB - well under Cloudflare's 100MB limit)
+const CHUNK_SIZE = 50 * 1024 * 1024;
+
 // Allowed video MIME types
 const ALLOWED_VIDEO_TYPES = [
   "video/mp4",
@@ -39,7 +42,7 @@ export async function onRequest(context) {
     });
   }
 
-  // POST /api/upload/video - Upload video to R2
+  // POST /api/upload/video - Upload video to R2 (for small files < 100MB)
   if (method === "POST" && pathname.endsWith("/video")) {
     return handleVideoUpload(context);
   }
@@ -52,6 +55,28 @@ export async function onRequest(context) {
   // GET /api/upload/media/:key - Get media from R2
   if (method === "GET" && pathname.includes("/media/")) {
     return handleMediaGet(context);
+  }
+
+  // === Multipart Upload Endpoints (for large files > 100MB) ===
+  
+  // POST /api/upload/multipart/create - Create a new multipart upload
+  if (method === "POST" && pathname.endsWith("/multipart/create")) {
+    return handleMultipartCreate(context);
+  }
+
+  // POST /api/upload/multipart/part - Upload a single part
+  if (method === "POST" && pathname.endsWith("/multipart/part")) {
+    return handleMultipartPart(context);
+  }
+
+  // POST /api/upload/multipart/complete - Complete the multipart upload
+  if (method === "POST" && pathname.endsWith("/multipart/complete")) {
+    return handleMultipartComplete(context);
+  }
+
+  // POST /api/upload/multipart/abort - Abort a multipart upload
+  if (method === "POST" && pathname.endsWith("/multipart/abort")) {
+    return handleMultipartAbort(context);
   }
 
   return new Response("Method not allowed", { status: 405 });
@@ -352,6 +377,212 @@ async function handleMediaGet(context) {
   } catch (err) {
     console.error("Media get error:", err);
     return new Response("Error retrieving file: " + err.message, { status: 500 });
+  }
+}
+
+// === Multipart Upload Handlers ===
+
+// Create a new multipart upload
+async function handleMultipartCreate(context) {
+  try {
+    const bucket = context.env.MEDIA_BUCKET;
+    
+    if (!bucket) {
+      return Response.json(
+        { error: "R2 bucket not configured" },
+        { status: 500, headers: corsHeaders() }
+      );
+    }
+
+    const { filename, contentType, fileSize } = await context.request.json();
+    
+    if (!filename || !contentType) {
+      return Response.json(
+        { error: "Missing filename or contentType" },
+        { status: 400, headers: corsHeaders() }
+      );
+    }
+
+    // Validate file size
+    if (fileSize > MAX_FILE_SIZE) {
+      return Response.json(
+        { error: `File too large. Maximum size is ${MAX_FILE_SIZE / (1024 * 1024)}MB` },
+        { status: 400, headers: corsHeaders() }
+      );
+    }
+
+    // Validate file type is a video
+    if (!ALLOWED_VIDEO_TYPES.includes(contentType)) {
+      return Response.json(
+        { error: "Invalid file type. Only video files are allowed." },
+        { status: 400, headers: corsHeaders() }
+      );
+    }
+
+    // Generate unique key
+    const timestamp = Date.now();
+    const randomId = generateSecureId();
+    const extension = getExtension(filename) || "mp4";
+    const key = `videos/${timestamp}-${randomId}.${extension}`;
+
+    // Create multipart upload
+    const multipartUpload = await bucket.createMultipartUpload(key, {
+      httpMetadata: {
+        contentType: contentType,
+      },
+      customMetadata: {
+        originalName: filename,
+        uploadedAt: new Date().toISOString(),
+      },
+    });
+
+    return Response.json({
+      success: true,
+      uploadId: multipartUpload.uploadId,
+      key: key,
+    }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error("Multipart create error:", err);
+    return Response.json(
+      { error: err.message },
+      { status: 500, headers: corsHeaders() }
+    );
+  }
+}
+
+// Upload a single part of a multipart upload
+async function handleMultipartPart(context) {
+  try {
+    const bucket = context.env.MEDIA_BUCKET;
+    
+    if (!bucket) {
+      return Response.json(
+        { error: "R2 bucket not configured" },
+        { status: 500, headers: corsHeaders() }
+      );
+    }
+
+    const contentType = context.request.headers.get("content-type") || "";
+    
+    if (!contentType.includes("multipart/form-data")) {
+      return Response.json(
+        { error: "Invalid content type. Use multipart/form-data" },
+        { status: 400, headers: corsHeaders() }
+      );
+    }
+
+    const formData = await context.request.formData();
+    const key = formData.get("key");
+    const uploadId = formData.get("uploadId");
+    const partNumber = parseInt(formData.get("partNumber"), 10);
+    const chunk = formData.get("chunk");
+    
+    if (!key || !uploadId || !partNumber || !chunk) {
+      return Response.json(
+        { error: "Missing required fields: key, uploadId, partNumber, chunk" },
+        { status: 400, headers: corsHeaders() }
+      );
+    }
+
+    // Resume the multipart upload
+    const multipartUpload = bucket.resumeMultipartUpload(key, uploadId);
+
+    // Upload the part
+    const uploadedPart = await multipartUpload.uploadPart(partNumber, chunk);
+
+    return Response.json({
+      success: true,
+      partNumber: partNumber,
+      etag: uploadedPart.etag,
+    }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error("Multipart part upload error:", err);
+    return Response.json(
+      { error: err.message },
+      { status: 500, headers: corsHeaders() }
+    );
+  }
+}
+
+// Complete a multipart upload
+async function handleMultipartComplete(context) {
+  try {
+    const bucket = context.env.MEDIA_BUCKET;
+    
+    if (!bucket) {
+      return Response.json(
+        { error: "R2 bucket not configured" },
+        { status: 500, headers: corsHeaders() }
+      );
+    }
+
+    const { key, uploadId, parts } = await context.request.json();
+    
+    if (!key || !uploadId || !parts || !Array.isArray(parts)) {
+      return Response.json(
+        { error: "Missing required fields: key, uploadId, parts" },
+        { status: 400, headers: corsHeaders() }
+      );
+    }
+
+    // Resume and complete the multipart upload
+    const multipartUpload = bucket.resumeMultipartUpload(key, uploadId);
+    
+    // Sort parts by partNumber before completing
+    const sortedParts = parts.sort((a, b) => a.partNumber - b.partNumber);
+    
+    await multipartUpload.complete(sortedParts);
+
+    const videoUrl = `/api/upload/media/${key}`;
+
+    return Response.json({
+      success: true,
+      url: videoUrl,
+      key: key,
+    }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error("Multipart complete error:", err);
+    return Response.json(
+      { error: err.message },
+      { status: 500, headers: corsHeaders() }
+    );
+  }
+}
+
+// Abort a multipart upload
+async function handleMultipartAbort(context) {
+  try {
+    const bucket = context.env.MEDIA_BUCKET;
+    
+    if (!bucket) {
+      return Response.json(
+        { error: "R2 bucket not configured" },
+        { status: 500, headers: corsHeaders() }
+      );
+    }
+
+    const { key, uploadId } = await context.request.json();
+    
+    if (!key || !uploadId) {
+      return Response.json(
+        { error: "Missing required fields: key, uploadId" },
+        { status: 400, headers: corsHeaders() }
+      );
+    }
+
+    // Resume and abort the multipart upload
+    const multipartUpload = bucket.resumeMultipartUpload(key, uploadId);
+    await multipartUpload.abort();
+
+    return Response.json({
+      success: true,
+    }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error("Multipart abort error:", err);
+    return Response.json(
+      { error: err.message },
+      { status: 500, headers: corsHeaders() }
+    );
   }
 }
 

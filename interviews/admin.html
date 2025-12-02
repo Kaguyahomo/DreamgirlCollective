@@ -273,8 +273,12 @@
 
 <script>
 const API = "https://renelaird.pages.dev/api";
-// Maximum file size for direct upload (400MB) - using R2 storage
+// Maximum file size for upload (400MB) - using R2 storage
 const MAX_VIDEO_FILE_SIZE = 400 * 1024 * 1024;
+// Threshold for using chunked upload (100MB - Cloudflare Workers body limit)
+const CHUNKED_UPLOAD_THRESHOLD = 100 * 1024 * 1024;
+// Chunk size for multipart uploads (50MB - well under Cloudflare's limit)
+const CHUNK_SIZE = 50 * 1024 * 1024;
 let selectedThumbnail = null;
 let videoElement = null;
 
@@ -476,15 +480,28 @@ async function uploadInterview() {
             showStatus("Uploading video file... 0%", "loading");
             showProgressBar(true);
             
-            // Upload to R2 using the new endpoint with progress tracking
-            const uploadResult = await uploadFileWithProgress(
-                `${API}/upload/video`,
-                videoFile,
-                (progress) => {
-                    updateProgress(progress);
-                    showStatus(`Uploading video file... ${Math.round(progress)}%`, "loading");
-                }
-            );
+            let uploadResult;
+            
+            // Use chunked upload for large files (> 100MB)
+            if (videoFile.size > CHUNKED_UPLOAD_THRESHOLD) {
+                uploadResult = await uploadFileChunked(
+                    videoFile,
+                    (progress) => {
+                        updateProgress(progress);
+                        showStatus(`Uploading video file... ${Math.round(progress)}%`, "loading");
+                    }
+                );
+            } else {
+                // Use direct upload for smaller files
+                uploadResult = await uploadFileWithProgress(
+                    `${API}/upload/video`,
+                    videoFile,
+                    (progress) => {
+                        updateProgress(progress);
+                        showStatus(`Uploading video file... ${Math.round(progress)}%`, "loading");
+                    }
+                );
+            }
             
             if (!uploadResult.success) {
                 throw new Error(uploadResult.error || "Failed to upload video");
@@ -594,6 +611,105 @@ function uploadFileWithProgress(url, file, onProgress) {
         xhr.open("POST", url);
         xhr.send(formData);
     });
+}
+
+// Upload large file in chunks using multipart upload API
+async function uploadFileChunked(file, onProgress) {
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+    let uploadId = null;
+    let key = null;
+    
+    try {
+        // Step 1: Create multipart upload
+        const createResponse = await fetch(`${API}/upload/multipart/create`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                filename: file.name,
+                contentType: file.type || "video/mp4",
+                fileSize: file.size
+            })
+        });
+        
+        if (!createResponse.ok) {
+            const error = await createResponse.json();
+            throw new Error(error.error || "Failed to initiate upload");
+        }
+        
+        const createResult = await createResponse.json();
+        uploadId = createResult.uploadId;
+        key = createResult.key;
+        
+        // Step 2: Upload each chunk
+        const uploadedParts = [];
+        
+        for (let i = 0; i < totalChunks; i++) {
+            const start = i * CHUNK_SIZE;
+            const end = Math.min(start + CHUNK_SIZE, file.size);
+            const chunk = file.slice(start, end);
+            const partNumber = i + 1;
+            
+            const formData = new FormData();
+            formData.append("key", key);
+            formData.append("uploadId", uploadId);
+            formData.append("partNumber", partNumber.toString());
+            formData.append("chunk", chunk);
+            
+            const partResponse = await fetch(`${API}/upload/multipart/part`, {
+                method: "POST",
+                body: formData
+            });
+            
+            if (!partResponse.ok) {
+                const error = await partResponse.json();
+                throw new Error(error.error || `Failed to upload part ${partNumber}`);
+            }
+            
+            const partResult = await partResponse.json();
+            uploadedParts.push({
+                partNumber: partNumber,
+                etag: partResult.etag
+            });
+            
+            // Update progress
+            const progress = ((i + 1) / totalChunks) * 100;
+            onProgress(progress);
+        }
+        
+        // Step 3: Complete multipart upload
+        const completeResponse = await fetch(`${API}/upload/multipart/complete`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                key: key,
+                uploadId: uploadId,
+                parts: uploadedParts
+            })
+        });
+        
+        if (!completeResponse.ok) {
+            const error = await completeResponse.json();
+            throw new Error(error.error || "Failed to complete upload");
+        }
+        
+        const completeResult = await completeResponse.json();
+        return { success: true, url: completeResult.url };
+        
+    } catch (error) {
+        // Attempt to abort the upload if it was started
+        if (uploadId && key) {
+            try {
+                await fetch(`${API}/upload/multipart/abort`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ key, uploadId })
+                });
+            } catch (abortError) {
+                console.error("Failed to abort upload:", abortError);
+            }
+        }
+        return { success: false, error: error.message };
+    }
 }
 
 function showProgressBar(show) {
