@@ -282,6 +282,19 @@ const CHUNK_SIZE = 50 * 1024 * 1024;
 let selectedThumbnail = null;
 let videoElement = null;
 
+// Safely parse JSON from a response, handling empty or malformed responses
+async function safeJsonParse(response) {
+    const text = await response.text();
+    if (!text || text.trim() === '') {
+        throw new Error("Server returned an empty response");
+    }
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        throw new Error("Server returned an invalid response: " + text.substring(0, 100));
+    }
+}
+
 // Check authentication on page load
 function checkAuth() {
     const auth = sessionStorage.getItem("interviewsAdminAuth");
@@ -522,9 +535,14 @@ async function uploadInterview() {
             });
             
             if (thumbnailResponse.ok) {
-                const thumbnailResult = await thumbnailResponse.json();
-                if (thumbnailResult.success) {
-                    finalThumbnailUrl = thumbnailResult.url;
+                try {
+                    const thumbnailResult = await safeJsonParse(thumbnailResponse);
+                    if (thumbnailResult.success) {
+                        finalThumbnailUrl = thumbnailResult.url;
+                    }
+                } catch (e) {
+                    console.error("Thumbnail upload response error:", e);
+                    // Continue without thumbnail rather than failing entire upload
                 }
             }
         }
@@ -543,7 +561,8 @@ async function uploadInterview() {
         });
         
         if (!response.ok) {
-            throw new Error("Failed to save interview metadata");
+            const errorData = await safeJsonParse(response).catch(() => ({}));
+            throw new Error(errorData.error || "Failed to save interview metadata");
         }
         
         showStatus("Interview uploaded successfully!", "success");
@@ -584,6 +603,10 @@ function uploadFileWithProgress(url, file, onProgress) {
         
         xhr.addEventListener("load", () => {
             try {
+                if (!xhr.responseText || xhr.responseText.trim() === '') {
+                    reject(new Error("Server returned an empty response. The upload may have timed out."));
+                    return;
+                }
                 const response = JSON.parse(xhr.responseText);
                 if (xhr.status >= 200 && xhr.status < 300) {
                     resolve(response);
@@ -591,7 +614,7 @@ function uploadFileWithProgress(url, file, onProgress) {
                     reject(new Error(response.error || `Server error: ${xhr.status}`));
                 }
             } catch (e) {
-                reject(new Error("Invalid response from server"));
+                reject(new Error("Invalid response from server: " + (xhr.responseText || "").substring(0, 100)));
             }
         });
         
@@ -632,11 +655,11 @@ async function uploadFileChunked(file, onProgress) {
         });
         
         if (!createResponse.ok) {
-            const error = await createResponse.json();
+            const error = await safeJsonParse(createResponse);
             throw new Error(error.error || "Failed to initiate upload");
         }
         
-        const createResult = await createResponse.json();
+        const createResult = await safeJsonParse(createResponse);
         uploadId = createResult.uploadId;
         key = createResult.key;
         
@@ -661,11 +684,11 @@ async function uploadFileChunked(file, onProgress) {
             });
             
             if (!partResponse.ok) {
-                const error = await partResponse.json();
+                const error = await safeJsonParse(partResponse);
                 throw new Error(error.error || `Failed to upload part ${partNumber}`);
             }
             
-            const partResult = await partResponse.json();
+            const partResult = await safeJsonParse(partResponse);
             uploadedParts.push({
                 partNumber: partNumber,
                 etag: partResult.etag
@@ -688,11 +711,11 @@ async function uploadFileChunked(file, onProgress) {
         });
         
         if (!completeResponse.ok) {
-            const error = await completeResponse.json();
+            const error = await safeJsonParse(completeResponse);
             throw new Error(error.error || "Failed to complete upload");
         }
         
-        const completeResult = await completeResponse.json();
+        const completeResult = await safeJsonParse(completeResponse);
         return { success: true, url: completeResult.url };
         
     } catch (error) {
@@ -735,7 +758,7 @@ function updateProgress(percent) {
 async function loadInterviews() {
     try {
         const res = await fetch(`${API}/interviews/all`);
-        const data = await res.json();
+        const data = await safeJsonParse(res);
         
         const interviews = data.interviews || data || [];
         

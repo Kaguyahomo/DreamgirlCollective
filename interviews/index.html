@@ -214,11 +214,24 @@
 <script>
 const API = "https://renelaird.pages.dev/api";
 
+// Safely parse JSON from a response, handling empty or malformed responses
+async function safeJsonParse(response) {
+    const text = await response.text();
+    if (!text || text.trim() === '') {
+        throw new Error("Server returned an empty response");
+    }
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        throw new Error("Server returned an invalid response");
+    }
+}
+
 // Load interviews on page load
 async function loadInterviews() {
     try {
         const res = await fetch(`${API}/interviews/all`);
-        const data = await res.json();
+        const data = await safeJsonParse(res);
         
         const interviews = data.interviews || data || [];
         
