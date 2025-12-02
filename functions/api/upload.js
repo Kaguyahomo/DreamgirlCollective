@@ -292,7 +292,51 @@ async function handleMediaGet(context) {
       return new Response("No key provided", { status: 400 });
     }
 
-    const object = await bucket.get(key);
+    // Support range requests for video streaming using R2's native range support
+    const range = context.request.headers.get("range");
+    
+    let object;
+    let start = 0;
+    let end;
+    
+    if (range) {
+      const parts = range.replace(/bytes=/, "").split("-");
+      start = parseInt(parts[0], 10);
+      // Note: We need to get object metadata first to know the size
+      const headObject = await bucket.head(key);
+      
+      if (!headObject) {
+        return new Response("File not found", { status: 404 });
+      }
+      
+      end = parts[1] ? parseInt(parts[1], 10) : headObject.size - 1;
+      
+      // Use R2's range option to avoid loading entire file into memory
+      object = await bucket.get(key, {
+        range: { offset: start, length: end - start + 1 }
+      });
+      
+      if (!object) {
+        return new Response("File not found", { status: 404 });
+      }
+      
+      const chunkSize = end - start + 1;
+      
+      const headers = new Headers();
+      headers.set("Content-Type", object.httpMetadata?.contentType || "application/octet-stream");
+      headers.set("Cache-Control", "public, max-age=31536000");
+      headers.set("Content-Range", `bytes ${start}-${end}/${headObject.size}`);
+      headers.set("Accept-Ranges", "bytes");
+      headers.set("Content-Length", chunkSize.toString());
+      
+      return new Response(object.body, {
+        status: 206,
+        headers,
+      });
+    }
+
+    // Non-range request - return full file
+    object = await bucket.get(key);
     
     if (!object) {
       return new Response("File not found", { status: 404 });
@@ -301,29 +345,7 @@ async function handleMediaGet(context) {
     const headers = new Headers();
     headers.set("Content-Type", object.httpMetadata?.contentType || "application/octet-stream");
     headers.set("Cache-Control", "public, max-age=31536000");
-    
-    // Support range requests for video streaming
-    const range = context.request.headers.get("range");
-    if (range && object.size) {
-      const parts = range.replace(/bytes=/, "").split("-");
-      const start = parseInt(parts[0], 10);
-      const end = parts[1] ? parseInt(parts[1], 10) : object.size - 1;
-      const chunkSize = end - start + 1;
-      
-      headers.set("Content-Range", `bytes ${start}-${end}/${object.size}`);
-      headers.set("Accept-Ranges", "bytes");
-      headers.set("Content-Length", chunkSize.toString());
-      
-      // For range requests, we need to slice the body
-      const body = await object.arrayBuffer();
-      const slicedBody = body.slice(start, end + 1);
-      
-      return new Response(slicedBody, {
-        status: 206,
-        headers,
-      });
-    }
-
+    headers.set("Accept-Ranges", "bytes");
     headers.set("Content-Length", object.size?.toString() || "0");
     
     return new Response(object.body, { headers });
