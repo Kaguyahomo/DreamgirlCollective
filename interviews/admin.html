@@ -273,6 +273,8 @@
 
 <script>
 const API = "https://renelaird.pages.dev/api";
+// Maximum file size for direct upload (10MB) - larger files should use external hosting
+const MAX_VIDEO_FILE_SIZE = 10 * 1024 * 1024;
 let selectedThumbnail = null;
 let videoElement = null;
 
@@ -467,13 +469,14 @@ async function uploadInterview() {
         // For now, we'll store the video URL directly - for large files,
         // the user should use an external hosting service
         if (videoFile && !videoUrl) {
-            // Convert to base64 for small videos, or prompt for URL for large ones
-            if (videoFile.size > 10 * 1024 * 1024) { // 10MB limit
-                showStatus("Video file is too large. Please upload to a video hosting service and use the URL field.", "error");
+            // Check file size - large files should use external hosting services
+            if (videoFile.size > MAX_VIDEO_FILE_SIZE) {
+                showStatus("Video file is too large (max 10MB for direct upload). Please upload to a video hosting service (YouTube, Vimeo, etc.) and paste the URL instead.", "error");
                 return;
             }
             
-            // For small files, we can convert to base64 (not ideal for production)
+            // For small files, convert to base64 data URL
+            // Note: This is suitable for small clips only; larger videos should use external hosting
             const reader = new FileReader();
             finalVideoUrl = await new Promise((resolve, reject) => {
                 reader.onload = e => resolve(e.target.result);
