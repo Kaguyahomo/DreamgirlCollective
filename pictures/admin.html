@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Digital Pictures</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .upload-section {
+            margin-bottom: 2rem;
+        }
+        .upload-form {
+            background-color: rgba(255,255,255,0.3);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #ff3377;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group input[type="url"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ff88bb;
+            border-radius: 6px;
+            background-color: rgba(255,255,255,0.5);
+            color: #333;
+            box-sizing: border-box;
+        }
+        .form-group input[type="file"] {
+            padding: 0.5rem;
+        }
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+        .image-preview.show {
+            display: block;
+        }
+        .pictures-list {
+            background-color: rgba(255,255,255,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .pictures-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .picture-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 8px;
+            gap: 1rem;
+        }
+        .picture-item-thumbnail {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+        .picture-item-info {
+            flex: 1;
+            text-align: left;
+        }
+        .picture-item-title {
+            font-weight: bold;
+            color: #ff3377;
+            margin-bottom: 0.25rem;
+        }
+        .picture-item-date {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .picture-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn-delete {
+            background: #ff6666 !important;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        .error-msg {
+            color: #cc0000;
+            font-weight: bold;
+        }
+        .success-msg {
+            color: #00aa00;
+            font-weight: bold;
+        }
+        h3 {
+            color: #ff3377;
+            border-bottom: 2px solid #ff88bb;
+            padding-bottom: 0.5rem;
+        }
+        .logout-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: #ff88bb;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 1rem;
+            display: none;
+        }
+        .progress-bar.show {
+            display: block;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #ff88bb;
+            transition: width 0.3s;
+        }
+        .upload-note {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+<button class="logout-btn" onclick="logout()">Logout</button>
+
+<header>
+    <img src="../header-image.png" class="header-image left">
+    <h1>Pictures Admin</h1>
+    <img src="../header-image.png" class="header-image right">
+</header>
+
+<nav>
+    <a href="../kaguya.html"><img src="../header-image.png" alt="Kaguya"></a>
+    <a href="index.html"><img src="../header-image.png" alt="Pictures"></a>
+</nav>
+
+<section>
+
+    <h2>Picture Manager</h2>
+
+    <!-- Upload New Picture Section -->
+    <div class="upload-section">
+        <h3>📷 Upload New Picture</h3>
+        
+        <div class="upload-form">
+            <div class="form-group">
+                <label for="picture-title">Picture Title</label>
+                <input type="text" id="picture-title" placeholder="Enter picture title...">
+            </div>
+            
+            <div class="form-group">
+                <label for="picture-date">Picture Date</label>
+                <input type="date" id="picture-date">
+            </div>
+            
+            <div class="form-group">
+                <label for="image-url">Image URL</label>
+                <input type="url" id="image-url" placeholder="Enter image URL (direct link to image)...">
+                <p class="upload-note">Paste a direct image link. For large files, consider using an image hosting service.</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="image-file">Or Upload Image File</label>
+                <input type="file" id="image-file" accept="image/*" onchange="handleImageSelect(event)">
+                <p class="upload-note">Upload images up to 10MB. Files are stored in cloud storage and will be accessible via URL.</p>
+            </div>
+            
+            <img id="image-preview" class="image-preview" alt="Preview">
+            
+            <div class="progress-bar" id="upload-progress">
+                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            </div>
+            
+            <button onclick="uploadPicture()">Upload Picture</button>
+            
+            <p id="upload-status"></p>
+        </div>
+    </div>
+
+    <hr style="margin:2rem 0; border-color: #ff88bb;">
+
+    <!-- Existing Pictures -->
+    <div>
+        <h3>📋 Existing Pictures</h3>
+        <p style="font-size: 0.9rem; color: #666;">Manage your uploaded pictures</p>
+        <div id="pictures-list" class="pictures-list">
+            <p class="loading">Loading pictures...</p>
+        </div>
+    </div>
+
+</section>
+
+<footer>
+    <p>Dreamgirl Collective - Admin Panel</p>
+</footer>
+
+<script>
+const API = "https://renelaird.pages.dev/api";
+// Maximum file size for upload (10MB)
+const MAX_IMAGE_FILE_SIZE = 10 * 1024 * 1024;
+// Upload timeout in milliseconds (5 minutes)
+const UPLOAD_TIMEOUT_MS = 5 * 60 * 1000;
+
+// Safely parse JSON from a response, handling empty or malformed responses
+async function safeJsonParse(response) {
+    const text = await response.text();
+    if (!text || text.trim() === '') {
+        throw new Error("Server returned an empty response");
+    }
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        throw new Error("Server returned an invalid response: " + text.substring(0, 100));
+    }
+}
+
+// Check authentication on page load
+function checkAuth() {
+    const auth = sessionStorage.getItem("picturesAdminAuth");
+    if (auth !== "true") {
+        window.location.href = "index.html";
+    }
+}
+
+function logout() {
+    sessionStorage.removeItem("picturesAdminAuth");
+    window.location.href = "index.html";
+}
+
+function showStatus(message, type) {
+    const statusEl = document.getElementById("upload-status");
+    statusEl.textContent = message;
+    statusEl.className = type === "error" ? "error-msg" : type === "success" ? "success-msg" : "loading";
+}
+
+// Handle image file selection
+function handleImageSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const preview = document.getElementById("image-preview");
+    preview.src = URL.createObjectURL(file);
+    preview.classList.add("show");
+}
+
+// Upload picture
+async function uploadPicture() {
+    const title = document.getElementById("picture-title").value.trim();
+    const date = document.getElementById("picture-date").value;
+    const imageUrl = document.getElementById("image-url").value.trim();
+    const imageFile = document.getElementById("image-file").files[0];
+    
+    if (!title) {
+        showStatus("Please enter a picture title", "error");
+        return;
+    }
+    
+    if (!date) {
+        showStatus("Please select a date", "error");
+        return;
+    }
+    
+    if (!imageUrl && !imageFile) {
+        showStatus("Please enter an image URL or upload an image file", "error");
+        return;
+    }
+    
+    showStatus("Uploading picture...", "loading");
+    
+    try {
+        let finalImageUrl = imageUrl;
+        
+        // If an image file was selected, upload it
+        if (imageFile && !imageUrl) {
+            // Check file size - max 10MB
+            if (imageFile.size > MAX_IMAGE_FILE_SIZE) {
+                showStatus(`Image file is too large (max ${MAX_IMAGE_FILE_SIZE / (1024 * 1024)}MB). Please upload a smaller file or use an image hosting service.`, "error");
+                return;
+            }
+            
+            showStatus("Uploading image file... 0%", "loading");
+            showProgressBar(true);
+            
+            const uploadResult = await uploadFileWithProgress(
+                `${API}/upload/image`,
+                imageFile,
+                (progress) => {
+                    updateProgress(progress);
+                    showStatus(`Uploading image file... ${Math.round(progress)}%`, "loading");
+                }
+            );
+            
+            if (!uploadResult.success) {
+                throw new Error(uploadResult.error || "Failed to upload image");
+            }
+            
+            finalImageUrl = uploadResult.url;
+            showProgressBar(false);
+        }
+        
+        showStatus("Saving picture metadata...", "loading");
+        
+        const response = await fetch(`${API}/pictures/add`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                title,
+                date,
+                image_url: finalImageUrl
+            })
+        });
+        
+        if (!response.ok) {
+            const errorData = await safeJsonParse(response).catch(() => ({}));
+            throw new Error(errorData.error || "Failed to save picture metadata");
+        }
+        
+        showStatus("Picture uploaded successfully!", "success");
+        
+        // Clear form
+        document.getElementById("picture-title").value = "";
+        document.getElementById("picture-date").value = "";
+        document.getElementById("image-url").value = "";
+        document.getElementById("image-file").value = "";
+        document.getElementById("image-preview").classList.remove("show");
+        document.getElementById("image-preview").src = "";
+        
+        // Reload pictures list
+        loadPictures();
+    } catch (err) {
+        showProgressBar(false);
+        showStatus("Error uploading picture: " + err.message, "error");
+    }
+}
+
+// Upload file with progress tracking using XMLHttpRequest
+function uploadFileWithProgress(url, file, onProgress) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        const formData = new FormData();
+        formData.append("file", file);
+        
+        xhr.upload.addEventListener("progress", (event) => {
+            if (event.lengthComputable) {
+                const progress = (event.loaded / event.total) * 100;
+                onProgress(progress);
+            }
+        });
+        
+        xhr.addEventListener("load", () => {
+            try {
+                if (!xhr.responseText || xhr.responseText.trim() === '') {
+                    reject(new Error("Server returned an empty response."));
+                    return;
+                }
+                const response = JSON.parse(xhr.responseText);
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    resolve(response);
+                } else {
+                    reject(new Error(response.error || `Server error: ${xhr.status}`));
+                }
+            } catch (e) {
+                reject(new Error("Invalid response from server: " + (xhr.responseText || "").substring(0, 100)));
+            }
+        });
+        
+        xhr.addEventListener("error", () => {
+            reject(new Error("Network error during upload. Please check your connection and try again."));
+        });
+        
+        xhr.addEventListener("abort", () => {
+            reject(new Error("Upload was cancelled"));
+        });
+        
+        xhr.addEventListener("timeout", () => {
+            reject(new Error("Upload timed out."));
+        });
+        
+        xhr.timeout = UPLOAD_TIMEOUT_MS;
+        xhr.open("POST", url);
+        xhr.send(formData);
+    });
+}
+
+function showProgressBar(show) {
+    const progressBar = document.getElementById("upload-progress");
+    if (show) {
+        progressBar.classList.add("show");
+        updateProgress(0);
+    } else {
+        progressBar.classList.remove("show");
+    }
+}
+
+function updateProgress(percent) {
+    const progressFill = document.getElementById("progress-fill");
+    progressFill.style.width = `${percent}%`;
+}
+
+// Load existing pictures
+async function loadPictures() {
+    try {
+        const res = await fetch(`${API}/pictures/all`);
+        const data = await safeJsonParse(res);
+        
+        const pictures = data.pictures || data || [];
+        
+        // Sort by date descending (newest first)
+        pictures.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        renderPicturesList(pictures);
+    } catch (err) {
+        console.error("Error loading pictures:", err);
+        document.getElementById("pictures-list").innerHTML = 
+            '<p class="error-msg">Error loading pictures</p>';
+    }
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#039;');
+}
+
+function renderPicturesList(pictures) {
+    const container = document.getElementById("pictures-list");
+    
+    if (pictures.length === 0) {
+        container.innerHTML = '<p style="color: #666; font-style: italic;">No pictures uploaded yet</p>';
+        return;
+    }
+    
+    let html = "<ul>";
+    pictures.forEach(picture => {
+        const formattedDate = new Date(picture.date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        const titleEscaped = escapeHtml(picture.title);
+        const imageUrl = escapeHtml(picture.image_url) || '../header-image.png';
+        
+        html += `
+            <li class="picture-item">
+                <img class="picture-item-thumbnail" 
+                     src="${imageUrl}" 
+                     alt="${titleEscaped}"
+                     onerror="this.src='../header-image.png'">
+                <div class="picture-item-info">
+                    <p class="picture-item-title">${titleEscaped}</p>
+                    <p class="picture-item-date">${escapeHtml(formattedDate)}</p>
+                </div>
+                <div class="picture-item-actions">
+                    <button class="btn-delete" onclick="deletePicture(${picture.id})">Delete</button>
+                </div>
+            </li>`;
+    });
+    html += "</ul>";
+    
+    container.innerHTML = html;
+}
+
+async function deletePicture(id) {
+    if (!confirm("Are you sure you want to delete this picture?")) return;
+    
+    try {
+        await fetch(`${API}/pictures/delete/${id}`, { method: "DELETE" });
+        loadPictures();
+        showStatus("Picture deleted", "success");
+    } catch (err) {
+        showStatus("Error deleting picture: " + err.message, "error");
+    }
+}
+
+// Initialize
+checkAuth();
+loadPictures();
+
+// Set default date to today
+document.getElementById("picture-date").valueAsDate = new Date();
+</script>
+
+</body>
+</html>
