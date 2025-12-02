@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interviews</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .interviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        .interview-card {
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .interview-card:hover {
+            transform: scale(1.02);
+        }
+        .interview-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            background-color: rgba(0,0,0,0.1);
+        }
+        .interview-info {
+            padding: 1rem;
+        }
+        .interview-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #ff3377;
+        }
+        .interview-date {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .video-modal.show {
+            display: flex;
+        }
+        .video-modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        .video-modal video {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+        }
+        .video-modal-title {
+            color: white;
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 1.2rem;
+        }
+        .close-modal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+            text-align: center;
+            padding: 2rem;
+        }
+        .no-interviews {
+            color: #666;
+            font-style: italic;
+            text-align: center;
+            padding: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <img src="../header-image.png" class="header-image left">
+    <h1>Interviews</h1>
+    <img src="../header-image.png" class="header-image right">
+</header>
+
+<nav>
+    <a href="../kaguya.html"><img src="../header-image.png" alt="Kaguya"></a>
+    <a href="../index.html"><img src="../header-image.png" alt="Home"></a>
+    <a href="../request.html"><img src="../Request.png" alt="Request"></a>
+    <a href="../creativewriting.html"><img src="../cw.gif" alt="CW"></a>
+</nav>
+
+<section>
+
+    <h2>Video Interviews</h2>
+    <p>Watch our collection of interviews sorted by date</p>
+
+    <div id="interviews-container" class="interviews-grid">
+        <p class="loading">Loading interviews...</p>
+    </div>
+
+</section>
+
+<!-- Video Player Modal -->
+<div id="video-modal" class="video-modal">
+    <div class="video-modal-content">
+        <button class="close-modal" onclick="closeVideoModal()">&times;</button>
+        <video id="modal-video" controls></video>
+        <p id="modal-title" class="video-modal-title"></p>
+    </div>
+</div>
+
+<!-- ADMIN LOGIN BUTTON (small pink circle) -->
+<div id="admin-circle" 
+   onclick="showLoginModal()"
+   style="
+        position: fixed;
+        bottom: 15px;
+        right: 15px;
+        width: 20px;
+        height: 20px;
+        background-color: #ff88bb;
+        border-radius: 50%;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.3s;
+   ">
+</div>
+
+<!-- Login Modal -->
+<div id="login-modal" style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+">
+    <div style="
+        background-color: #ffd1dc;
+        padding: 2rem;
+        border-radius: 8px;
+        text-align: center;
+        max-width: 300px;
+    ">
+        <h3 style="margin-top: 0; color: #ff3377;">Admin Login</h3>
+        <input id="login-username" placeholder="Username" style="
+            width: 90%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #ff88bb;
+            border-radius: 6px;
+        ">
+        <input id="login-password" type="password" placeholder="Password" style="
+            width: 90%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #ff88bb;
+            border-radius: 6px;
+        ">
+        <br>
+        <button onclick="attemptLogin()" style="
+            background: #ff88bb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border-radius: 8px;
+            cursor: pointer;
+        ">Login</button>
+        <button onclick="hideLoginModal()" style="
+            background: #ccc;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border-radius: 8px;
+            cursor: pointer;
+        ">Cancel</button>
+        <p id="login-error" style="color: red; margin-top: 10px; display: none;">Invalid credentials</p>
+    </div>
+</div>
+
+<footer>
+    <p>Dreamgirl Collective</p>
+</footer>
+
+<script>
+const API = "https://renelaird.pages.dev/api";
+
+// Load interviews on page load
+async function loadInterviews() {
+    try {
+        const res = await fetch(`${API}/interviews/all`);
+        const data = await res.json();
+        
+        const interviews = data.interviews || data || [];
+        
+        // Sort by date descending (newest first)
+        interviews.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        renderInterviews(interviews);
+    } catch (err) {
+        console.error("Error loading interviews:", err);
+        document.getElementById("interviews-container").innerHTML = 
+            '<p class="no-interviews">Error loading interviews. Please try again later.</p>';
+    }
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#039;');
+}
+
+function renderInterviews(interviews) {
+    const container = document.getElementById("interviews-container");
+    
+    if (interviews.length === 0) {
+        container.innerHTML = '<p class="no-interviews">No interviews available yet.</p>';
+        return;
+    }
+    
+    container.innerHTML = '';
+    
+    interviews.forEach(interview => {
+        const card = document.createElement('div');
+        card.className = 'interview-card';
+        card.dataset.videoUrl = interview.video_url;
+        card.dataset.title = interview.title;
+        
+        const formattedDate = new Date(interview.date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        card.innerHTML = `
+            <img class="interview-thumbnail" 
+                 src="${escapeHtml(interview.thumbnail_url) || '../header-image.png'}" 
+                 alt="${escapeHtml(interview.title)}"
+                 onerror="this.src='../header-image.png'">
+            <div class="interview-info">
+                <p class="interview-title">${escapeHtml(interview.title)}</p>
+                <p class="interview-date">${escapeHtml(formattedDate)}</p>
+            </div>
+        `;
+        
+        card.addEventListener('click', function() {
+            openVideoModal(this.dataset.videoUrl, this.dataset.title);
+        });
+        
+        container.appendChild(card);
+    });
+}
+
+function openVideoModal(videoUrl, title) {
+    const modal = document.getElementById("video-modal");
+    const video = document.getElementById("modal-video");
+    const titleEl = document.getElementById("modal-title");
+    
+    video.src = videoUrl;
+    titleEl.textContent = title;
+    modal.classList.add("show");
+    document.body.style.overflow = "hidden";
+}
+
+function closeVideoModal() {
+    const modal = document.getElementById("video-modal");
+    const video = document.getElementById("modal-video");
+    
+    video.pause();
+    video.src = "";
+    modal.classList.remove("show");
+    document.body.style.overflow = "";
+}
+
+// Close modal on escape key
+document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") {
+        closeVideoModal();
+    }
+});
+
+// Close modal when clicking outside video
+document.getElementById("video-modal").addEventListener("click", function(e) {
+    if (e.target === this) {
+        closeVideoModal();
+    }
+});
+
+// Admin login functions
+function showLoginModal() {
+    document.getElementById("login-modal").style.display = "flex";
+}
+
+function hideLoginModal() {
+    document.getElementById("login-modal").style.display = "none";
+    document.getElementById("login-error").style.display = "none";
+    document.getElementById("login-username").value = "";
+    document.getElementById("login-password").value = "";
+}
+
+function attemptLogin() {
+    const username = document.getElementById("login-username").value.trim();
+    const password = document.getElementById("login-password").value;
+    
+    if (username === "Rene" && password === "MischiefSisters2!") {
+        // Store auth in sessionStorage
+        sessionStorage.setItem("interviewsAdminAuth", "true");
+        window.location.href = "admin.html";
+    } else {
+        document.getElementById("login-error").style.display = "block";
+    }
+}
+
+// Allow Enter key to submit login
+document.addEventListener("keypress", function(e) {
+    if (e.key === "Enter" && document.getElementById("login-modal").style.display === "flex") {
+        attemptLogin();
+    }
+});
+
+// Initialize
+loadInterviews();
+</script>
+
+</body>
+</html>
