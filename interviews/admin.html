@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Interviews</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .upload-section {
+            margin-bottom: 2rem;
+        }
+        .upload-form {
+            background-color: rgba(255,255,255,0.3);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #ff3377;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group input[type="url"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ff88bb;
+            border-radius: 6px;
+            background-color: rgba(255,255,255,0.5);
+            color: #333;
+            box-sizing: border-box;
+        }
+        .form-group input[type="file"] {
+            padding: 0.5rem;
+        }
+        .thumbnail-preview-container {
+            margin-top: 1rem;
+            display: none;
+        }
+        .thumbnail-preview-container.show {
+            display: block;
+        }
+        .thumbnail-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .thumbnail-option {
+            cursor: pointer;
+            border: 3px solid transparent;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .thumbnail-option:hover {
+            border-color: #ff88bb;
+        }
+        .thumbnail-option.selected {
+            border-color: #ff3377;
+        }
+        .thumbnail-option img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+        }
+        .video-preview {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+        .video-preview.show {
+            display: block;
+        }
+        .interviews-list {
+            background-color: rgba(255,255,255,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .interviews-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .interview-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 8px;
+            gap: 1rem;
+        }
+        .interview-item-thumbnail {
+            width: 120px;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+        .interview-item-info {
+            flex: 1;
+            text-align: left;
+        }
+        .interview-item-title {
+            font-weight: bold;
+            color: #ff3377;
+            margin-bottom: 0.25rem;
+        }
+        .interview-item-date {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .interview-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn-delete {
+            background: #ff6666 !important;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        .error-msg {
+            color: #cc0000;
+            font-weight: bold;
+        }
+        .success-msg {
+            color: #00aa00;
+            font-weight: bold;
+        }
+        h3 {
+            color: #ff3377;
+            border-bottom: 2px solid #ff88bb;
+            padding-bottom: 0.5rem;
+        }
+        .logout-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: #ff88bb;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 1rem;
+            display: none;
+        }
+        .progress-bar.show {
+            display: block;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #ff88bb;
+            transition: width 0.3s;
+        }
+        .upload-note {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+<button class="logout-btn" onclick="logout()">Logout</button>
+
+<header>
+    <img src="../header-image.png" class="header-image left">
+    <h1>Interviews Admin</h1>
+    <img src="../header-image.png" class="header-image right">
+</header>
+
+<nav>
+    <a href="../kaguya.html"><img src="../header-image.png" alt="Kaguya"></a>
+    <a href="index.html"><img src="../header-image.png" alt="Interviews"></a>
+</nav>
+
+<section>
+
+    <h2>Interview Manager</h2>
+
+    <!-- Upload New Interview Section -->
+    <div class="upload-section">
+        <h3>📹 Upload New Interview</h3>
+        
+        <div class="upload-form">
+            <div class="form-group">
+                <label for="interview-title">Interview Title</label>
+                <input type="text" id="interview-title" placeholder="Enter interview title...">
+            </div>
+            
+            <div class="form-group">
+                <label for="interview-date">Interview Date</label>
+                <input type="date" id="interview-date">
+            </div>
+            
+            <div class="form-group">
+                <label for="video-url">Video URL</label>
+                <input type="url" id="video-url" placeholder="Enter video URL (YouTube, direct link, etc.)...">
+                <p class="upload-note">Paste a direct video link or streaming URL. For large files, consider using a video hosting service.</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="video-file">Or Upload Video File</label>
+                <input type="file" id="video-file" accept="video/*" onchange="handleVideoSelect(event)">
+                <p class="upload-note">For large videos, streaming is recommended. Max upload size depends on your hosting configuration.</p>
+            </div>
+            
+            <video id="video-preview" class="video-preview" controls></video>
+            
+            <div class="progress-bar" id="upload-progress">
+                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            </div>
+            
+            <div id="thumbnail-preview-container" class="thumbnail-preview-container">
+                <label>Select Thumbnail</label>
+                <p class="upload-note">Click on a frame to use it as the thumbnail, or upload a custom one:</p>
+                <div class="form-group">
+                    <input type="file" id="custom-thumbnail" accept="image/*" onchange="handleCustomThumbnail(event)">
+                </div>
+                <div id="thumbnail-options" class="thumbnail-options"></div>
+                <canvas id="thumbnail-canvas" style="display: none;"></canvas>
+            </div>
+            
+            <div class="form-group">
+                <label for="thumbnail-url">Or Enter Thumbnail URL</label>
+                <input type="url" id="thumbnail-url" placeholder="Enter thumbnail image URL...">
+            </div>
+            
+            <button onclick="generateThumbnails()">Generate Thumbnails from Video</button>
+            <button onclick="uploadInterview()">Upload Interview</button>
+            
+            <p id="upload-status"></p>
+        </div>
+    </div>
+
+    <hr style="margin:2rem 0; border-color: #ff88bb;">
+
+    <!-- Existing Interviews -->
+    <div>
+        <h3>📋 Existing Interviews</h3>
+        <p style="font-size: 0.9rem; color: #666;">Manage your uploaded interviews</p>
+        <div id="interviews-list" class="interviews-list">
+            <p class="loading">Loading interviews...</p>
+        </div>
+    </div>
+
+</section>
+
+<footer>
+    <p>Dreamgirl Collective - Admin Panel</p>
+</footer>
+
+<script>
+const API = "https://renelaird.pages.dev/api";
+let selectedThumbnail = null;
+let videoElement = null;
+
+// Check authentication on page load
+function checkAuth() {
+    const auth = sessionStorage.getItem("interviewsAdminAuth");
+    if (auth !== "true") {
+        window.location.href = "index.html";
+    }
+}
+
+function logout() {
+    sessionStorage.removeItem("interviewsAdminAuth");
+    window.location.href = "index.html";
+}
+
+function showStatus(message, type) {
+    const statusEl = document.getElementById("upload-status");
+    statusEl.textContent = message;
+    statusEl.className = type === "error" ? "error-msg" : type === "success" ? "success-msg" : "loading";
+}
+
+// Handle video file selection
+function handleVideoSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const video = document.getElementById("video-preview");
+    video.src = URL.createObjectURL(file);
+    video.classList.add("show");
+    videoElement = video;
+    
+    // Clear previous thumbnails
+    document.getElementById("thumbnail-options").innerHTML = '';
+    document.getElementById("thumbnail-preview-container").classList.remove("show");
+    selectedThumbnail = null;
+    
+    // Also set a temporary video URL reference
+    video.dataset.localFile = "true";
+}
+
+// Generate thumbnails from video at different timestamps
+function generateThumbnails() {
+    const video = document.getElementById("video-preview");
+    const videoUrl = document.getElementById("video-url").value.trim();
+    
+    // If there's a URL but no file loaded, try to load the video
+    if (videoUrl && !video.src) {
+        video.src = videoUrl;
+        video.classList.add("show");
+        video.crossOrigin = "anonymous";
+    }
+    
+    if (!video.src) {
+        showStatus("Please upload a video file or enter a video URL first", "error");
+        return;
+    }
+    
+    showStatus("Generating thumbnails...", "loading");
+    
+    video.addEventListener("loadedmetadata", function onLoaded() {
+        video.removeEventListener("loadedmetadata", onLoaded);
+        captureFrames(video);
+    });
+    
+    // If video is already loaded
+    if (video.readyState >= 2) {
+        captureFrames(video);
+    }
+}
+
+function captureFrames(video) {
+    const canvas = document.getElementById("thumbnail-canvas");
+    const ctx = canvas.getContext("2d");
+    const container = document.getElementById("thumbnail-options");
+    
+    // Set canvas size to match video aspect ratio
+    canvas.width = 320;
+    canvas.height = 180;
+    
+    const duration = video.duration;
+    const timestamps = [
+        0.1 * duration,
+        0.25 * duration,
+        0.5 * duration,
+        0.75 * duration
+    ];
+    
+    container.innerHTML = '';
+    let captured = 0;
+    
+    timestamps.forEach((time, index) => {
+        video.currentTime = time;
+        
+        video.addEventListener("seeked", function onSeeked() {
+            video.removeEventListener("seeked", onSeeked);
+            
+            try {
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+                
+                const option = document.createElement("div");
+                option.className = "thumbnail-option";
+                option.innerHTML = `<img src="${dataUrl}" alt="Thumbnail ${index + 1}">`;
+                option.addEventListener("click", function() {
+                    selectThumbnail(this, dataUrl);
+                });
+                container.appendChild(option);
+                
+                captured++;
+                if (captured === timestamps.length) {
+                    document.getElementById("thumbnail-preview-container").classList.add("show");
+                    showStatus("Thumbnails generated! Click one to select.", "success");
+                    video.currentTime = 0;
+                }
+            } catch (err) {
+                console.error("Error capturing frame:", err);
+                captured++;
+                if (captured === timestamps.length) {
+                    if (container.children.length === 0) {
+                        showStatus("Could not generate thumbnails (CORS restriction). Please upload a custom thumbnail or enter a thumbnail URL.", "error");
+                    }
+                    document.getElementById("thumbnail-preview-container").classList.add("show");
+                }
+            }
+        }, { once: true });
+    });
+}
+
+function selectThumbnail(element, dataUrl) {
+    // Remove selected class from all options
+    document.querySelectorAll(".thumbnail-option").forEach(opt => {
+        opt.classList.remove("selected");
+    });
+    
+    // Add selected class to clicked option
+    element.classList.add("selected");
+    selectedThumbnail = dataUrl;
+    
+    // Clear the URL input if a generated thumbnail is selected
+    document.getElementById("thumbnail-url").value = "";
+}
+
+function handleCustomThumbnail(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        selectedThumbnail = e.target.result;
+        
+        // Clear selection from generated thumbnails
+        document.querySelectorAll(".thumbnail-option").forEach(opt => {
+            opt.classList.remove("selected");
+        });
+        
+        showStatus("Custom thumbnail selected!", "success");
+    };
+    reader.readAsDataURL(file);
+}
+
+// Upload interview
+async function uploadInterview() {
+    const title = document.getElementById("interview-title").value.trim();
+    const date = document.getElementById("interview-date").value;
+    const videoUrl = document.getElementById("video-url").value.trim();
+    const thumbnailUrl = document.getElementById("thumbnail-url").value.trim();
+    const videoFile = document.getElementById("video-file").files[0];
+    
+    if (!title) {
+        showStatus("Please enter an interview title", "error");
+        return;
+    }
+    
+    if (!date) {
+        showStatus("Please select a date", "error");
+        return;
+    }
+    
+    if (!videoUrl && !videoFile) {
+        showStatus("Please enter a video URL or upload a video file", "error");
+        return;
+    }
+    
+    showStatus("Uploading interview...", "loading");
+    
+    try {
+        let finalVideoUrl = videoUrl;
+        let finalThumbnailUrl = thumbnailUrl || selectedThumbnail || "";
+        
+        // If a video file was selected, we need to handle the upload
+        // For now, we'll store the video URL directly - for large files,
+        // the user should use an external hosting service
+        if (videoFile && !videoUrl) {
+            // Convert to base64 for small videos, or prompt for URL for large ones
+            if (videoFile.size > 10 * 1024 * 1024) { // 10MB limit
+                showStatus("Video file is too large. Please upload to a video hosting service and use the URL field.", "error");
+                return;
+            }
+            
+            // For small files, we can convert to base64 (not ideal for production)
+            const reader = new FileReader();
+            finalVideoUrl = await new Promise((resolve, reject) => {
+                reader.onload = e => resolve(e.target.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(videoFile);
+            });
+        }
+        
+        const response = await fetch(`${API}/interviews/add`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                title,
+                date,
+                video_url: finalVideoUrl,
+                thumbnail_url: finalThumbnailUrl
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error("Failed to upload interview");
+        }
+        
+        showStatus("Interview uploaded successfully!", "success");
+        
+        // Clear form
+        document.getElementById("interview-title").value = "";
+        document.getElementById("interview-date").value = "";
+        document.getElementById("video-url").value = "";
+        document.getElementById("thumbnail-url").value = "";
+        document.getElementById("video-file").value = "";
+        document.getElementById("video-preview").classList.remove("show");
+        document.getElementById("video-preview").src = "";
+        document.getElementById("thumbnail-options").innerHTML = "";
+        document.getElementById("thumbnail-preview-container").classList.remove("show");
+        selectedThumbnail = null;
+        
+        // Reload interviews list
+        loadInterviews();
+    } catch (err) {
+        showStatus("Error uploading interview: " + err.message, "error");
+    }
+}
+
+// Load existing interviews
+async function loadInterviews() {
+    try {
+        const res = await fetch(`${API}/interviews/all`);
+        const data = await res.json();
+        
+        const interviews = data.interviews || data || [];
+        
+        // Sort by date descending (newest first)
+        interviews.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        renderInterviewsList(interviews);
+    } catch (err) {
+        console.error("Error loading interviews:", err);
+        document.getElementById("interviews-list").innerHTML = 
+            '<p class="error-msg">Error loading interviews</p>';
+    }
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#039;');
+}
+
+function renderInterviewsList(interviews) {
+    const container = document.getElementById("interviews-list");
+    
+    if (interviews.length === 0) {
+        container.innerHTML = '<p style="color: #666; font-style: italic;">No interviews uploaded yet</p>';
+        return;
+    }
+    
+    let html = "<ul>";
+    interviews.forEach(interview => {
+        const formattedDate = new Date(interview.date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        const titleEscaped = escapeHtml(interview.title);
+        const thumbnailUrl = escapeHtml(interview.thumbnail_url) || '../header-image.png';
+        
+        html += `
+            <li class="interview-item">
+                <img class="interview-item-thumbnail" 
+                     src="${thumbnailUrl}" 
+                     alt="${titleEscaped}"
+                     onerror="this.src='../header-image.png'">
+                <div class="interview-item-info">
+                    <p class="interview-item-title">${titleEscaped}</p>
+                    <p class="interview-item-date">${escapeHtml(formattedDate)}</p>
+                </div>
+                <div class="interview-item-actions">
+                    <button class="btn-delete" onclick="deleteInterview(${interview.id})">Delete</button>
+                </div>
+            </li>`;
+    });
+    html += "</ul>";
+    
+    container.innerHTML = html;
+}
+
+async function deleteInterview(id) {
+    if (!confirm("Are you sure you want to delete this interview?")) return;
+    
+    try {
+        await fetch(`${API}/interviews/delete/${id}`, { method: "DELETE" });
+        loadInterviews();
+        showStatus("Interview deleted", "success");
+    } catch (err) {
+        showStatus("Error deleting interview: " + err.message, "error");
+    }
+}
+
+// Initialize
+checkAuth();
+loadInterviews();
+
+// Set default date to today
+document.getElementById("interview-date").valueAsDate = new Date();
+</script>
+
+</body>
+</html>
