@@ -174,8 +174,8 @@
         
         <div class="upload-form">
             <div class="form-group">
-                <label for="picture-title">Picture Title</label>
-                <input type="text" id="picture-title" placeholder="Enter picture title...">
+                <label for="picture-description">Picture Description</label>
+                <textarea id="picture-description" placeholder="Describe this picture... What was it of? When was it taken? Your thoughts about it..." rows="4" style="width: 100%; padding: 0.75rem; border: 2px solid #ff88bb; border-radius: 6px; background-color: rgba(255,255,255,0.5); color: #333; box-sizing: border-box; resize: vertical;"></textarea>
             </div>
             
             <div class="form-group">
@@ -192,7 +192,7 @@
             <div class="form-group">
                 <label for="image-file">Or Upload Image File</label>
                 <input type="file" id="image-file" accept="image/*" onchange="handleImageSelect(event)">
-                <p class="upload-note">Upload images up to 10MB. Files are stored in cloud storage and will be accessible via URL.</p>
+                <p class="upload-note">Upload images up to 20MB. Files are stored in cloud storage and will be accessible via URL.</p>
             </div>
             
             <img id="image-preview" class="image-preview" alt="Preview">
@@ -226,8 +226,8 @@
 
 <script>
 const API = "https://renelaird.pages.dev/api";
-// Maximum file size for upload (10MB)
-const MAX_IMAGE_FILE_SIZE = 10 * 1024 * 1024;
+// Maximum file size for upload (20MB)
+const MAX_IMAGE_FILE_SIZE = 20 * 1024 * 1024;
 // Upload timeout in milliseconds (5 minutes)
 const UPLOAD_TIMEOUT_MS = 5 * 60 * 1000;
 
@@ -275,15 +275,10 @@ function handleImageSelect(event) {
 
 // Upload picture
 async function uploadPicture() {
-    const title = document.getElementById("picture-title").value.trim();
+    const description = document.getElementById("picture-description").value.trim();
     const date = document.getElementById("picture-date").value;
     const imageUrl = document.getElementById("image-url").value.trim();
     const imageFile = document.getElementById("image-file").files[0];
-    
-    if (!title) {
-        showStatus("Please enter a picture title", "error");
-        return;
-    }
     
     if (!date) {
         showStatus("Please select a date", "error");
@@ -302,7 +297,7 @@ async function uploadPicture() {
         
         // If an image file was selected, upload it
         if (imageFile && !imageUrl) {
-            // Check file size - max 10MB
+            // Check file size - max 20MB
             if (imageFile.size > MAX_IMAGE_FILE_SIZE) {
                 showStatus(`Image file is too large (max ${MAX_IMAGE_FILE_SIZE / (1024 * 1024)}MB). Please upload a smaller file or use an image hosting service.`, "error");
                 return;
@@ -334,7 +329,7 @@ async function uploadPicture() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                title,
+                description,
                 date,
                 image_url: finalImageUrl
             })
@@ -348,7 +343,7 @@ async function uploadPicture() {
         showStatus("Picture uploaded successfully!", "success");
         
         // Clear form
-        document.getElementById("picture-title").value = "";
+        document.getElementById("picture-description").value = "";
         document.getElementById("picture-date").value = "";
         document.getElementById("image-url").value = "";
         document.getElementById("image-file").value = "";
@@ -471,17 +466,20 @@ function renderPicturesList(pictures) {
             day: 'numeric'
         });
         
-        const titleEscaped = escapeHtml(picture.title);
+        const descriptionEscaped = escapeHtml(picture.description || picture.title || '');
+        const descriptionPreview = descriptionEscaped.length > 100 
+            ? descriptionEscaped.substring(0, 100) + '...' 
+            : descriptionEscaped;
         const imageUrl = escapeHtml(picture.image_url) || '../header-image.png';
         
         html += `
             <li class="picture-item">
                 <img class="picture-item-thumbnail" 
                      src="${imageUrl}" 
-                     alt="${titleEscaped}"
+                     alt="Picture"
                      onerror="this.src='../header-image.png'">
                 <div class="picture-item-info">
-                    <p class="picture-item-title">${titleEscaped}</p>
+                    <p class="picture-item-title">${descriptionPreview || '(No description)'}</p>
                     <p class="picture-item-date">${escapeHtml(formattedDate)}</p>
                 </div>
                 <div class="picture-item-actions">

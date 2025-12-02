@@ -20,17 +20,17 @@ export async function onRequest(context) {
   // POST /api/pictures/add → add new picture
   if (method === "POST" && pathname.endsWith("/add")) {
     try {
-      const { title, date, image_url } = await context.request.json();
+      const { description, date, image_url } = await context.request.json();
       
-      if (!title || !date || !image_url) {
+      if (!date || !image_url) {
         return Response.json({ error: "Missing required fields" }, { status: 400 });
       }
       
       await db
         .prepare(
-          "INSERT INTO pictures (title, date, image_url) VALUES (?, ?, ?)"
+          "INSERT INTO pictures (title, description, date, image_url) VALUES (?, ?, ?, ?)"
         )
-        .bind(title, date, image_url)
+        .bind('', description || '', date, image_url)
         .run();
       
       return Response.json({ success: true });

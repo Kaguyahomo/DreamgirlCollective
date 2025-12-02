@@ -12,76 +12,117 @@
             gap: 1.5rem;
             margin-top: 1rem;
         }
+        
+        /* Flip card container */
         .picture-card {
-            background-color: rgba(255,255,255,0.3);
-            border-radius: 8px;
-            overflow: hidden;
-            transition: transform 0.2s;
+            perspective: 1000px;
+            height: 400px;
+        }
+        
+        .picture-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
             cursor: pointer;
         }
-        .picture-card:hover {
-            transform: scale(1.02);
+        
+        .picture-card.flipped .picture-card-inner {
+            transform: rotateY(180deg);
         }
+        
+        .picture-card-front,
+        .picture-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .picture-card-front {
+            background-color: rgba(255,255,255,0.3);
+        }
+        
+        .picture-card-back {
+            background-color: rgba(255,240,245,0.95);
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            box-sizing: border-box;
+        }
+        
         .picture-thumbnail {
             width: 100%;
-            aspect-ratio: 1/1;
+            height: 300px;
             object-fit: cover;
             background-color: rgba(0,0,0,0.1);
         }
+        
         .picture-info {
             padding: 1rem;
         }
-        .picture-title {
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: #ff3377;
-        }
+        
         .picture-date {
             font-size: 0.9rem;
             color: #666;
         }
-        .picture-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.9);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
+        
+        /* Back of card - postcard style */
+        .postcard-header {
+            text-align: center;
+            border-bottom: 2px dashed #ff88bb;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
         }
-        .picture-modal.show {
-            display: flex;
+        
+        .postcard-header h3 {
+            margin: 0;
+            color: #ff3377;
+            font-size: 1.1rem;
         }
-        .picture-modal-content {
-            max-width: 90%;
-            max-height: 90%;
-            position: relative;
+        
+        .postcard-date {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 0.25rem;
         }
-        .picture-modal img {
-            max-width: 100%;
-            max-height: 80vh;
-            border-radius: 8px;
+        
+        .postcard-description {
+            flex: 1;
+            overflow-y: auto;
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #333;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
-        .picture-modal-title {
-            color: white;
+        
+        .postcard-footer {
             text-align: center;
             margin-top: 1rem;
-            font-size: 1.2rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #ffccdd;
         }
-        .close-modal {
-            position: absolute;
-            top: -40px;
-            right: 0;
-            color: white;
-            font-size: 2rem;
-            cursor: pointer;
-            background: none;
-            border: none;
+        
+        .postcard-footer span {
+            font-size: 0.8rem;
+            color: #999;
+            font-style: italic;
         }
+        
+        .no-description {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
         .loading {
             color: #666;
             font-style: italic;
@@ -93,6 +134,36 @@
             font-style: italic;
             text-align: center;
             padding: 2rem;
+        }
+        
+        /* Touch hint for mobile */
+        .tap-hint {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255,51,119,0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .picture-card:hover .tap-hint {
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .pictures-grid {
+                grid-template-columns: 1fr;
+            }
+            .picture-card {
+                height: 450px;
+            }
+            .tap-hint {
+                opacity: 1;
+            }
         }
     </style>
 </head>
@@ -115,22 +186,13 @@
 <section>
 
     <h2>Digital Pictures</h2>
-    <p>Browse my collection of digital pictures sorted by date</p>
+    <p>Browse my collection of digital pictures — tap or click any photo to flip it over and read the story behind it!</p>
 
     <div id="pictures-container" class="pictures-grid">
         <p class="loading">Loading pictures...</p>
     </div>
 
 </section>
-
-<!-- Picture Viewer Modal -->
-<div id="picture-modal" class="picture-modal">
-    <div class="picture-modal-content">
-        <button class="close-modal" onclick="closePictureModal()">&times;</button>
-        <img id="modal-picture" src="" alt="">
-        <p id="modal-title" class="picture-modal-title"></p>
-    </div>
-</div>
 
 <!-- ADMIN LOGIN BUTTON (small pink circle) -->
 <div id="admin-circle" 
@@ -268,8 +330,6 @@ function renderPictures(pictures) {
     pictures.forEach(picture => {
         const card = document.createElement('div');
         card.className = 'picture-card';
-        card.dataset.imageUrl = picture.image_url;
-        card.dataset.title = picture.title;
         
         const formattedDate = new Date(picture.date).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -277,59 +337,44 @@ function renderPictures(pictures) {
             day: 'numeric'
         });
         
+        const description = picture.description || picture.title || '';
+        const imageUrl = escapeHtml(picture.image_url) || '../header-image.png';
+        const hasDescription = description.trim().length > 0;
+        
         card.innerHTML = `
-            <img class="picture-thumbnail" 
-                 src="${escapeHtml(picture.image_url) || '../header-image.png'}" 
-                 alt="${escapeHtml(picture.title)}"
-                 onerror="this.src='../header-image.png'">
-            <div class="picture-info">
-                <p class="picture-title">${escapeHtml(picture.title)}</p>
-                <p class="picture-date">${escapeHtml(formattedDate)}</p>
+            <div class="picture-card-inner">
+                <div class="picture-card-front">
+                    <img class="picture-thumbnail" 
+                         src="${imageUrl}" 
+                         alt="Picture"
+                         onerror="this.src='../header-image.png'">
+                    <div class="picture-info">
+                        <p class="picture-date">${escapeHtml(formattedDate)}</p>
+                    </div>
+                    <span class="tap-hint">Tap to flip</span>
+                </div>
+                <div class="picture-card-back">
+                    <div class="postcard-header">
+                        <h3>📮 Postcard</h3>
+                        <p class="postcard-date">${escapeHtml(formattedDate)}</p>
+                    </div>
+                    <div class="postcard-description ${hasDescription ? '' : 'no-description'}">
+                        ${hasDescription ? escapeHtml(description) : 'No description yet...'}
+                    </div>
+                    <div class="postcard-footer">
+                        <span>Tap to flip back</span>
+                    </div>
+                </div>
             </div>
         `;
         
         card.addEventListener('click', function() {
-            openPictureModal(this.dataset.imageUrl, this.dataset.title);
+            this.classList.toggle('flipped');
         });
         
         container.appendChild(card);
     });
 }
-
-function openPictureModal(imageUrl, title) {
-    const modal = document.getElementById("picture-modal");
-    const image = document.getElementById("modal-picture");
-    const titleEl = document.getElementById("modal-title");
-    
-    image.src = imageUrl;
-    image.alt = title;
-    titleEl.textContent = title;
-    modal.classList.add("show");
-    document.body.style.overflow = "hidden";
-}
-
-function closePictureModal() {
-    const modal = document.getElementById("picture-modal");
-    const image = document.getElementById("modal-picture");
-    
-    image.src = "";
-    modal.classList.remove("show");
-    document.body.style.overflow = "";
-}
-
-// Close modal on escape key
-document.addEventListener("keydown", function(e) {
-    if (e.key === "Escape") {
-        closePictureModal();
-    }
-});
-
-// Close modal when clicking outside picture
-document.getElementById("picture-modal").addEventListener("click", function(e) {
-    if (e.target === this) {
-        closePictureModal();
-    }
-});
 
 // Admin login functions
 function showLoginModal() {
